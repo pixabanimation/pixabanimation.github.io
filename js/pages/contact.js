@@ -49,7 +49,7 @@ const ContactPage = {
           <div class="glass" style="padding:32px">
             <h3 style="margin-bottom:20px;font-size:1.2rem">Send us a Message</h3>
             <form class="contact-form" onsubmit="ContactPage.submit(event)">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div class="contact-name-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
                 <div class="form-group">
                   <label>Your Name</label>
                   <input type="text" id="contactName" placeholder="John Doe" required>

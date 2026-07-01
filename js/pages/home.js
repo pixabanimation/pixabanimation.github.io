@@ -143,7 +143,7 @@ const HomePage = {
         <!-- TRUST BAR — Glassmorphism Stats Row            -->
         <!-- ============================================ -->
         <div style="max-width:1280px;margin:-32px auto 0;padding:0 24px;position:relative;z-index:3">
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);background:rgba(22,34,64,0.7);backdrop-filter:blur(20px);border:1px solid rgba(59,130,246,0.1);border-radius:20px;padding:4px;box-shadow:0 8px 40px rgba(0,0,0,0.15)">
+          <div class="mobile-trust-bar" style="display:grid;grid-template-columns:repeat(4,1fr);background:rgba(22,34,64,0.7);backdrop-filter:blur(20px);border:1px solid rgba(59,130,246,0.1);border-radius:20px;padding:4px;box-shadow:0 8px 40px rgba(0,0,0,0.15)">
             <div style="text-align:center;padding:28px 16px;border-right:1px solid rgba(255,255,255,0.04)">
               <div style="width:44px;height:44px;margin:0 auto 10px;background:rgba(59,130,246,0.08);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--accent-1)"><i class="fas fa-cloud-download-alt"></i></div>
               <div style="font-weight:600;font-size:0.9rem;color:var(--text-primary)">Instant Download</div>

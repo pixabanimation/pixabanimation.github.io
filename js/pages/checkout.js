@@ -85,7 +85,7 @@ const CheckoutPage = {
               <div class="form-group full-width">
                 <label>Country</label>
                 <div style="position:relative">
-                  <select id="shipCountry" onchange="CheckoutPage.onCountryChange()" required style="padding:12px 16px;appearance:auto;-webkit-appearance:auto">
+                  <select id="shipCountry" onchange="CheckoutPage.onCountryChange()" required>
                     <option value="">🌍 Select your country</option>
                     ${Countries.renderOptions(defaultCountry)}
                   </select>
