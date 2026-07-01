@@ -347,6 +347,25 @@ input:focus, textarea:focus, select:focus {
   animation: pulse-glow 3s ease-in-out infinite;
 }
 
+.brand-logo {
+  width: 36px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.footer-logo {
+  width: 44px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 12px;
+  vertical-align: middle;
+}
+
 @keyframes pulse-glow {
   0%, 100% { filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.3)); }
   50% { filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.6)); }
