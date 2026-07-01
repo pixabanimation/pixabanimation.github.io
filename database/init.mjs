@@ -84,6 +84,31 @@ async function main() {
     console.error("  ⚠️ Password migration error:", err.message);
   }
 
+  // Migration: Fix images JSON column — strip literal backslash-escaped quotes from bad seed data
+  console.log("🔄 Fixing images JSON format in products table...");
+  try {
+    // Find products where images column has literal backslash sequences (not valid JSON)
+    const badImages = await client.execute(
+      "SELECT id, images FROM products WHERE images LIKE '%\\\\%\\\\"'%' OR images LIKE '%\\\\%\\\\\"%' OR images IS NOT NULL AND images NOT LIKE '[%'"
+    );
+    // Alternative approach: update any images that aren't valid JSON arrays
+    // We'll fix by removing backslashes before quotes
+    const allProducts = await client.execute("SELECT id, images FROM products WHERE images IS NOT NULL AND images != '[]'");
+    for (const row of allProducts.rows) {
+      const raw = row.images;
+      if (raw && typeof raw === 'string') {
+        // Try to clean backslash-escaped quotes: \" -> "
+        const cleaned = raw.replace(/\\"/g, '"');
+        if (cleaned !== raw) {
+          await client.execute("UPDATE products SET images = ? WHERE id = ?", [cleaned, row.id]);
+          console.log(`  ✅ Fixed images JSON for product #${row.id}`);
+        }
+      }
+    }
+  } catch (err) {
+    console.error("  ⚠️ Images JSON fix error:", err.message);
+  }
+
   // Migration: Fix broken product thumbnail URLs
   console.log("🔄 Fixing broken product thumbnail URLs...");
   const imageFixes = [
@@ -172,10 +197,10 @@ async function main() {
   console.log("🔄 Updating existing product data from new seed...");
   try {
     // Update product 11 with the new name/description/price from seed
-    await client.execute("UPDATE products SET name = 'Creative Business Book', slug = 'creative-business-book', description = 'The ultimate guide to building a creative career. Learn the strategies, mindsets, and workflows used by top animators, designers, and content creators to turn passion into profit.', price = 24.99, compare_price = 29.99, image_url = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=80', images = '[\"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=80\",\"https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=80\"]', stock = 200 WHERE id = 11");
+    await client.execute("UPDATE products SET name = 'Creative Business Book', slug = 'creative-business-book', description = 'The ultimate guide to building a creative career. Learn the strategies, mindsets, and workflows used by top animators, designers, and content creators to turn passion into profit.', price = 24.99, compare_price = 29.99, image_url = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=80', images = '[\"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=80\",\"https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=80\]', stock = 200 WHERE id = 11");
     // Also update product 4 and 9 to ensure they match seed data
-    await client.execute("UPDATE products SET images = '[\"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80\",\"https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=600&q=80\"]', slug = 'desk-lamp', compare_price = 119.99 WHERE id = 4");
-    await client.execute("UPDATE products SET images = '[\"https://images.unsplash.com/photo-1592078615290-033ee584e267?w=600&q=80\",\"https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=600&q=80\"]', slug = 'office-chair', compare_price = 749.99 WHERE id = 9");
+    await client.execute("UPDATE products SET images = '[\"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80\",\"https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=600&q=80\]', slug = 'desk-lamp', compare_price = 119.99 WHERE id = 4");
+    await client.execute("UPDATE products SET images = '[\"https://images.unsplash.com/photo-1592078615290-033ee584e267?w=600&q=80\",\"https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=600&q=80\]', slug = 'office-chair', compare_price = 749.99 WHERE id = 9");
     console.log("  ✅ Updated existing product data (4, 9, 11) to match new seed");
   } catch (err) {
     console.error("  ⚠️ Could not update product data:", err.message);

@@ -26,7 +26,14 @@ const ProductPage = {
       const reviews = await DB.getProductReviews(product.id);
       const isInWishlist = await DB.isInWishlist(product.id);
       const isVideo = product.media_type === 'video';
-      const images = JSON.parse(product.images || '[]');
+      let images = [];
+      try {
+        images = JSON.parse(product.images || '[]');
+        if (!Array.isArray(images)) images = [];
+      } catch (e) {
+        images = [];
+        console.warn('Failed to parse product images JSON:', e.message);
+      }
       const allImages = [product.image_url, ...images.filter(i => i !== product.image_url)];
       const hasDiscount = product.compare_price && product.compare_price > product.price;
 
