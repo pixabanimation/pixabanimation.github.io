@@ -67,14 +67,15 @@ const HomePage = {
               </div>
               
               <h1 style="font-size:clamp(2.4rem,5vw,4rem);font-weight:800;line-height:1.08;margin-bottom:20px;font-family:var(--font-display);letter-spacing:-0.02em">
-                Premium Animation<br>
-                <span class="text-gradient">Assets for Creators</span>
+                Premium Motion Graphics<br>
+                <span class="text-gradient">&amp; Animation Assets for Creators</span>
               </h1>
               
               <p style="color:var(--text-secondary);font-size:clamp(1rem,1.2vw,1.15rem);line-height:1.8;margin-bottom:36px;max-width:520px">
-                Elevate your projects with cinema-grade 4K video clips, motion graphics packs, 
-                logo reveals, typography animations, and professional editing templates. 
-                Used by top creators in 50+ countries.
+                Elevate your projects with cinema-grade <strong>4K motion graphics</strong>, <strong>animation assets</strong>, 
+                video clips, logo reveals, typography animations, <strong>After Effects templates</strong>, and 
+                professional <strong>Premiere Pro templates</strong>. Used by top creators in 50+ countries 
+                for commercial video production, social media content, and broadcast design.
               </p>
               
               <div style="display:flex;gap:14px;flex-wrap:wrap">
@@ -174,11 +175,11 @@ const HomePage = {
             <div style="display:inline-block;padding:6px 18px;background:rgba(59,130,246,0.08);color:var(--accent-1);border-radius:100px;font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">Featured Collection</div>
             <h2 style="font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;margin-bottom:14px;font-family:var(--font-display);letter-spacing:-0.01em">
               Top <span class="text-gradient">Animation</span> Assets
-            </h2>
-            <p style="color:var(--text-secondary);font-size:1.05rem;max-width:560px;margin:0 auto;line-height:1.7">
-              Handpicked premium video clips, motion graphics, and templates — 
-              chosen for quality, creativity, and production value.
-            </p>
+            </h2>              <p style="color:var(--text-secondary);font-size:1.05rem;max-width:560px;margin:0 auto;line-height:1.7">
+                Handpicked premium <strong>motion graphics</strong>, <strong>animation video clips</strong>, and 
+                <strong>creative templates</strong> for editors, motion designers, and content creators — 
+                chosen for exceptional quality, creativity, and production value.
+              </p>
           </div>
           <div class="product-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:24px">
             ${allProducts.slice(0, 8).map((p, i) => Components.productCard(p, i)).join('')}
@@ -220,8 +221,8 @@ const HomePage = {
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
               <div style="padding:36px 28px;background:rgba(22,34,64,0.5);border:1px solid rgba(59,130,246,0.08);border-radius:16px;transition:all 0.3s ease">
                 <div style="width:52px;height:52px;background:rgba(59,130,246,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--accent-1);margin-bottom:20px"><i class="fas fa-film"></i></div>
-                <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:8px">Cinema-Grade Quality</h3>
-                <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7">Every asset is shot or rendered in true 4K resolution. No compression artifacts, no compromises — just stunning visual fidelity.</p>
+                <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:8px">Cinema-Grade 4K Quality</h3>
+                <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.7">Every motion graphics asset and video clip is rendered in true 4K resolution. Compatible with After Effects, Premiere Pro, Final Cut Pro, and DaVinci Resolve — no compromises, just stunning visual fidelity.</p>
               </div>
               <div style="padding:36px 28px;background:rgba(22,34,64,0.5);border:1px solid rgba(59,130,246,0.08);border-radius:16px;transition:all 0.3s ease">
                 <div style="width:52px;height:52px;background:rgba(59,130,246,0.1);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--accent-1);margin-bottom:20px"><i class="fas fa-bolt"></i></div>
