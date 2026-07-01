@@ -957,6 +957,17 @@ select:focus option:checked {
   animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
+.hero-image .spurno-player {
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  aspect-ratio: 16 / 10;
+  background: var(--bg-secondary);
+}
+
+.hero-video .spurno-video {
+  object-fit: cover !important;
+}
+
 .hero-image img {
   width: 100%;
   border-radius: var(--radius-lg);

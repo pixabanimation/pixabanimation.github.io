@@ -105,18 +105,17 @@ const HomePage = {
             </div>
 
             <div class="hero-image" style="position:relative;animation:fadeInUp 0.8s ease-out 0.2s both">
-              <!-- Main showcase image with glass card overlay -->
-              <div style="position:relative;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);background:var(--bg-secondary)">
-                <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=700&q=80" 
-                     alt="PixabAnimation showcase" loading="eager" 
-                     style="width:100%;display:block;aspect-ratio:16/10;object-fit:cover">
-                <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,0.06),transparent 50%)"></div>
-                
-                <!-- Play button overlay -->
-                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:rgba(59,130,246,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(59,130,246,0.4);backdrop-filter:blur(4px)">
-                  <i class="fas fa-play" style="color:white;font-size:1.2rem;margin-left:3px"></i>
-                </div>
-              </div>
+              <!-- Motion Graphics Showcase Video -->
+              ${VideoPlayer.render({
+                src: 'assets/videos/red-motion-animated-background.mp4',
+                poster: 'assets/images/motion-red.jpg',
+                width: '100%',
+                height: 'auto',
+                controls: true,
+                autoplay: false,
+                loop: false,
+                className: 'hero-video'
+              })}
 
               <!-- Floating card 1 -->
               <div style="position:absolute;top:-12px;right:-12px;padding:14px 18px;display:flex;align-items:center;gap:10px;background:rgba(22,34,64,0.8);backdrop-filter:blur(16px);border:1px solid rgba(59,130,246,0.15);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.2);animation:float 7s ease-in-out infinite">
@@ -321,6 +320,7 @@ const HomePage = {
       `;
 
       App.updateWishlistIcons();
+      VideoPlayer.init();
     } catch (error) {
       console.error('Home page error:', error);
       content.innerHTML = Components.emptyState(
