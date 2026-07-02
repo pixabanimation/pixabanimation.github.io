@@ -17,9 +17,9 @@ const ContactPage = {
           <p class="ds-body" style="color:rgba(0,0,0,0.56);max-width:480px;margin:0 auto">Have a question, feedback, or just want to say hello? We're here for you.</p>
         </div>
         
-        <div class="contact-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:40px">
-          <div class="contact-info-cards" style="display:flex;flex-direction:column;gap:12px">
-            <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
+        <div class="contact-grid">
+          <div class="contact-info-cards" style="gap:12px">
+            <div class="contact-info-card" style="padding:20px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
               <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--ds-primary);flex-shrink:0"><i class="fas fa-map-marker-alt"></i></div>
               <div class="contact-info-text">
                 <h4 class="ds-caption-strong" style="color:#1d1d1f;margin-bottom:4px">Visit Us</h4>
@@ -49,10 +49,10 @@ const ContactPage = {
             </div>
           </div>
 
-          <div style="padding:28px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
+          <div class="contact-form-wrapper">
             <h3 class="ds-body-strong" style="color:#1d1d1f;margin-bottom:20px">Send us a Message</h3>
-            <form class="contact-form" onsubmit="ContactPage.submit(event)" style="display:flex;flex-direction:column;gap:14px">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <form class="contact-form" onsubmit="ContactPage.submit(event)" style="gap:14px">
+              <div class="contact-name-row">
                 <div class="form-group">
                   <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Your Name</label>
                   <input type="text" id="contactName" placeholder="John Doe" required>

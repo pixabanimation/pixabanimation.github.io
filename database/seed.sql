@@ -59,9 +59,35 @@ INSERT OR IGNORE INTO reviews (id, product_id, author_name, rating, comment) VAL
 (2, 13, 'Sarah K.', 4, 'Beautiful nature footage. Would love even more scenes, but what is included is top quality.'),
 (3, 15, 'James R.', 5, 'Best motion graphics pack I have ever purchased. So many useful elements!'),
 (4, 16, 'Emma L.', 5, 'The logo reveal templates saved me hours of work. Client was blown away!'),
-(5, 18, 'Michael P.', 4, 'Great typography pack. Easy to customize and looks professional out of the box.');
+(5, 18, 'Michael P.', 4, 'Great typography pack. Easy to customize and looks professional out of the box.'),
+(6, 14, 'Olivia W.', 5, 'The urban time-lapse compilation is breathtaking. The day-to-night transitions are incredible!'),
+(7, 14, 'Tom H.', 4, 'Great quality footage. The 4K HDR really makes the city lights pop at night.'),
+(8, 15, 'Nina P.', 5, 'Worth every penny. The fluid shapes are perfect for my music visualizer project.'),
+(9, 16, 'Chris B.', 5, 'These logo reveals look so professional. My clients are always impressed.'),
+(10, 17, 'Maya S.', 4, 'The story templates are trendy and easy to customize. Great for Instagram.'),
+(11, 18, 'Ryan T.', 5, 'The kinetic text animations are smooth and polished. Highly recommend!'),
+(12, 19, 'Sophia L.', 5, 'Over 100 particle effects and they all look amazing. The fire effects are so realistic.'),
+(13, 20, 'Daniel C.', 4, 'Really smooth transitions. The glitch effects are my favorite.'),
+(14, 22, 'Emily R.', 5, 'This vlog pack is a game changer. Everything I need in one bundle.'),
+(15, 25, 'Lucas M.', 5, 'The animated charts make my data presentations actually interesting to watch.');
 
 -- Sample coupon
 INSERT OR IGNORE INTO coupons (id, code, discount_percent, min_purchase, expires_at) VALUES
 (1, 'WELCOME10', 10, 50, '2027-12-31 23:59:59'),
 (2, 'SAVE20', 20, 100, '2027-12-31 23:59:59');
+
+-- Sample newsletter subscribers
+INSERT OR IGNORE INTO newsletter_subscribers (id, email, name, active) VALUES
+(1, 'sarah.johnson@email.com', 'Sarah Johnson', 1),
+(2, 'mike.chen@email.com', 'Mike Chen', 1),
+(3, 'emma.davis@email.com', 'Emma Davis', 1),
+(4, 'alex.turner@email.com', 'Alex Turner', 0),
+(5, 'lisa.wong@email.com', 'Lisa Wong', 1),
+(6, 'jordan.parker@email.com', 'Jordan Parker', 1),
+(7, 'unsubscribed.user@email.com', NULL, 0);
+
+-- Sample contact messages
+INSERT OR IGNORE INTO contact_messages (id, name, email, subject, message) VALUES
+(1, 'John Smith', 'john.smith@email.com', 'Question about licensing', 'I am interested in using your nature reel for a commercial project. Can you tell me more about the licensing options?'),
+(2, 'Rachel Green', 'rachel.green@email.com', 'Custom animation request', 'Hi there! I am looking for a custom animated logo for my startup. Do you offer custom animation services?'),
+(3, 'David Kim', 'david.kim@email.com', 'Download issue', 'I purchased the Abstract Motion Graphics Pack but the download link does not seem to be working. Can you help?');

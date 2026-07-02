@@ -87,12 +87,6 @@ async function main() {
   // Migration: Fix images JSON column — strip literal backslash-escaped quotes from bad seed data
   console.log("🔄 Fixing images JSON format in products table...");
   try {
-    // Find products where images column has literal backslash sequences (not valid JSON)
-    const badImages = await client.execute(
-      "SELECT id, images FROM products WHERE images LIKE '%\\\\%\\\\"'%' OR images LIKE '%\\\\%\\\\\"%' OR images IS NOT NULL AND images NOT LIKE '[%'"
-    );
-    // Alternative approach: update any images that aren't valid JSON arrays
-    // We'll fix by removing backslashes before quotes
     const allProducts = await client.execute("SELECT id, images FROM products WHERE images IS NOT NULL AND images != '[]'");
     for (const row of allProducts.rows) {
       const raw = row.images;

@@ -50,8 +50,8 @@ const HomePage = {
         <!-- ============================================ -->
         <!-- HERO — Apple.com-Inspired White/Light         -->
         <!-- ============================================ -->
-        <section style="padding:120px 24px 80px;position:relative;overflow:hidden;display:flex;align-items:center;background:#fff">
-          <div class="hero-content" style="position:relative;z-index:1;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center">
+        <section style="padding:120px 24px 80px;position:relative;overflow:hidden;display:flex;align-items:center;background:#fff;min-height:auto">
+          <div class="hero-content" style="width:100%;max-width:1100px">
             <div class="hero-text" style="animation:fadeInUp 0.8s ease-out">
               <h1 style="font-family:var(--font-display);font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:700;line-height:1.05;letter-spacing:-0.005em;margin-bottom:8px;color:#1d1d1f">
                 Premium Motion<br>
@@ -201,7 +201,7 @@ const HomePage = {
                 Built for Creators
               </h2>
             </div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+            <div class="home-value-grid">
               <div style="padding:36px 28px;border:1px solid rgba(0,0,0,0.06);border-radius:14px;transition:all 0.2s ease;background:#fafafa"
                    onmouseover="this.style.borderColor='rgba(0,102,204,0.2)';this.style.background='#f5f7f9'"
                    onmouseout="this.style.borderColor='rgba(0,0,0,0.06)';this.style.background='#fafafa'">
@@ -261,7 +261,7 @@ const HomePage = {
               Loved by Creators Worldwide
             </h2>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          <div class="home-testimonials-grid">
             <div style="padding:28px 24px;background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:14px;box-shadow:0 1px 8px rgba(0,0,0,0.04)">
               <div style="font-size:0.9rem;margin-bottom:12px;letter-spacing:1px;color:var(--ds-primary)">★★★★★</div>
               <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.6;letter-spacing:-0.013em;color:rgba(0,0,0,0.56);margin-bottom:16px">

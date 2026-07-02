@@ -28,37 +28,44 @@ const AdminPage = {
             <span class="brand-icon">✦</span>
             <span class="brand-text">Admin</span>
           </div>
-          <nav class="admin-sidebar-nav">
-            <button class="admin-nav-item active" data-tab="dashboard" onclick="AdminPage.switchTab('dashboard')">
+          <button class="admin-sidebar-toggle" onclick="AdminPage.toggleSidebar()" aria-label="Toggle menu">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <line x1="2" y1="5" x2="16" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="2" y1="9" x2="16" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="2" y1="13" x2="16" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <nav class="admin-sidebar-nav" id="adminSidebarNav">
+            <button class="admin-nav-item active" data-tab="dashboard" onclick="AdminPage.switchTab('dashboard');AdminPage.closeSidebar()">
               <i class="fas fa-chart-pie"></i> Dashboard
             </button>
-            <button class="admin-nav-item" data-tab="products" onclick="AdminPage.switchTab('products')">
+            <button class="admin-nav-item" data-tab="products" onclick="AdminPage.switchTab('products');AdminPage.closeSidebar()">
               <i class="fas fa-box"></i> Products
             </button>
-            <button class="admin-nav-item" data-tab="orders" onclick="AdminPage.switchTab('orders')">
+            <button class="admin-nav-item" data-tab="orders" onclick="AdminPage.switchTab('orders');AdminPage.closeSidebar()">
               <i class="fas fa-truck"></i> Orders
             </button>
-            <button class="admin-nav-item" data-tab="users" onclick="AdminPage.switchTab('users')">
+            <button class="admin-nav-item" data-tab="users" onclick="AdminPage.switchTab('users');AdminPage.closeSidebar()">
               <i class="fas fa-users"></i> Users
             </button>
-            <button class="admin-nav-item" data-tab="coupons" onclick="AdminPage.switchTab('coupons')">
+            <button class="admin-nav-item" data-tab="coupons" onclick="AdminPage.switchTab('coupons');AdminPage.closeSidebar()">
               <i class="fas fa-tag"></i> Coupons
             </button>
-            <button class="admin-nav-item" data-tab="media" onclick="AdminPage.switchTab('media')">
+            <button class="admin-nav-item" data-tab="media" onclick="AdminPage.switchTab('media');AdminPage.closeSidebar()">
               <i class="fas fa-cloud-upload-alt"></i> Media
             </button>
-            <button class="admin-nav-item" data-tab="subscribers" onclick="AdminPage.switchTab('subscribers')">
+            <button class="admin-nav-item" data-tab="subscribers" onclick="AdminPage.switchTab('subscribers');AdminPage.closeSidebar()">
               <i class="fas fa-envelope"></i> Subscribers
             </button>
-            <button class="admin-nav-item" data-tab="reviews" onclick="AdminPage.switchTab('reviews')">
+            <button class="admin-nav-item" data-tab="reviews" onclick="AdminPage.switchTab('reviews');AdminPage.closeSidebar()">
               <i class="fas fa-star"></i> Reviews
             </button>
             <hr class="admin-divider">
-            <button class="admin-nav-item" data-tab="settings" onclick="AdminPage.switchTab('settings')">
+            <button class="admin-nav-item" data-tab="settings" onclick="AdminPage.switchTab('settings');AdminPage.closeSidebar()">
               <i class="fas fa-cog"></i> Settings
             </button>
             <hr class="admin-divider">
-            <a href="#/" class="admin-nav-item">
+            <a href="#/" class="admin-nav-item" onclick="AdminPage.closeSidebar()">
               <i class="fas fa-arrow-left"></i> Back to Store
             </a>
           </nav>
@@ -79,7 +86,36 @@ const AdminPage = {
       </div>
     `;
 
+    // Close sidebar on outside click (mobile) — remove stale listener first
+    document.removeEventListener('click', AdminPage.handleOutsideClick);
+    document.addEventListener('click', AdminPage.handleOutsideClick);
+
     await this.loadDashboard();
+  },
+
+  toggleSidebar() {
+    const nav = document.getElementById('adminSidebarNav');
+    const btn = document.querySelector('.admin-sidebar-toggle');
+    if (!nav) return;
+    nav.classList.toggle('open');
+    if (btn) btn.classList.toggle('active');
+  },
+
+  closeSidebar() {
+    const nav = document.getElementById('adminSidebarNav');
+    const btn = document.querySelector('.admin-sidebar-toggle');
+    if (!nav) return;
+    nav.classList.remove('open');
+    if (btn) btn.classList.remove('active');
+  },
+
+  handleOutsideClick(e) {
+    const sidebar = document.querySelector('.admin-sidebar');
+    const nav = document.getElementById('adminSidebarNav');
+    if (!sidebar || !nav || !nav.classList.contains('open')) return;
+    if (!sidebar.contains(e.target)) {
+      AdminPage.closeSidebar();
+    }
   },
 
   switchTab(tab) {
