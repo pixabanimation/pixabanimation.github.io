@@ -16,8 +16,8 @@ const ShopPage = {
           <span style="width:6px;height:6px;border-radius:50%;background:var(--ds-primary)"></span>
           <span class="ds-caption" style="font-weight:500;color:var(--ds-primary)">Shop</span>
         </div>
-        <h1 class="ds-display-lg" style="color:#fff;margin-bottom:8px">Explore Our <span class="text-gradient">Collection</span></h1>
-        <p class="ds-body" style="color:rgba(255,255,255,0.5);max-width:480px;margin:0 auto">${categorySlug ? `Browsing: ${categorySlug}` : 'Discover premium motion graphics and animation assets'}</p>
+        <h1 class="ds-display-lg" style="color:#1d1d1f;margin-bottom:8px">Explore Our <span class="text-gradient">Collection</span></h1>
+        <p class="ds-body" style="color:rgba(0,0,0,0.56);max-width:480px;margin:0 auto">${categorySlug ? `Browsing: ${categorySlug}` : 'Discover premium motion graphics and animation assets'}</p>
       </div>
       <div class="section" style="padding-top:32px">
         <div class="shop-controls">
@@ -33,7 +33,7 @@ const ShopPage = {
               <option value="name" ${sortBy === 'name' ? 'selected' : ''}>Name</option>
             </select>
           </div>
-          <div class="shop-results ds-caption" id="shopResults" style="color:rgba(255,255,255,0.4)">Loading products...</div>
+          <div class="shop-results ds-caption" id="shopResults" style="color:rgba(0,0,0,0.48)">Loading products...</div>
         </div>
         <div id="shopGrid">${Components.loadingSkeleton(8)}</div>
         ${categorySlug ? `<div style="text-align:center;margin-top:32px">

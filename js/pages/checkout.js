@@ -8,7 +8,14 @@ const CheckoutPage = {
 
     content.innerHTML = `
       <div class="checkout-page page-enter">
-        <h1><i class="fas fa-credit-card"></i> Checkout</h1>
+        <div style="text-align:center;margin-bottom:40px">
+          <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(0,102,204,0.1);border:1px solid rgba(0,102,204,0.15);border-radius:9999px;margin-bottom:16px">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--ds-primary)"></span>
+            <span class="ds-caption" style="font-weight:500;color:var(--ds-primary)">Secure Checkout</span>
+          </div>
+          <h1 class="ds-display-lg" style="color:#1d1d1f;margin-bottom:10px">Complete Your <span class="text-gradient">Order</span></h1>
+          <p class="ds-body" style="color:rgba(0,0,0,0.56);max-width:480px;margin:0 auto">Fill in your details and submit your payment to complete the purchase.</p>
+        </div>
         <div id="checkoutContent">
           <div style="text-align:center;padding:40px">
             <div class="loader-spinner"></div>
@@ -25,14 +32,14 @@ const CheckoutPage = {
     if (states.length === 0) {
       return `
         <div class="form-group full-width">
-          <label>State / Province / Region</label>
+          <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province / Region</label>
           <input type="text" id="shipState" placeholder="Enter your state, province, or region" class="state-input">
         </div>
       `;
     }
     return `
       <div class="form-group full-width">
-        <label>State / Province</label>
+        <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province</label>
         <select id="shipState" required>
           <option value="">Select ${Countries.getName(countryCode)} ${countryCode === 'GB' ? 'region' : 'state'}</option>
           ${Countries.renderStateOptions(countryCode)}
@@ -63,27 +70,31 @@ const CheckoutPage = {
 
       container.innerHTML = `
         <form class="checkout-form" onsubmit="CheckoutPage.placeOrder(event)">
-          <div class="checkout-section glass">
-            <h3><i class="fas fa-user" style="color:var(--accent-1)"></i> Shipping Information</h3>
+          <!-- Shipping Information -->
+          <div style="border:1px solid rgba(0,0,0,0.06);border-radius:14px;padding:28px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--ds-primary);flex-shrink:0;background:rgba(0,102,204,0.06);border-radius:8px"><i class="fas fa-user"></i></div>
+              <h3 class="ds-body-strong" style="color:#1d1d1f;margin:0">Shipping Information</h3>
+            </div>
             <div class="checkout-grid">
               <div class="form-group full-width">
-                <label>Full Name</label>
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Full Name</label>
                 <input type="text" id="shipName" placeholder="John Doe" required>
               </div>
               <div class="form-group">
-                <label>Email</label>
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Email</label>
                 <input type="email" id="shipEmail" placeholder="john@example.com" required>
               </div>
               <div class="form-group">
-                <label>Phone</label>
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Phone</label>
                 <input type="tel" id="shipPhone" placeholder="+1 (555) 000-0000">
               </div>
               <div class="form-group full-width">
-                <label>Address</label>
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Address</label>
                 <input type="text" id="shipAddress" placeholder="123 Main Street, Apt 4B" required>
               </div>
               <div class="form-group full-width">
-                <label>Country</label>
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Country</label>
                 <div style="position:relative">
                   <select id="shipCountry" onchange="CheckoutPage.onCountryChange()" required>
                     <option value="">🌍 Select your country</option>
@@ -92,54 +103,56 @@ const CheckoutPage = {
                 </div>
               </div>
               <div class="form-group">
-                <label>City</label>
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">City</label>
                 <input type="text" id="shipCity" placeholder="New York" required>
               </div>
               <div class="form-group" id="stateFieldContainer">
                 ${this.getCountryStatesHtml(defaultCountry)}
               </div>
               <div class="form-group">
-                <label>ZIP / Postal Code</label>
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">ZIP / Postal Code</label>
                 <input type="text" id="shipZip" placeholder="10001" required>
               </div>
             </div>
           </div>
 
-          <div class="checkout-section glass">
-            <h3><i class="fas fa-credit-card" style="color:var(--accent-1)"></i> Payment Method</h3>
-            <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:16px">
+          <!-- Payment Method -->
+          <div style="border:1px solid rgba(0,0,0,0.06);border-radius:14px;padding:28px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--ds-primary);flex-shrink:0;background:rgba(0,102,204,0.06);border-radius:8px"><i class="fas fa-credit-card"></i></div>
+              <h3 class="ds-body-strong" style="color:#1d1d1f;margin:0">Payment Method</h3>
+            </div>
+            <p class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:16px">
               Make your payment via <strong>Payoneer</strong> or <strong>Skrill</strong>, then enter the Transaction ID below to complete your order.
             </p>
-            <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
-              <label style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-input);border-radius:var(--radius-sm);cursor:pointer;border:2px solid var(--accent-1)">
-                <input type="radio" name="payment" value="payoneer" checked>
-                <i class="fas fa-university" style="font-size:1.2rem;color:#FF6B35"></i>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px" id="paymentOptions">
+              <label class="payment-option-label" style="display:flex;align-items:center;gap:14px;padding:18px 20px;border:2px solid var(--ds-primary);border-radius:12px;cursor:pointer;background:rgba(0,102,204,0.03)" onclick="document.querySelectorAll('.payment-option-label').forEach(l=>{l.style.border='2px solid rgba(0,0,0,0.06)';l.style.background='transparent'});this.style.border='2px solid var(--ds-primary)';this.style.background='rgba(0,102,204,0.03)';this.querySelector('input').checked=true">
+                <input type="radio" name="payment" value="payoneer" checked style="width:auto;flex-shrink:0">
+                <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#FF6B35;color:white;font-size:1.1rem;flex-shrink:0"><i class="fas fa-university"></i></div>
                 <div style="flex:1">
-                  <span style="font-weight:600">Payoneer</span>
-                  <div style="font-size:0.8rem;color:var(--text-muted);margin-top:2px">
-                    Send payment to: <strong style="color:var(--accent-1);background:rgba(59,130,246,0.12);padding:2px 8px;border-radius:4px;font-size:0.85rem">any_dj@live.com</strong>
+                  <div style="font-weight:600;font-size:0.95rem;color:#1d1d1f">Payoneer</div>
+                  <div class="ds-caption" style="color:rgba(0,0,0,0.50);margin-top:2px">
+                    Send to: <strong style="color:var(--ds-primary);background:rgba(0,102,204,0.08);padding:2px 8px;border-radius:4px">any_dj@live.com</strong>
                   </div>
                 </div>
-                
               </label>
-              <label style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-input);border-radius:var(--radius-sm);cursor:pointer">
-                <input type="radio" name="payment" value="skrill">
-                <i class="fas fa-money-bill-wave" style="font-size:1.2rem;color:#942B8B"></i>
+              <label class="payment-option-label" style="display:flex;align-items:center;gap:14px;padding:18px 20px;border:2px solid rgba(0,0,0,0.06);border-radius:12px;cursor:pointer;background:transparent" onclick="document.querySelectorAll('.payment-option-label').forEach(l=>{l.style.border='2px solid rgba(0,0,0,0.06)';l.style.background='transparent'});this.style.border='2px solid var(--ds-primary)';this.style.background='rgba(0,102,204,0.03)';this.querySelector('input').checked=true">
+                <input type="radio" name="payment" value="skrill" style="width:auto;flex-shrink:0">
+                <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#942B8B;color:white;font-size:1.1rem;flex-shrink:0"><i class="fas fa-money-bill-wave"></i></div>
                 <div style="flex:1">
-                  <span style="font-weight:600">Skrill</span>
-                  <div style="font-size:0.8rem;color:var(--text-muted);margin-top:2px">
-                    Send payment to: <strong style="color:#942B8B;background:rgba(148,43,139,0.12);padding:2px 8px;border-radius:4px;font-size:0.85rem">spurno@icloud.com</strong>
-                    <span style="font-size:0.75rem;color:var(--text-muted)">Recommended</span>
-                    </div>
+                  <div style="font-weight:600;font-size:0.95rem;color:#1d1d1f">Skrill <span style="font-size:0.7rem;font-weight:400;color:var(--ds-primary);background:rgba(0,102,204,0.08);padding:1px 8px;border-radius:9999px">Recommended</span></div>
+                  <div class="ds-caption" style="color:rgba(0,0,0,0.50);margin-top:2px">
+                    Send to: <strong style="color:#942B8B;background:rgba(148,43,139,0.08);padding:2px 8px;border-radius:4px">spurno@icloud.com</strong>
+                  </div>
                 </div>
               </label>
             </div>
 
-            <div style="padding:16px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15);border-radius:var(--radius-sm);margin-bottom:16px">
-              <div style="font-weight:600;font-size:0.85rem;margin-bottom:8px;color:var(--accent-1)">
+            <div style="padding:16px 20px;background:rgba(0,102,204,0.04);border:1px solid rgba(0,102,204,0.1);border-radius:12px;margin-bottom:16px">
+              <div class="ds-caption-strong" style="color:var(--ds-primary);margin-bottom:8px">
                 <i class="fas fa-info-circle"></i> How to pay
               </div>
-              <ol style="font-size:0.82rem;color:var(--text-secondary);padding-left:16px;display:flex;flex-direction:column;gap:4px">
+              <ol style="font-size:0.82rem;color:rgba(0,0,0,0.56);padding-left:16px;display:flex;flex-direction:column;gap:5px">
                 <li>Transfer the total amount via <strong>Payoneer</strong> or <strong>Skrill</strong> to our account.</li>
                 <li>After payment, copy the <strong>Transaction ID</strong> from your payment receipt.</li>
                 <li>Paste the Transaction ID below and submit your order.</li>
@@ -148,39 +161,45 @@ const CheckoutPage = {
             </div>
 
             <div class="form-group">
-              <label><i class="fas fa-hashtag" style="color:var(--accent-1)"></i> Transaction ID</label>
+              <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">
+                <i class="fas fa-hashtag" style="color:var(--ds-primary)"></i> Transaction ID
+              </label>
               <input type="text" id="transactionId" placeholder="Enter your Payoneer or Skrill Transaction ID" required>
-              <span style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">
+              <span class="ds-caption" style="color:rgba(0,0,0,0.40);margin-top:2px">
                 Enter the Transaction ID from your payment receipt. Your order will be verified by admin.
               </span>
             </div>
           </div>
 
-          <div class="checkout-section glass">
-            <h3><i class="fas fa-shopping-bag" style="color:var(--accent-1)"></i> Order Summary</h3>
-            <div style="display:flex;flex-direction:column;gap:12px">
+          <!-- Order Summary -->
+          <div style="border:1px solid rgba(0,0,0,0.06);border-radius:14px;padding:28px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--ds-primary);flex-shrink:0;background:rgba(0,102,204,0.06);border-radius:8px"><i class="fas fa-shopping-bag"></i></div>
+              <h3 class="ds-body-strong" style="color:#1d1d1f;margin:0">Order Summary</h3>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
               ${cartItems.map(item => `
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-light)">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.06)">
                   <div style="display:flex;align-items:center;gap:12px">
-                    <img src="${item.image_url}" alt="${item.name}" style="width:48px;height:48px;border-radius:8px;object-fit:cover">
+                    <img src="${item.image_url}" alt="${item.name}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;border:1px solid rgba(0,0,0,0.04)">
                     <div>
-                      <div style="font-weight:500;font-size:0.9rem">${item.name}</div>
-                      <div style="font-size:0.8rem;color:var(--text-muted)">Qty: ${item.quantity}</div>
+                      <div style="font-weight:500;font-size:0.9rem;color:#1d1d1f">${item.name}</div>
+                      <div class="ds-caption" style="color:rgba(0,0,0,0.40)">Qty: ${item.quantity}</div>
                     </div>
                   </div>
-                  <div style="font-weight:600">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
+                  <div style="font-weight:600;color:var(--ds-primary)">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
                 </div>
               `).join('')}
             </div>
-            <div style="margin-top:16px">
-              <div class="summary-row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
-              <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? '<span style="color:var(--success)">FREE</span>' : `$${shipping.toFixed(2)}`}</span></div>
-              <div class="summary-row"><span>Tax (8%)</span><span>$${tax.toFixed(2)}</span></div>
+            <div style="margin-top:12px">
+              <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+              <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Shipping</span><span>${shipping === 0 ? '<span style="color:var(--success)">FREE</span>' : `$${shipping.toFixed(2)}`}</span></div>
+              <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Tax (8%)</span><span>$${tax.toFixed(2)}</span></div>
               <div class="summary-row total"><span>Total</span><span class="amount">$${grandTotal.toFixed(2)}</span></div>
             </div>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-block btn-lg" style="font-size:1.05rem">
+          <button type="submit" class="ds-pill-cta" style="justify-content:center;padding:16px 28px;font-size:17px;width:100%">
             <i class="fas fa-lock"></i> Place Order — $${grandTotal.toFixed(2)}
           </button>
         </form>
@@ -198,7 +217,7 @@ const CheckoutPage = {
     if (!countryCode) {
       stateContainer.innerHTML = `
         <div class="form-group full-width">
-          <label>State / Province / Region</label>
+          <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province / Region</label>
           <input type="text" id="shipState" placeholder="Enter your state, province, or region">
         </div>
       `;
@@ -209,14 +228,14 @@ const CheckoutPage = {
     if (states.length === 0) {
       stateContainer.innerHTML = `
         <div class="form-group full-width">
-          <label>State / Province / Region</label>
+          <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province / Region</label>
           <input type="text" id="shipState" placeholder="Enter your state, province, or region" class="state-input">
         </div>
       `;
     } else {
       stateContainer.innerHTML = `
         <div class="form-group full-width">
-          <label>State / Province</label>
+          <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province</label>
           <select id="shipState" required>
             <option value="">Select ${Countries.getName(countryCode)} ${countryCode === 'GB' ? 'region' : 'state'}</option>
             ${Countries.renderStateOptions(countryCode)}
@@ -298,21 +317,33 @@ const CheckoutPage = {
       // Show success page
       const container = document.getElementById('checkoutContent');
       container.innerHTML = `
-        <div style="text-align:center;padding:60px 24px" class="page-enter">
-          <div style="font-size:5rem;margin-bottom:24px">📋</div>
-          <h2 style="font-size:2rem;font-weight:800;margin-bottom:12px">Order Submitted!</h2>
-          <p style="color:var(--text-muted);font-size:1.1rem;margin-bottom:8px">Order #${orderId} — awaiting verification</p>
-          <p style="color:var(--text-secondary);margin-bottom:32px">
-            Your payment of <strong>$${total.toFixed(2)}</strong> via <strong>${paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)}</strong> is being reviewed.
-            <br>Transaction ID: <strong>${transactionId}</strong>
-            <br>Shipping to: ${countryFlag} ${countryName}${state ? ', ' + state : ''}
-            <br>You will receive the download link once admin approves the transaction.
-          </p>
+        <div style="max-width:540px;margin:0 auto;text-align:center;padding:60px 24px" class="page-enter">
+          <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.15);border-radius:9999px;margin-bottom:16px">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span>
+            <span class="ds-caption" style="font-weight:500;color:var(--success)">Order Submitted</span>
+          </div>
+          <div style="font-size:4rem;margin-bottom:20px">📋</div>
+          <h2 class="ds-display-lg" style="color:#1d1d1f;margin-bottom:8px">Order <span class="text-gradient">Submitted</span>!</h2>
+          <p class="ds-body" style="color:rgba(0,0,0,0.56);margin-bottom:4px">Order #${orderId} — awaiting verification</p>
+          <div style="padding:24px;border:1px solid rgba(0,0,0,0.06);border-radius:14px;margin:24px 0;text-align:left">
+            <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
+              <span style="font-weight:600;color:#1d1d1f">Payment:</span> $${total.toFixed(2)} via ${paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)}
+            </p>
+            <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
+              <span style="font-weight:600;color:#1d1d1f">Transaction:</span> ${transactionId}
+            </p>
+            <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
+              <span style="font-weight:600;color:#1d1d1f">Shipping to:</span> ${countryFlag} ${countryName}${state ? ', ' + state : ''}
+            </p>
+            <p class="ds-caption" style="color:rgba(0,0,0,0.50)">
+              You will receive the download link once admin approves the transaction.
+            </p>
+          </div>
           <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-            <a href="#/profile" class="btn btn-primary btn-lg">
+            <a href="#/profile" class="ds-pill-cta" style="padding:12px 24px;font-size:15px">
               <i class="fas fa-user"></i> View Orders
             </a>
-            <a href="#/" class="btn btn-secondary btn-lg">
+            <a href="#/" class="ds-pill-cta-secondary" style="padding:12px 24px;font-size:15px">
               <i class="fas fa-home"></i> Continue Shopping
             </a>
           </div>

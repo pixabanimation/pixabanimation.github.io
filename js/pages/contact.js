@@ -13,61 +13,61 @@ const ContactPage = {
             <span style="width:6px;height:6px;border-radius:50%;background:var(--ds-primary)"></span>
             <span class="ds-caption" style="font-weight:500;color:var(--ds-primary)">Get in Touch</span>
           </div>
-          <h1 class="ds-display-lg" style="color:#fff;margin-bottom:10px">We'd Love to <span class="text-gradient">Hear</span> From You</h1>
-          <p class="ds-body" style="color:rgba(255,255,255,0.5);max-width:480px;margin:0 auto">Have a question, feedback, or just want to say hello? We're here for you.</p>
+          <h1 class="ds-display-lg" style="color:#1d1d1f;margin-bottom:10px">We'd Love to <span class="text-gradient">Hear</span> From You</h1>
+          <p class="ds-body" style="color:rgba(0,0,0,0.56);max-width:480px;margin:0 auto">Have a question, feedback, or just want to say hello? We're here for you.</p>
         </div>
         
         <div class="contact-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:40px">
           <div class="contact-info-cards" style="display:flex;flex-direction:column;gap:12px">
-            <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(255,255,255,0.06);border-radius:14px">
+            <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
               <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--ds-primary);flex-shrink:0"><i class="fas fa-map-marker-alt"></i></div>
               <div class="contact-info-text">
-                <h4 class="ds-caption-strong" style="color:#fff;margin-bottom:4px">Visit Us</h4>
-                <p class="ds-caption" style="color:rgba(255,255,255,0.45);line-height:1.5">123 Commerce Street, Suite 100<br>San Francisco, CA 94102</p>
+                <h4 class="ds-caption-strong" style="color:#1d1d1f;margin-bottom:4px">Visit Us</h4>
+                <p class="ds-caption" style="color:rgba(0,0,0,0.50);line-height:1.5">123 Commerce Street, Suite 100<br>San Francisco, CA 94102</p>
               </div>
             </div>
-            <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(255,255,255,0.06);border-radius:14px">
+            <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
               <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--ds-primary);flex-shrink:0"><i class="fas fa-envelope"></i></div>
               <div class="contact-info-text">
-                <h4 class="ds-caption-strong" style="color:#fff;margin-bottom:4px">Email Us</h4>
-                <p class="ds-caption" style="color:rgba(255,255,255,0.45);line-height:1.5">hello@pixabanimation.com<br>support@pixabanimation.com</p>
+                <h4 class="ds-caption-strong" style="color:#1d1d1f;margin-bottom:4px">Email Us</h4>
+                <p class="ds-caption" style="color:rgba(0,0,0,0.50);line-height:1.5">hello@pixabanimation.com<br>support@pixabanimation.com</p>
               </div>
             </div>
-            <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(255,255,255,0.06);border-radius:14px">
+            <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
               <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--ds-primary);flex-shrink:0"><i class="fas fa-phone-alt"></i></div>
               <div class="contact-info-text">
-                <h4 class="ds-caption-strong" style="color:#fff;margin-bottom:4px">Call Us</h4>
-                <p class="ds-caption" style="color:rgba(255,255,255,0.45);line-height:1.5">+1 (555) 123-4567<br>Mon-Fri, 9AM-6PM EST</p>
+                <h4 class="ds-caption-strong" style="color:#1d1d1f;margin-bottom:4px">Call Us</h4>
+                <p class="ds-caption" style="color:rgba(0,0,0,0.50);line-height:1.5">+1 (555) 123-4567<br>Mon-Fri, 9AM-6PM EST</p>
               </div>
             </div>
-            <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(255,255,255,0.06);border-radius:14px">
+            <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
               <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--ds-primary);flex-shrink:0"><i class="fas fa-clock"></i></div>
               <div class="contact-info-text">
-                <h4 class="ds-caption-strong" style="color:#fff;margin-bottom:4px">Business Hours</h4>
-                <p class="ds-caption" style="color:rgba(255,255,255,0.45);line-height:1.5">Monday - Friday: 9AM - 6PM<br>Saturday: 10AM - 4PM<br>Sunday: Closed</p>
+                <h4 class="ds-caption-strong" style="color:#1d1d1f;margin-bottom:4px">Business Hours</h4>
+                <p class="ds-caption" style="color:rgba(0,0,0,0.50);line-height:1.5">Monday - Friday: 9AM - 6PM<br>Saturday: 10AM - 4PM<br>Sunday: Closed</p>
               </div>
             </div>
           </div>
 
-          <div style="padding:28px;border:1px solid rgba(255,255,255,0.06);border-radius:14px">
-            <h3 class="ds-body-strong" style="color:#fff;margin-bottom:20px">Send us a Message</h3>
+          <div style="padding:28px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
+            <h3 class="ds-body-strong" style="color:#1d1d1f;margin-bottom:20px">Send us a Message</h3>
             <form class="contact-form" onsubmit="ContactPage.submit(event)" style="display:flex;flex-direction:column;gap:14px">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
                 <div class="form-group">
-                  <label class="ds-caption" style="color:rgba(255,255,255,0.5);margin-bottom:4px;display:block">Your Name</label>
+                  <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Your Name</label>
                   <input type="text" id="contactName" placeholder="John Doe" required>
                 </div>
                 <div class="form-group">
-                  <label class="ds-caption" style="color:rgba(255,255,255,0.5);margin-bottom:4px;display:block">Your Email</label>
+                  <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Your Email</label>
                   <input type="email" id="contactEmail" placeholder="john@example.com" required>
                 </div>
               </div>
               <div class="form-group">
-                <label class="ds-caption" style="color:rgba(255,255,255,0.5);margin-bottom:4px;display:block">Subject</label>
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Subject</label>
                 <input type="text" id="contactSubject" placeholder="How can we help?" required>
               </div>
               <div class="form-group">
-                <label class="ds-caption" style="color:rgba(255,255,255,0.5);margin-bottom:4px;display:block">Message</label>
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Message</label>
                 <textarea id="contactMessage" rows="5" placeholder="Tell us more about your inquiry..." required style="resize:vertical"></textarea>
               </div>
               <button type="submit" class="ds-pill-cta" style="align-self:flex-start;padding:12px 28px;font-size:15px">
