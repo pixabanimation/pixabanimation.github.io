@@ -375,6 +375,23 @@ const DB = {
     return this.query('SELECT * FROM newsletter_subscribers ORDER BY subscribed_at DESC');
   },
 
+  async deleteSubscriber(id) {
+    return this.execute('DELETE FROM newsletter_subscribers WHERE id = ?', [id]);
+  },
+
+  async getAllReviews() {
+    return this.query(
+      `SELECT r.*, p.name as product_name, p.image_url as product_image
+       FROM reviews r
+       LEFT JOIN products p ON r.product_id = p.id
+       ORDER BY r.created_at DESC`
+    );
+  },
+
+  async deleteReview(id) {
+    return this.execute('DELETE FROM reviews WHERE id = ?', [id]);
+  },
+
   // === Search / Autocomplete ===
   async searchSuggestions(query, limit = 6) {
     if (!query || query.trim().length < 1) return [];

@@ -47,6 +47,12 @@ const AdminPage = {
             <button class="admin-nav-item" data-tab="media" onclick="AdminPage.switchTab('media')">
               <i class="fas fa-cloud-upload-alt"></i> Media
             </button>
+            <button class="admin-nav-item" data-tab="subscribers" onclick="AdminPage.switchTab('subscribers')">
+              <i class="fas fa-envelope"></i> Subscribers
+            </button>
+            <button class="admin-nav-item" data-tab="reviews" onclick="AdminPage.switchTab('reviews')">
+              <i class="fas fa-star"></i> Reviews
+            </button>
             <hr class="admin-divider">
             <button class="admin-nav-item" data-tab="settings" onclick="AdminPage.switchTab('settings')">
               <i class="fas fa-cog"></i> Settings
@@ -92,6 +98,8 @@ const AdminPage = {
       case 'users': this.loadUsers(); break;
       case 'coupons': this.loadCoupons(); break;
       case 'media': AdminMedia.render(); break;
+      case 'subscribers': this.loadSubscribers(); break;
+      case 'reviews': this.loadReviews(); break;
       case 'settings': AdminSettings.render(); break;
     }
   },
@@ -1003,6 +1011,176 @@ const AdminPage = {
     } catch (error) {
       console.error('Users error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load users', error.message);
+    }
+  },
+
+  // ===================== SUBSCRIBERS =====================
+  async loadSubscribers() {
+    const container = document.getElementById('adminContent');
+
+    try {
+      const subscribers = await DB.getAllSubscribers();
+
+      container.innerHTML = `
+        <div class="admin-toolbar">
+          <h3 style="font-size:1rem;font-weight:600">Newsletter Subscribers</h3>
+          <span style="color:var(--text-muted);font-size:0.85rem">${subscribers.length} total</span>
+        </div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Active</th>
+                <th>Subscribed At</th>
+                <th style="width:100px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${subscribers.length === 0 ?
+                '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">No subscribers yet</td></tr>' :
+                subscribers.map(s => `
+                  <tr>
+                    <td style="color:var(--text-muted);font-size:0.85rem">#${s.id}</td>
+                    <td><span style="font-weight:600">${s.email}</span></td>
+                    <td>${s.name || '—'}</td>
+                    <td>
+                      ${s.active ?
+                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(0,230,118,0.15);color:var(--success)">Active</span>' :
+                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:var(--bg-input);color:var(--text-muted)">Inactive</span>'
+                      }
+                    </td>
+                    <td style="font-size:0.85rem;color:var(--text-muted)">${new Date(s.subscribed_at).toLocaleString()}</td>
+                    <td>
+                      <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteSubscriber(${s.id}, '${s.email.replace(/'/g, "\\'")}')" title="Delete Subscriber">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } catch (error) {
+      console.error('Subscribers error:', error);
+      container.innerHTML = Components.emptyState('😔', 'Failed to load subscribers', error.message);
+    }
+  },
+
+  confirmDeleteSubscriber(id, email) {
+    Components.showModal('Delete Subscriber', `
+      <p style="color:var(--text-secondary);margin-bottom:20px">
+        Are you sure you want to delete the subscriber <strong>${email}</strong>? This action cannot be undone.
+      </p>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" style="background:var(--error)" onclick="AdminPage.deleteSubscriber(${id})">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    `);
+  },
+
+  async deleteSubscriber(id) {
+    try {
+      await DB.deleteSubscriber(id);
+      Components.toast('Subscriber deleted', 'success');
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadSubscribers();
+    } catch (error) {
+      Components.toast('Failed to delete subscriber', 'error');
+    }
+  },
+
+  // ===================== REVIEWS =====================
+  async loadReviews() {
+    const container = document.getElementById('adminContent');
+
+    try {
+      const reviews = await DB.getAllReviews();
+
+      container.innerHTML = `
+        <div class="admin-toolbar">
+          <h3 style="font-size:1rem;font-weight:600">All Reviews</h3>
+          <span style="color:var(--text-muted);font-size:0.85rem">${reviews.length} total</span>
+        </div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product</th>
+                <th>Author</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Date</th>
+                <th style="width:100px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${reviews.length === 0 ?
+                '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No reviews yet</td></tr>' :
+                reviews.map(r => `
+                  <tr>
+                    <td style="color:var(--text-muted);font-size:0.85rem">#${r.id}</td>
+                    <td>
+                      <div style="display:flex;align-items:center;gap:8px">
+                        ${r.product_image ? `<img src="${r.product_image}" alt="${r.product_name || ''}" style="width:32px;height:32px;border-radius:6px;object-fit:cover">` : ''}
+                        <span style="font-size:0.85rem;font-weight:500">${r.product_name || 'Deleted Product'}</span>
+                      </div>
+                    </td>
+                    <td><span style="font-weight:600">${r.author_name}</span></td>
+                    <td>
+                      <span style="color:#ffc107">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+                    </td>
+                    <td>
+                      <span style="font-size:0.85rem;color:var(--text-secondary);display:block;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(r.comment || '').replace(/"/g, '&quot;')}">
+                        ${r.comment ? r.comment.substring(0, 80) + (r.comment.length > 80 ? '...' : '') : '—'}
+                      </span>
+                    </td>
+                    <td style="font-size:0.85rem;color:var(--text-muted)">${new Date(r.created_at).toLocaleDateString()}</td>
+                    <td>
+                      <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteReview(${r.id}, '${r.author_name.replace(/'/g, "\\'")}')" title="Delete Review">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } catch (error) {
+      console.error('Reviews error:', error);
+      container.innerHTML = Components.emptyState('😔', 'Failed to load reviews', error.message);
+    }
+  },
+
+  confirmDeleteReview(id, authorName) {
+    Components.showModal('Delete Review', `
+      <p style="color:var(--text-secondary);margin-bottom:20px">
+        Are you sure you want to delete the review by <strong>${authorName}</strong>? This action cannot be undone.
+      </p>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" style="background:var(--error)" onclick="AdminPage.deleteReview(${id})">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    `);
+  },
+
+  async deleteReview(id) {
+    try {
+      await DB.deleteReview(id);
+      Components.toast('Review deleted', 'success');
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadReviews();
+    } catch (error) {
+      Components.toast('Failed to delete review', 'error');
     }
   },
 
