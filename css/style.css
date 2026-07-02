@@ -554,14 +554,14 @@ select:focus option:checked {
   display: flex;
   align-items: center;
   gap: 1px;
-  justify-content: center;
+  justify-content: flex-start;
   flex: 1;
 }
 
 .nav-brand-item {
   display: flex;
   align-items: center;
-  margin-right: 8px;
+  margin-right: 54px;
   padding-right: 12px;
   border-right: 1px solid rgba(0, 0, 0, 0.06);
 }
@@ -618,6 +618,12 @@ select:focus option:checked {
 }
 
 .nav-link i {
+  display: none;
+}
+
+/* Mobile action items — hidden on desktop */
+.nav-action-mobile,
+.nav-divider-mobile {
   display: none;
 }
 
@@ -2752,6 +2758,43 @@ select:focus option:checked {
     margin-right: 8px;
     font-size: 13px;
     color: rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Mobile action items inside nav */
+  .nav-action-mobile {
+    display: flex !important;
+  }
+  
+  .nav-divider-mobile {
+    display: block !important;
+  }
+  
+  .nav-divider-mobile hr {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    margin: 8px 22px;
+  }
+  
+  .nav-action-mobile .badge {
+    position: static;
+    display: inline-flex;
+    margin-left: auto;
+    transform: scale(0.85);
+  }
+  
+  .nav-action-mobile .badge.visible {
+    transform: scale(0.85);
+  }
+  
+  /* Hide desktop action icons on mobile */
+  .nav-actions .nav-icon-btn[aria-label="Wishlist"],
+  .nav-actions .nav-icon-btn[aria-label="Cart"],
+  .nav-actions .btn-sm.btn-primary {
+    display: none;
+  }
+  
+  .nav-actions #profileBtn {
+    display: none !important;
   }
   
   .nav-brand-item {

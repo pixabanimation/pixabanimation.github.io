@@ -200,6 +200,8 @@ const App = {
     const user = this.getUser();
     const loginBtn = document.getElementById('loginBtn');
     const profileBtn = document.getElementById('profileBtn');
+    const loginBtnMobile = document.getElementById('loginBtnMobile');
+    const profileBtnMobile = document.getElementById('profileBtnMobile');
 
     if (user) {
       if (loginBtn) {
@@ -210,14 +212,31 @@ const App = {
           AuthPage.logout();
         };
       }
+      if (loginBtnMobile) {
+        loginBtnMobile.innerHTML = '<i class="fas fa-sign-out-alt"></i> Sign Out';
+        loginBtnMobile.href = '#';
+        loginBtnMobile.onclick = (e) => {
+          e.preventDefault();
+          AuthPage.logout();
+          document.getElementById('navToggle')?.classList.remove('active');
+          document.getElementById('navLinks')?.classList.remove('active');
+        };
+      }
       if (profileBtn) profileBtn.style.display = 'flex';
+      if (profileBtnMobile) profileBtnMobile.style.display = 'flex';
     } else {
       if (loginBtn) {
         loginBtn.innerHTML = 'Sign In';
         loginBtn.href = '#/login';
         loginBtn.onclick = null;
       }
+      if (loginBtnMobile) {
+        loginBtnMobile.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+        loginBtnMobile.href = '#/login';
+        loginBtnMobile.onclick = null;
+      }
       if (profileBtn) profileBtn.style.display = 'none';
+      if (profileBtnMobile) profileBtnMobile.style.display = 'none';
     }
   },
 
@@ -225,9 +244,14 @@ const App = {
     try {
       const count = await DB.getCartCount();
       const badge = document.getElementById('cartBadge');
+      const badgeMobile = document.getElementById('cartBadgeMobile');
       if (badge) {
         badge.textContent = count;
         badge.classList.toggle('visible', count > 0);
+      }
+      if (badgeMobile) {
+        badgeMobile.textContent = count;
+        badgeMobile.classList.toggle('visible', count > 0);
       }
     } catch (e) {
       console.error('Failed to update cart badge:', e);
@@ -238,9 +262,14 @@ const App = {
     try {
       const count = await DB.getWishlistCount();
       const badge = document.getElementById('wishlistBadge');
+      const badgeMobile = document.getElementById('wishlistBadgeMobile');
       if (badge) {
         badge.textContent = count;
         badge.classList.toggle('visible', count > 0);
+      }
+      if (badgeMobile) {
+        badgeMobile.textContent = count;
+        badgeMobile.classList.toggle('visible', count > 0);
       }
     } catch (e) {
       console.error('Failed to update wishlist badge:', e);
