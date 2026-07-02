@@ -198,6 +198,8 @@ const AdminMedia = {
         ${filtered.map(m => this.mediaCard(m)).join('')}
       </div>
     `;
+    // Initialize video players after rendering
+    setTimeout(() => VideoPlayer.init(), 100);
   },
 
   mediaCard(media) {
@@ -208,13 +210,13 @@ const AdminMedia = {
     return `
       <div class="media-item" data-media-id="${media.id}" data-media-type="${media.media_type}">
         <div class="media-item-preview">
-          ${isVideo ? `
-            <div class="media-item-video-thumb">
-              ${media.thumbnail_url ? `<img src="${media.thumbnail_url}" alt="${media.original_name}" loading="lazy">` :
-                `<div style="display:flex;align-items:center;justify-content:center;height:100%;background:var(--bg-input);font-size:2rem;color:var(--text-muted)"><i class="fas fa-video"></i></div>`}
-              <div class="media-item-video-icon"><i class="fas fa-play"></i></div>
-            </div>
-          ` : `
+          ${isVideo ? VideoPlayer.render({
+            src: media.secure_url || media.url,
+            poster: media.thumbnail_url || '',
+            width: '100%',
+            height: '100%',
+            className: 'media-video-player'
+          }) : `
             <img src="${media.secure_url || media.url}" alt="${media.original_name || media.filename}" loading="lazy">
           `}
         </div>

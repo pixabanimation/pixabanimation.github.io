@@ -3844,6 +3844,56 @@ select:focus option:checked {
   box-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 
+/* Video player inside media card preview */
+.media-item-preview .spurno-player.media-video-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.media-item-preview .spurno-player .spurno-poster {
+  z-index: 1;
+}
+
+.media-item-preview .spurno-player .spurno-poster img {
+  object-fit: cover;
+}
+
+.media-item-preview .spurno-player .spurno-play-btn {
+  width: 48px;
+  height: 48px;
+}
+
+.media-item-preview .spurno-player .spurno-play-btn svg {
+  width: 32px;
+  height: 32px;
+}
+
+.media-item-preview .spurno-player .spurno-controls {
+  padding: 24px 10px 8px;
+}
+
+.media-item-preview .spurno-player .spurno-controls .spurno-btn {
+  width: 28px;
+  height: 28px;
+  font-size: 0.8rem;
+}
+
+.media-item-preview .spurno-player .spurno-progress {
+  height: 3px;
+  margin-bottom: 6px;
+}
+
+.media-item-preview .spurno-player .spurno-watermark {
+  display: none !important;
+}
+
+.media-item-preview .spurno-player .spurno-watermark-overlay {
+  display: none !important;
+}
+
 .media-item-info {
   padding: 12px 14px;
 }
