@@ -34,7 +34,7 @@ const AdminSettings = {
               <div class="settings-info-item">
                 <div class="settings-info-label">Role</div>
                 <div class="settings-info-value">
-                  <span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(108,99,255,0.15);color:var(--accent-1)">Administrator</span>
+                  <span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(0,102,204,0.15);color:var(--accent-1)">Administrator</span>
                 </div>
               </div>
               <div class="settings-info-item">

@@ -52,7 +52,7 @@ const AdminPage = {
               <i class="fas fa-cog"></i> Settings
             </button>
             <hr class="admin-divider">
-            <a href="#/" class="admin-nav-item" style="display:flex;align-items:center;gap:10px;padding:12px 16px;color:var(--text-muted);text-decoration:none;border-radius:var(--radius-sm);font-size:0.9rem;transition:var(--transition-normal)">
+            <a href="#/" class="admin-nav-item">
               <i class="fas fa-arrow-left"></i> Back to Store
             </a>
           </nav>
@@ -117,7 +117,7 @@ const AdminPage = {
         <!-- Stats Cards -->
         <div class="admin-stats-grid">
           <div class="admin-stat-card glass">
-            <div class="admin-stat-icon" style="background:rgba(108,99,255,0.15);color:var(--accent-1)">
+            <div class="admin-stat-icon revenue">
               <i class="fas fa-dollar-sign"></i>
             </div>
             <div class="admin-stat-info">
@@ -129,7 +129,7 @@ const AdminPage = {
             </div>
           </div>
           <div class="admin-stat-card glass">
-            <div class="admin-stat-icon" style="background:rgba(0,229,255,0.15);color:var(--accent-3)">
+            <div class="admin-stat-icon orders">
               <i class="fas fa-shopping-bag"></i>
             </div>
             <div class="admin-stat-info">
@@ -141,7 +141,7 @@ const AdminPage = {
             </div>
           </div>
           <div class="admin-stat-card glass">
-            <div class="admin-stat-icon" style="background:rgba(0,230,118,0.15);color:var(--success)">
+            <div class="admin-stat-icon products">
               <i class="fas fa-box"></i>
             </div>
             <div class="admin-stat-info">
@@ -153,7 +153,7 @@ const AdminPage = {
             </div>
           </div>
           <div class="admin-stat-card glass">
-            <div class="admin-stat-icon" style="background:rgba(255,215,64,0.15);color:var(--warning)">
+            <div class="admin-stat-icon users">
               <i class="fas fa-users"></i>
             </div>
             <div class="admin-stat-info">
@@ -382,7 +382,7 @@ const AdminPage = {
                       </div>
                     </td>
                     <td><span style="font-size:0.85rem">${p.category_name || '—'}</span></td>
-                    <td><span style="font-size:0.75rem;padding:2px 8px;border-radius:var(--radius-full);background:${p.media_type === 'video' ? 'rgba(108,99,255,0.15)' : p.media_type === 'digital' ? 'rgba(0,230,118,0.15)' : 'var(--bg-input)'};color:${p.media_type === 'video' ? 'var(--accent-1)' : p.media_type === 'digital' ? 'var(--success)' : 'var(--text-muted)'}">${p.media_type === 'video' ? '🎬 Video' : p.media_type === 'digital' ? '📄 Digital' : '📦 Physical'}</span></td>
+                    <td><span style="font-size:0.75rem;padding:2px 8px;border-radius:var(--radius-full);background:${p.media_type === 'video' ? 'rgba(0,102,204,0.15)' : p.media_type === 'digital' ? 'rgba(0,230,118,0.15)' : 'var(--bg-input)'};color:${p.media_type === 'video' ? 'var(--accent-1)' : p.media_type === 'digital' ? 'var(--success)' : 'var(--text-muted)'}">${p.media_type === 'video' ? '🎬 Video' : p.media_type === 'digital' ? '📄 Digital' : '📦 Physical'}</span></td>
                     <td><span style="font-weight:600;color:var(--accent-1)">$${parseFloat(p.price).toFixed(2)}</span></td>
                     <td>
                       <span style="color:${p.stock > 0 ? 'var(--success)' : 'var(--error)'};font-weight:600">
@@ -804,7 +804,7 @@ const AdminPage = {
             <div style="font-size:0.9rem">${order.shipping_address || 'No address'}</div>
           </div>
           ${order.transaction_id ? `
-          <div style="padding:12px;background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.1);border-radius:var(--radius-sm)">
+          <div style="padding:12px;background:rgba(0,102,204,0.06);border:1px solid rgba(0,102,204,0.1);border-radius:var(--radius-sm)">
             <div style="display:flex;flex-direction:column;gap:8px">
               <div style="display:flex;justify-content:space-between">
                 <span style="font-size:0.8rem;color:var(--text-muted)">Payment Provider</span>
@@ -989,7 +989,7 @@ const AdminPage = {
                     <td>${u.phone || '—'}</td>
                     <td>
                       ${u.is_admin ? 
-                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(108,99,255,0.15);color:var(--accent-1)">Admin</span>' :
+                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(0,102,204,0.15);color:var(--accent-1)">Admin</span>' :
                         '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:var(--bg-input);color:var(--text-muted)">User</span>'
                       }
                     </td>

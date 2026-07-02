@@ -11,12 +11,13 @@ const ShopPage = {
     const sortBy = query.sort || 'newest';
 
     content.innerHTML = `
-      <div class="shop-header">
-        <div class="section-header" style="margin-bottom:0">
-          <div class="section-label">Shop</div>
-          <h1 class="section-title">Explore Our <span class="text-gradient">Collection</span></h1>
-          <p class="section-subtitle">${categorySlug ? `Browsing: ${categorySlug}` : 'Discover products you love'}</p>
+      <div class="shop-header" style="padding:48px 24px 32px;text-align:center;background:var(--bg-secondary)">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(0,102,204,0.1);border:1px solid rgba(0,102,204,0.15);border-radius:9999px;margin-bottom:16px">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--ds-primary)"></span>
+          <span class="ds-caption" style="font-weight:500;color:var(--ds-primary)">Shop</span>
         </div>
+        <h1 class="ds-display-lg" style="color:#fff;margin-bottom:8px">Explore Our <span class="text-gradient">Collection</span></h1>
+        <p class="ds-body" style="color:rgba(255,255,255,0.5);max-width:480px;margin:0 auto">${categorySlug ? `Browsing: ${categorySlug}` : 'Discover premium motion graphics and animation assets'}</p>
       </div>
       <div class="section" style="padding-top:32px">
         <div class="shop-controls">
@@ -32,11 +33,11 @@ const ShopPage = {
               <option value="name" ${sortBy === 'name' ? 'selected' : ''}>Name</option>
             </select>
           </div>
-          <div class="shop-results" id="shopResults">Loading products...</div>
+          <div class="shop-results ds-caption" id="shopResults" style="color:rgba(255,255,255,0.4)">Loading products...</div>
         </div>
         <div id="shopGrid">${Components.loadingSkeleton(8)}</div>
         ${categorySlug ? `<div style="text-align:center;margin-top:32px">
-          <a href="#/shop" class="btn btn-secondary"><i class="fas fa-times"></i> Clear Filters</a>
+          <a href="#/shop" class="ds-pill-cta-secondary" style="font-size:13px;padding:8px 18px"><i class="fas fa-times"></i> Clear Filters</a>
         </div>` : ''}
       </div>
     `;
