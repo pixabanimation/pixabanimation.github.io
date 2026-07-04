@@ -23,21 +23,21 @@ const ContactPage = {
               <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--ds-primary);flex-shrink:0"><i class="fas fa-map-marker-alt"></i></div>
               <div class="contact-info-text">
                 <h4 class="ds-caption-strong" style="color:#1d1d1f;margin-bottom:4px">Visit Us</h4>
-                <p class="ds-caption" style="color:rgba(0,0,0,0.50);line-height:1.5">123 Commerce Street, Suite 100<br>San Francisco, CA 94102</p>
+                <p class="ds-caption" style="color:rgba(0,0,0,0.50);line-height:1.5">Dhanmondi 32, Dhaka, Bangladesh.</p>
               </div>
             </div>
             <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
               <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--ds-primary);flex-shrink:0"><i class="fas fa-envelope"></i></div>
               <div class="contact-info-text">
                 <h4 class="ds-caption-strong" style="color:#1d1d1f;margin-bottom:4px">Email Us</h4>
-                <p class="ds-caption" style="color:rgba(0,0,0,0.50);line-height:1.5">hello@pixabanimation.com<br>support@pixabanimation.com</p>
+                <p class="ds-caption" style="color:rgba(0,0,0,0.50);line-height:1.5">spurno@icloud.com<br>any_dj@icloud.com</p>
               </div>
             </div>
             <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
               <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--ds-primary);flex-shrink:0"><i class="fas fa-phone-alt"></i></div>
               <div class="contact-info-text">
                 <h4 class="ds-caption-strong" style="color:#1d1d1f;margin-bottom:4px">Call Us</h4>
-                <p class="ds-caption" style="color:rgba(0,0,0,0.50);line-height:1.5">+1 (555) 123-4567<br>Mon-Fri, 9AM-6PM EST</p>
+                <p class="ds-caption" style="color:rgba(0,0,0,0.50);line-height:1.5">+880 1521211774<br>Mon-Fri, 9AM-6PM EST</p>
               </div>
             </div>
             <div class="contact-info-card" style="display:flex;gap:14px;align-items:flex-start;padding:20px;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
@@ -55,11 +55,11 @@ const ContactPage = {
               <div class="contact-name-row">
                 <div class="form-group">
                   <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Your Name</label>
-                  <input type="text" id="contactName" placeholder="John Doe" required>
+                  <input type="text" id="contactName" placeholder="Full name" required>
                 </div>
                 <div class="form-group">
                   <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Your Email</label>
-                  <input type="email" id="contactEmail" placeholder="john@example.com" required>
+                  <input type="email" id="contactEmail" placeholder="youremail@gmail.com" required>
                 </div>
               </div>
               <div class="form-group">

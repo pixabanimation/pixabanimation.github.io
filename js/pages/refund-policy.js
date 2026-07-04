@@ -75,7 +75,7 @@ const RefundPolicyPage = {
                   <li>Any relevant screenshots or details about the issue</li>
                 </ul>
                 <p style="color:var(--text-secondary);font-size:0.95rem;line-height:1.8;margin-top:12px">
-                  Email us at: <strong>support@pixabanimation.com</strong> or visit our <a href="#/contact" style="color:var(--accent-1)">Contact page</a>.
+                  Email us at: <strong>spurno@icloud.com</strong> or visit our <a href="#/contact" style="color:var(--accent-1)">Contact page</a>.
                   We aim to respond within 24-48 hours.
                 </p>
               </div>
