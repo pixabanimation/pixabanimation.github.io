@@ -172,8 +172,10 @@ const Components = {
     document.body.appendChild(overlay);
   },
 
-  // Media Picker Modal — select an image from the Media Library
+  // Media Picker — creates its own overlay without removing existing modals (e.g. when used inside a form modal)
   async openMediaPicker(onSelect) {
+    // Prevent stacking multiple pickers if user double-clicks Browse
+    if (document.querySelector('.media-picker-overlay')) return;
     try {
       const media = await DB.getMedia({ media_type: 'image' });
 
@@ -207,20 +209,40 @@ const Components = {
       // Store the callback globally so onclick can reach it
       window.__mediaPickerCallback = onSelect;
 
-      this.showModal('Select Image', `
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:4px">
-            Choose an image from the Media Library. Only images are shown.
-          </p>
-          ${gridHtml}
-          <div style="display:flex;gap:8px;margin-top:8px;padding-top:12px;border-top:1px solid var(--border-light)">
-            <input type="url" id="mediaPickerUrl" placeholder="Or paste an image URL directly..." style="flex:1">
-            <button class="btn btn-primary btn-sm" onclick="Components.useMediaPickerUrl()">
-              <i class="fas fa-check"></i> Use URL
+      // Create a separate overlay that stacks on top of any existing form modal
+      // NOTE: Do NOT use showModal() here — it removes all existing modals
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay media-picker-overlay';
+      overlay.style.zIndex = '20000';
+      overlay.innerHTML = `
+        <div class="modal-content" style="max-width:520px">
+          <div class="modal-header">
+            <h2>Select Image</h2>
+            <button class="modal-close" onclick="this.closest('.media-picker-overlay').remove();window.__mediaPickerCallback=null">
+              <i class="fas fa-times"></i>
             </button>
           </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:4px">
+              Choose an image from the Media Library. Only images are shown.
+            </p>
+            ${gridHtml}
+            <div style="display:flex;gap:8px;margin-top:8px;padding-top:12px;border-top:1px solid var(--border-light)">
+              <input type="url" id="mediaPickerUrl" placeholder="Or paste an image URL directly..." style="flex:1">
+              <button class="btn btn-primary btn-sm" onclick="Components.useMediaPickerUrl()">
+                <i class="fas fa-check"></i> Use URL
+              </button>
+            </div>
+          </div>
         </div>
-      `, '520px');
+      `;
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.remove();
+          window.__mediaPickerCallback = null;
+        }
+      });
+      document.body.appendChild(overlay);
     } catch (error) {
       console.error('Media picker error:', error);
       this.toast('Failed to load media library', 'error');
@@ -233,7 +255,8 @@ const Components = {
       window.__mediaPickerCallback(url);
       window.__mediaPickerCallback = null;
     }
-    document.querySelector('.modal-overlay')?.remove();
+    // Only remove the picker overlay, not any underlying form modals
+    document.querySelector('.media-picker-overlay')?.remove();
   },
 
   // Called when the user enters a custom URL
@@ -247,7 +270,8 @@ const Components = {
       window.__mediaPickerCallback(url);
       window.__mediaPickerCallback = null;
     }
-    document.querySelector('.modal-overlay')?.remove();
+    // Only remove the picker overlay, not any underlying form modals
+    document.querySelector('.media-picker-overlay')?.remove();
   },
 
   // Reusable: open media picker and fill an input field by ID, with optional extra callback
