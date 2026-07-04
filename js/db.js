@@ -132,6 +132,44 @@ const DB = {
     return categories.length > 0 ? categories[0] : null;
   },
 
+  async createCategory(data) {
+    const { name, slug, image_url, description } = data;
+    const result = await this.execute(
+      'INSERT INTO categories (name, slug, image_url, description) VALUES (?, ?, ?, ?)',
+      [name, slug, image_url || null, description || null]
+    );
+    return result.lastInsertRowid;
+  },
+
+  async updateCategory(id, data) {
+    const fields = [];
+    const params = [];
+    const allowedFields = ['name', 'slug', 'image_url', 'description'];
+    for (const [key, value] of Object.entries(data)) {
+      if (allowedFields.includes(key)) {
+        fields.push(`${key} = ?`);
+        params.push(value);
+      }
+    }
+    if (fields.length === 0) return;
+    params.push(id);
+    return this.execute(
+      `UPDATE categories SET ${fields.join(', ')} WHERE id = ?`,
+      params
+    );
+  },
+
+  async deleteCategory(id) {
+    // Unlink products from this category first
+    await this.execute('UPDATE products SET category_id = NULL WHERE category_id = ?', [id]);
+    return this.execute('DELETE FROM categories WHERE id = ?', [id]);
+  },
+
+  async getCategoryById(id) {
+    const categories = await this.query('SELECT * FROM categories WHERE id = ?', [id]);
+    return categories.length > 0 ? categories[0] : null;
+  },
+
   // === Cart ===
   getSessionId() {
     let sessionId = localStorage.getItem('shop_session_id');
@@ -344,10 +382,40 @@ const DB = {
 
   // === Contact ===
   async submitContact(name, email, subject, message) {
+    const user = App.getUser();
+    const userId = user ? user.id : null;
     return this.execute(
-      'INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)',
-      [name, email, subject, message]
+      'INSERT INTO contact_messages (user_id, name, email, subject, message) VALUES (?, ?, ?, ?, ?)',
+      [userId, name, email, subject, message]
     );
+  },
+
+  async getUserMessages(userId) {
+    return this.query(
+      'SELECT * FROM contact_messages WHERE user_id = ? ORDER BY created_at DESC',
+      [userId]
+    );
+  },
+
+  async getAllMessages() {
+    return this.query(
+      'SELECT * FROM contact_messages ORDER BY created_at DESC'
+    );
+  },
+
+  async replyToMessage(messageId, reply, adminId) {
+    return this.execute(
+      'UPDATE contact_messages SET admin_reply = ?, replied_by = ?, replied_at = CURRENT_TIMESTAMP, is_read = 1 WHERE id = ?',
+      [reply, adminId, messageId]
+    );
+  },
+
+  async deleteMessage(id) {
+    return this.execute('DELETE FROM contact_messages WHERE id = ?', [id]);
+  },
+
+  async markMessageRead(id) {
+    return this.execute('UPDATE contact_messages SET is_read = 1 WHERE id = ?', [id]);
   },
 
   // === Newsletter ===
@@ -644,17 +712,46 @@ const DB = {
   },
 
   // === User Management ===
-  async createUser(name, email, password) {
+  async createUser(name, email, password, isAdmin = 0) {
     const hashedPassword = await this.hashPassword(password);
     const result = await this.execute(
-      'INSERT INTO users (name, email, password, is_admin) VALUES (?, ?, ?, 0)',
-      [name, email, hashedPassword]
+      'INSERT INTO users (name, email, password, is_admin) VALUES (?, ?, ?, ?)',
+      [name, email, hashedPassword, isAdmin]
     );
     return result.lastInsertRowid;
   },
 
   async getAllUsers() {
-    return this.query('SELECT id, name, email, phone, is_admin, created_at FROM users ORDER BY created_at DESC');
+    return this.query('SELECT id, name, email, phone, avatar_url, additional_email, is_admin, created_at FROM users ORDER BY created_at DESC');
+  },
+
+  async updateUser(id, data) {
+    const fields = [];
+    const params = [];
+    const allowedFields = ['name', 'email', 'phone', 'address', 'avatar_url', 'additional_email', 'is_admin'];
+    for (const [key, value] of Object.entries(data)) {
+      if (allowedFields.includes(key)) {
+        fields.push(`${key} = ?`);
+        params.push(value);
+      }
+    }
+    if (fields.length === 0) return;
+    params.push(id);
+    return this.execute(
+      `UPDATE users SET ${fields.join(', ')} WHERE id = ?`,
+      params
+    );
+  },
+
+  async deleteUser(id) {
+    // Clean up related data
+    await this.execute('DELETE FROM cart_items WHERE user_id = ?', [id]);
+    await this.execute('DELETE FROM wishlist_items WHERE user_id = ?', [id]);
+    await this.execute('DELETE FROM reviews WHERE user_id = ?', [id]);
+    await this.execute('UPDATE orders SET user_id = NULL WHERE user_id = ?', [id]);
+    await this.execute('DELETE FROM admin_security WHERE user_id = ?', [id]);
+    await this.execute('DELETE FROM contact_messages WHERE user_id = ?', [id]);
+    return this.execute('DELETE FROM users WHERE id = ?', [id]);
   },
 
   // === Admin Password Management ===
@@ -671,6 +768,24 @@ const DB = {
   async updateUserPassword(userId, newPassword) {
     const hashedPassword = await this.hashPassword(newPassword);
     return this.execute('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId]);
+  },
+
+  async updateUserProfile(userId, data) {
+    const fields = [];
+    const params = [];
+    const allowedFields = ['name', 'email', 'phone', 'address', 'avatar_url', 'additional_email'];
+    for (const [key, value] of Object.entries(data)) {
+      if (allowedFields.includes(key)) {
+        fields.push(`${key} = ?`);
+        params.push(value);
+      }
+    }
+    if (fields.length === 0) return;
+    params.push(userId);
+    return this.execute(
+      `UPDATE users SET ${fields.join(', ')} WHERE id = ?`,
+      params
+    );
   },
 
   async storePasswordResetCode(email, code, expiresAt) {

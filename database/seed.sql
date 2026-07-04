@@ -46,12 +46,12 @@ INSERT OR IGNORE INTO products (id, name, slug, description, price, compare_pric
 (11, 'Creative Business Book', 'creative-business-book', 'The ultimate guide to building a creative career. Learn the strategies, mindsets, and workflows used by top animators, designers, and content creators to turn passion into profit.', 24.99, 29.99, 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=80', '["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=80","https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=80"]', 5, 200, 4.8, 312, 0, 'physical', NULL, NULL, NULL, NULL, NULL);
 
 -- Demo user (password: "password123" — SHA-256 hashed)
-INSERT OR IGNORE INTO users (id, name, email, password, is_admin) VALUES
-(1, 'Demo User', 'demo@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 0);
+INSERT OR IGNORE INTO users (id, name, email, password, avatar_url, phone, additional_email, is_admin) VALUES
+(1, 'Demo User', 'demo@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80', '+1 (555) 123-4567', 'demo.alternate@example.com', 0);
 
 -- Admin user (password: "admin123" — SHA-256 hashed)
-INSERT OR IGNORE INTO users (id, name, email, password, is_admin) VALUES
-(2, 'Admin', 'admin@pixabanimation.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 1);
+INSERT OR IGNORE INTO users (id, name, email, password, avatar_url, phone, additional_email, is_admin) VALUES
+(2, 'Admin', 'admin@pixabanimation.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80', '+1 (555) 987-6543', 'admin.secondary@pixabanimation.com', 1);
 
 -- Sample reviews for video products
 INSERT OR IGNORE INTO reviews (id, product_id, author_name, rating, comment) VALUES
@@ -86,8 +86,8 @@ INSERT OR IGNORE INTO newsletter_subscribers (id, email, name, active) VALUES
 (6, 'jordan.parker@email.com', 'Jordan Parker', 1),
 (7, 'unsubscribed.user@email.com', NULL, 0);
 
--- Sample contact messages
-INSERT OR IGNORE INTO contact_messages (id, name, email, subject, message) VALUES
-(1, 'John Smith', 'john.smith@email.com', 'Question about licensing', 'I am interested in using your nature reel for a commercial project. Can you tell me more about the licensing options?'),
-(2, 'Rachel Green', 'rachel.green@email.com', 'Custom animation request', 'Hi there! I am looking for a custom animated logo for my startup. Do you offer custom animation services?'),
-(3, 'David Kim', 'david.kim@email.com', 'Download issue', 'I purchased the Abstract Motion Graphics Pack but the download link does not seem to be working. Can you help?');
+-- Sample contact messages with admin replies
+INSERT OR IGNORE INTO contact_messages (id, user_id, name, email, subject, message, admin_reply, replied_by, replied_at, is_read) VALUES
+(1, 2, 'John Smith', 'john.smith@email.com', 'Question about licensing', 'I am interested in using your nature reel for a commercial project. Can you tell me more about the licensing options?', 'Hi John! All our assets come with a Standard License that covers commercial use in client projects. For broadcast/film use, please reach out about our Extended License. Let me know if you have more questions!', 2, '2026-06-15 10:30:00', 1),
+(2, NULL, 'Rachel Green', 'rachel.green@email.com', 'Custom animation request', 'Hi there! I am looking for a custom animated logo for my startup. Do you offer custom animation services?', NULL, NULL, NULL, 0),
+(3, 1, 'David Kim', 'david.kim@email.com', 'Download issue', 'I purchased the Abstract Motion Graphics Pack but the download link does not seem to be working. Can you help?', 'I have resent the download link to your email. Please check your inbox and let us know if you have any further issues!', 2, '2026-06-14 14:15:00', 1);

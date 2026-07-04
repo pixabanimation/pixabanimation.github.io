@@ -1,5 +1,6 @@
 // ============================================
 // pixabanimation — Profile Page
+// Profile pic, account details, password, messages
 // ============================================
 
 const ProfilePage = {
@@ -18,10 +19,23 @@ const ProfilePage = {
       return;
     }
 
+    // Fetch fresh user data from DB
+    let fullUser;
+    try {
+      fullUser = await DB.getUserById(user.id);
+    } catch (e) {
+      fullUser = user;
+    }
+
+    const avatarUrl = fullUser?.avatar_url || '';
+
     content.innerHTML = `
       <div class="profile-page page-enter">
         <div class="profile-header">
-          <div class="profile-avatar">${user.name.charAt(0).toUpperCase()}</div>
+          ${avatarUrl
+            ? `<img src="${avatarUrl}" alt="${user.name}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border-light)">`
+            : `<div class="profile-avatar">${user.name.charAt(0).toUpperCase()}</div>`
+          }
           <div class="profile-info">
             <h1>${user.name}</h1>
             <p>${user.email}</p>
@@ -34,6 +48,9 @@ const ProfilePage = {
             <i class="fas fa-download"></i> My Downloads
           </button>
           <button class="profile-tab" onclick="ProfilePage.switchTab('details', this)">Account Details</button>
+          <button class="profile-tab" onclick="ProfilePage.switchTab('messages', this)">
+            <i class="fas fa-envelope"></i> Messages
+          </button>
           <button class="profile-tab" onclick="ProfilePage.logout()" style="margin-left:auto;color:var(--error)">Sign Out</button>
         </div>
 
@@ -190,35 +207,301 @@ const ProfilePage = {
     if (tab === 'downloads') {
       this.loadDownloads();
     } else if (tab === 'details') {
-      const user = App.getUser();
-      container.innerHTML = `
-        <div style="padding:32px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-md)" class="page-enter">
-          <h3 style="margin-bottom:24px">Account Details</h3>
-          <div style="display:grid;gap:16px;max-width:480px">
+      this.renderDetails();
+    } else if (tab === 'messages') {
+      this.renderMessages();
+    } else {
+      this.loadOrders();
+    }
+  },
+
+  async renderDetails() {
+    const container = document.getElementById('profileContent');
+    const user = App.getUser();
+
+    let fullUser;
+    try {
+      fullUser = await DB.getUserById(user.id);
+    } catch (e) {
+      fullUser = user;
+    }
+
+    const avatarUrl = fullUser?.avatar_url || '';
+    const phone = fullUser?.phone || '';
+    const additionalEmail = fullUser?.additional_email || '';
+
+    container.innerHTML = `
+      <div style="padding:32px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-md)" class="page-enter">
+        <h3 style="margin-bottom:24px">Account Details</h3>
+        
+        <!-- Profile Picture -->
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding:16px;background:var(--bg-input);border-radius:var(--radius-sm);flex-wrap:wrap">
+          ${avatarUrl
+            ? `<img src="${avatarUrl}" alt="Profile" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--border-light)">`
+            : `<div style="width:60px;height:60px;border-radius:50%;background:var(--accent-gradient);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:white">${user.name.charAt(0).toUpperCase()}</div>`
+          }
+          <div style="flex:1;min-width:200px">
+            <div style="font-weight:600;font-size:0.9rem;margin-bottom:4px">Profile Picture</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <input type="url" id="profileAvatarUrl" value="${avatarUrl}" placeholder="https://...avatar.jpg" style="flex:1;min-width:160px">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="Components.openMediaPickerFor('profileAvatarUrl', ProfilePage.saveAvatar)">
+                <i class="fas fa-image"></i> Browse
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="ProfilePage.saveAvatar()">
+                <i class="fas fa-save"></i> Save
+              </button>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;display:block">
+              Click <strong>Browse</strong> to pick from uploaded images, or paste a URL.
+            </span>
+          </div>
+        </div>
+
+        <div style="display:grid;gap:16px;max-width:560px">
+          <div class="admin-form-grid-2">
             <div class="form-group">
               <label>Name</label>
-              <input type="text" value="${user.name}">
+              <input type="text" id="profileName" value="${user.name}">
             </div>
             <div class="form-group">
               <label>Email</label>
-              <input type="email" value="${user.email}">
+              <input type="email" id="profileEmail" value="${user.email}">
+            </div>
+          </div>
+          <div class="admin-form-grid-2">
+            <div class="form-group">
+              <label>Additional Email</label>
+              <input type="email" id="profileAdditionalEmail" value="${additionalEmail}" placeholder="Optional secondary email">
             </div>
             <div class="form-group">
               <label>Phone</label>
-              <input type="tel" placeholder="Add phone number">
+              <input type="tel" id="profilePhone" value="${phone}" placeholder="+1 (555) 000-0000">
+            </div>
+          </div>
+          <button class="btn btn-primary" style="align-self:flex-start" onclick="ProfilePage.saveDetails()">
+            <i class="fas fa-save"></i> Save Changes
+          </button>
+
+          <hr style="border:none;border-top:1px solid var(--border-light);margin:8px 0">
+
+          <h4 style="font-weight:600;font-size:1rem">Change Password</h4>
+          <div class="admin-form-grid-2">
+            <div class="form-group">
+              <label>Current Password</label>
+              <input type="password" id="profileCurrentPassword" placeholder="Enter current password">
             </div>
             <div class="form-group">
-              <label>Address</label>
-              <textarea rows="2" placeholder="Add your shipping address"></textarea>
+              <label>New Password</label>
+              <input type="password" id="profileNewPassword" placeholder="Min. 8 characters" minlength="8">
             </div>
-            <button class="btn btn-primary" onclick="Components.toast('Profile updated!', 'success')">
-              Save Changes
+          </div>
+          <div class="form-group" style="max-width:270px">
+            <label>Confirm New Password</label>
+            <input type="password" id="profileConfirmPassword" placeholder="Confirm new password">
+          </div>
+          <button class="btn btn-primary" style="align-self:flex-start" onclick="ProfilePage.changePassword()">
+            <i class="fas fa-key"></i> Update Password
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  async saveAvatar() {
+    const url = document.getElementById('profileAvatarUrl').value.trim();
+    const user = App.getUser();
+    if (!user) return;
+
+    try {
+      await DB.updateUserProfile(user.id, { avatar_url: url || null });
+      const updated = await DB.getUserById(user.id);
+      localStorage.setItem('shop_user', JSON.stringify({
+        id: updated.id,
+        name: updated.name,
+        email: updated.email,
+        is_admin: !!updated.is_admin,
+        avatar_url: updated.avatar_url
+      }));
+      Components.toast('Profile picture updated!', 'success');
+      // Refresh the details view
+      this.renderDetails();
+    } catch (error) {
+      Components.toast('Failed to update: ' + error.message, 'error');
+    }
+  },
+
+  async saveDetails() {
+    const user = App.getUser();
+    if (!user) return;
+
+    const name = document.getElementById('profileName').value.trim();
+    const email = document.getElementById('profileEmail').value.trim();
+    const phone = document.getElementById('profilePhone').value.trim();
+    const additionalEmail = document.getElementById('profileAdditionalEmail').value.trim();
+
+    if (!name || !email) {
+      Components.toast('Name and email are required', 'error');
+      return;
+    }
+
+    try {
+      await DB.updateUserProfile(user.id, {
+        name,
+        email,
+        phone: phone || null,
+        additional_email: additionalEmail || null
+      });
+      const updated = await DB.getUserById(user.id);
+      localStorage.setItem('shop_user', JSON.stringify({
+        id: updated.id,
+        name: updated.name,
+        email: updated.email,
+        is_admin: !!updated.is_admin,
+        avatar_url: updated.avatar_url
+      }));
+      Components.toast('Profile updated!', 'success');
+      App.updateAuthUI();
+      this.renderDetails();
+    } catch (error) {
+      if (error.message.includes('UNIQUE')) {
+        Components.toast('This email is already in use', 'error');
+      } else {
+        Components.toast('Failed to update: ' + error.message, 'error');
+      }
+    }
+  },
+
+  async changePassword() {
+    const user = App.getUser();
+    if (!user) return;
+
+    const currentPw = document.getElementById('profileCurrentPassword').value;
+    const newPw = document.getElementById('profileNewPassword').value;
+    const confirmPw = document.getElementById('profileConfirmPassword').value;
+
+    if (newPw !== confirmPw) {
+      Components.toast('New passwords do not match', 'error');
+      return;
+    }
+    if (newPw.length < 8) {
+      Components.toast('Password must be at least 8 characters', 'error');
+      return;
+    }
+
+    const userData = await DB.getUserByEmail(user.email);
+    if (userData) {
+      const hashedCurrent = await DB.hashPassword(currentPw);
+      if (userData.password !== hashedCurrent) {
+        Components.toast('Current password is incorrect', 'error');
+        return;
+      }
+    }
+
+    try {
+      await DB.updateUserPassword(user.id, newPw);
+      Components.toast('Password changed successfully!', 'success');
+      document.getElementById('profileCurrentPassword').value = '';
+      document.getElementById('profileNewPassword').value = '';
+      document.getElementById('profileConfirmPassword').value = '';
+    } catch (error) {
+      Components.toast('Failed to change password: ' + error.message, 'error');
+    }
+  },
+
+  async renderMessages() {
+    const container = document.getElementById('profileContent');
+    const user = App.getUser();
+
+    try {
+      const messages = await DB.getUserMessages(user.id);
+
+      container.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:16px" class="page-enter">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+            <h3 style="font-size:1.1rem;font-weight:600">
+              <i class="fas fa-envelope" style="color:var(--accent-1)"></i> My Messages
+            </h3>
+            <button class="btn btn-primary btn-sm" onclick="ProfilePage.showSendMessage()">
+              <i class="fas fa-paper-plane"></i> Send to Admin
             </button>
           </div>
+
+          ${messages.length === 0 ? `
+            <div style="text-align:center;padding:40px;color:var(--text-muted)">
+              <i class="fas fa-envelope-open-text" style="font-size:3rem;margin-bottom:12px;display:block;opacity:0.3"></i>
+              <p>No messages yet. Send a message to the admin team.</p>
+            </div>
+          ` : messages.map(m => `
+            <div style="padding:16px 20px;background:var(--bg-card);border:1px solid ${m.admin_reply ? 'rgba(0,230,118,0.2)' : 'var(--border-light)'};border-radius:var(--radius-md)">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+                <div>
+                  <span style="font-weight:600;font-size:0.9rem">${m.subject || 'No subject'}</span>
+                  ${m.admin_reply ? '<span style="margin-left:8px;padding:2px 8px;border-radius:var(--radius-full);font-size:0.65rem;font-weight:600;background:rgba(0,230,118,0.15);color:var(--success)">Replied</span>' : ''}
+                </div>
+                <span style="font-size:0.75rem;color:var(--text-muted)">${new Date(m.created_at).toLocaleDateString()}</span>
+              </div>
+              <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px;line-height:1.6;white-space:pre-wrap">${m.message}</div>
+              ${m.admin_reply ? `
+                <div style="padding:10px 14px;margin-top:8px;background:rgba(0,230,118,0.06);border-left:3px solid var(--success);border-radius:0 var(--radius-sm) var(--radius-sm) 0">
+                  <div style="font-size:0.75rem;font-weight:600;color:var(--success);margin-bottom:4px">
+                    <i class="fas fa-reply"></i> Admin Reply
+                  </div>
+                  <div style="font-size:0.85rem;line-height:1.6;white-space:pre-wrap">${m.admin_reply}</div>
+                  ${m.replied_at ? `<div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px">${new Date(m.replied_at).toLocaleString()}</div>` : ''}
+                </div>
+              ` : ''}
+            </div>
+          `).join('')}
         </div>
       `;
-    } else {
-      this.loadOrders();
+    } catch (error) {
+      console.error('Messages error:', error);
+      container.innerHTML = Components.emptyState('😔', 'Failed to load messages', error.message);
+    }
+  },
+
+  showSendMessage() {
+    const user = App.getUser();
+
+    Components.showModal('Send Message to Admin', `
+      <form id="userMessageForm" onsubmit="ProfilePage.sendMessage(event)" style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" id="msg_subject" placeholder="How can we help you?" required>
+        </div>
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="msg_name" value="${user.name}" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="msg_email" value="${user.email}" required>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="msg_message" rows="5" placeholder="Write your message..." required style="resize:vertical"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-paper-plane"></i> Send Message
+        </button>
+      </form>
+    `);
+  },
+
+  async sendMessage(event) {
+    event.preventDefault();
+    const subject = document.getElementById('msg_subject').value.trim();
+    const name = document.getElementById('msg_name').value.trim();
+    const email = document.getElementById('msg_email').value.trim();
+    const message = document.getElementById('msg_message').value.trim();
+
+    try {
+      await DB.submitContact(name, email, subject, message);
+      Components.toast('Message sent! Admin will reply soon.', 'success');
+      document.querySelector('.modal-overlay')?.remove();
+      this.renderMessages();
+    } catch (error) {
+      Components.toast('Failed to send message: ' + error.message, 'error');
     }
   },
 

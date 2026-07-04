@@ -42,6 +42,9 @@ const AdminPage = {
             <button class="admin-nav-item" data-tab="products" onclick="AdminPage.switchTab('products');AdminPage.closeSidebar()">
               <i class="fas fa-box"></i> Products
             </button>
+            <button class="admin-nav-item" data-tab="categories" onclick="AdminPage.switchTab('categories');AdminPage.closeSidebar()">
+              <i class="fas fa-tags"></i> Categories
+            </button>
             <button class="admin-nav-item" data-tab="orders" onclick="AdminPage.switchTab('orders');AdminPage.closeSidebar()">
               <i class="fas fa-truck"></i> Orders
             </button>
@@ -59,6 +62,9 @@ const AdminPage = {
             </button>
             <button class="admin-nav-item" data-tab="reviews" onclick="AdminPage.switchTab('reviews');AdminPage.closeSidebar()">
               <i class="fas fa-star"></i> Reviews
+            </button>
+            <button class="admin-nav-item" data-tab="messages" onclick="AdminPage.switchTab('messages');AdminPage.closeSidebar()" id="adminMessagesNav">
+              <i class="fas fa-envelope"></i> Messages
             </button>
             <hr class="admin-divider">
             <button class="admin-nav-item" data-tab="settings" onclick="AdminPage.switchTab('settings');AdminPage.closeSidebar()">
@@ -130,12 +136,14 @@ const AdminPage = {
     switch (tab) {
       case 'dashboard': this.loadDashboard(); break;
       case 'products': this.loadProducts(); break;
+      case 'categories': this.loadCategories(); break;
       case 'orders': this.loadOrders(); break;
       case 'users': this.loadUsers(); break;
       case 'coupons': this.loadCoupons(); break;
       case 'media': AdminMedia.render(); break;
       case 'subscribers': this.loadSubscribers(); break;
       case 'reviews': this.loadReviews(); break;
+      case 'messages': this.loadMessages(); break;
       case 'settings': AdminSettings.render(); break;
     }
   },
@@ -515,8 +523,7 @@ const AdminPage = {
             <label>Stock</label>
             <input type="number" id="pf_stock" min="0" value="${isEdit ? product.stock : '0'}">
           </div>
-        </div>
-        <div class="admin-form-grid-2">
+        </div>          <div class="admin-form-grid-2">
           <div class="form-group">
             <label>Category</label>
             <select id="pf_category">
@@ -526,7 +533,7 @@ const AdminPage = {
           </div>
           <div class="form-group">
             <label>Image/Thumbnail URL</label>
-            <input type="url" id="pf_image" value="${isEdit ? (product.image_url || '') : ''}" placeholder="https://...">
+            ${Components.mediaField('pf_image', isEdit ? (product.image_url || '') : '', 'https://...')}
           </div>
         </div>
 
@@ -672,6 +679,174 @@ const AdminPage = {
       this.loadProducts();
     } catch (error) {
       Components.toast('Failed to delete', 'error');
+    }
+  },
+
+  // ===================== CATEGORIES =====================
+  async loadCategories() {
+    const container = document.getElementById('adminContent');
+
+    try {
+      const categories = await DB.getCategories();
+
+      container.innerHTML = `
+        <div class="admin-toolbar">
+          <h3 style="font-size:1rem;font-weight:600">Manage Categories</h3>
+          <button class="btn btn-primary btn-sm" onclick="AdminPage.showCategoryForm(null)">
+            <i class="fas fa-plus"></i> Add Category
+          </button>
+        </div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width:40px">ID</th>
+                <th style="width:80px">Image</th>
+                <th>Name</th>
+                <th>Slug</th>
+                <th>Description</th>
+                <th>Products</th>
+                <th style="width:120px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${categories.length === 0 ? 
+                '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No categories found</td></tr>' :
+                categories.map(c => `
+                  <tr>
+                    <td style="color:var(--text-muted);font-size:0.85rem">#${c.id}</td>
+                    <td>
+                      <img src="${c.image_url || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=80&q=60'}" 
+                           alt="${c.name}" style="width:44px;height:44px;border-radius:8px;object-fit:cover">
+                    </td>
+                    <td><span style="font-weight:600">${c.name}</span></td>
+                    <td><span style="font-size:0.8rem;color:var(--text-muted);font-family:monospace">${c.slug}</span></td>
+                    <td>
+                      <span style="font-size:0.85rem;color:var(--text-secondary);display:block;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(c.description || '').replace(/"/g, '&quot;')}">
+                        ${c.description || '—'}
+                      </span>
+                    </td>
+                    <td><span style="font-weight:600;color:var(--accent-1)">${c.product_count || 0}</span></td>
+                    <td>
+                      <div style="display:flex;gap:6px">
+                        <button class="admin-action-btn" onclick="AdminPage.showCategoryForm(${c.id})" title="Edit">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteCategory(${c.id}, '${c.name.replace(/'/g, "\\'")}')" title="Delete">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } catch (error) {
+      console.error('Categories error:', error);
+      container.innerHTML = Components.emptyState('😔', 'Failed to load categories', error.message);
+    }
+  },
+
+  async showCategoryForm(categoryId) {
+    let category = null;
+    if (categoryId) {
+      category = await DB.getCategoryById(categoryId);
+    }
+
+    const isEdit = !!category;
+
+    Components.showModal(isEdit ? 'Edit Category' : 'Add Category', `
+      <form id="categoryForm" onsubmit="AdminPage.saveCategory(event, ${categoryId || 'null'})" style="display:flex;flex-direction:column;gap:14px">
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label>Category Name</label>
+            <input type="text" id="cf_name" value="${isEdit ? category.name : ''}" required>
+          </div>
+          <div class="form-group">
+            <label>Slug</label>
+            <input type="text" id="cf_slug" value="${isEdit ? category.slug : ''}" placeholder="auto-generated">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="cf_description" rows="2" style="resize:vertical" placeholder="Optional description...">${isEdit ? (category.description || '') : ''}</textarea>
+        </div>
+        <div class="form-group">
+          <label>Image URL</label>
+          ${Components.mediaField('cf_image', isEdit ? (category.image_url || '') : '', 'https://...')}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Save Changes' : 'Add Category'}
+        </button>
+      </form>
+    `);
+
+    // Auto-generate slug from name (only for new categories)
+    const slugField = document.getElementById('cf_slug');
+    const nameField = document.getElementById('cf_name');
+    if (!slugField.value) {
+      nameField?.addEventListener('input', function() {
+        if (!slugField.dataset.manual) {
+          slugField.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        }
+      });
+    }
+    slugField?.addEventListener('input', function() {
+      this.dataset.manual = 'true';
+    });
+  },
+
+  async saveCategory(event, categoryId) {
+    event.preventDefault();
+    const name = document.getElementById('cf_name').value.trim();
+    const slug = document.getElementById('cf_slug').value.trim() || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const description = document.getElementById('cf_description').value.trim();
+    const image_url = document.getElementById('cf_image').value.trim() || null;
+
+    if (!name) {
+      Components.toast('Category name is required', 'error');
+      return;
+    }
+
+    try {
+      if (categoryId) {
+        await DB.updateCategory(categoryId, { name, slug, description, image_url });
+        Components.toast('Category updated!', 'success');
+      } else {
+        await DB.createCategory({ name, slug, description, image_url });
+        Components.toast('Category created!', 'success');
+      }
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadCategories();
+    } catch (error) {
+      Components.toast('Failed to save category: ' + error.message, 'error');
+    }
+  },
+
+  confirmDeleteCategory(categoryId, categoryName) {
+    Components.showModal('Delete Category', `
+      <p style="color:var(--text-secondary);margin-bottom:20px">
+        Are you sure you want to delete <strong>${categoryName}</strong>? Products in this category will be unlinked (not deleted).
+      </p>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" style="background:var(--error)" onclick="AdminPage.deleteCategory(${categoryId})">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    `);
+  },
+
+  async deleteCategory(categoryId) {
+    try {
+      await DB.deleteCategory(categoryId);
+      Components.toast('Category deleted', 'success');
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadCategories();
+    } catch (error) {
+      Components.toast('Failed to delete category', 'error');
     }
   },
 
@@ -998,7 +1173,7 @@ const AdminPage = {
     }
   },
 
-  // ===================== USERS =====================
+  // ===================== USERS (Enhanced) =====================
   async loadUsers() {
     const container = document.getElementById('adminContent');
 
@@ -1007,29 +1182,44 @@ const AdminPage = {
 
       container.innerHTML = `
         <div class="admin-toolbar">
-          <h3 style="font-size:1rem;font-weight:600">All Registered Users</h3>
-          <span style="color:var(--text-muted);font-size:0.85rem">${users.length} total</span>
+          <h3 style="font-size:1rem;font-weight:600">User Management</h3>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span style="color:var(--text-muted);font-size:0.85rem">${users.length} total</span>
+            <button class="btn btn-primary btn-sm" onclick="AdminPage.showUserForm()">
+              <i class="fas fa-plus"></i> Add User
+            </button>
+          </div>
         </div>
         <div class="admin-table-container">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th style="width:40px">ID</th>
+                <th style="width:50px">Avatar</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Additional Email</th>
                 <th>Phone</th>
                 <th>Role</th>
                 <th>Joined</th>
+                <th style="width:120px">Actions</th>
               </tr>
             </thead>
             <tbody>
               ${users.length === 0 ?
-                '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">No users found</td></tr>' :
+                '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No users found</td></tr>' :
                 users.map(u => `
                   <tr>
                     <td style="color:var(--text-muted);font-size:0.85rem">#${u.id}</td>
+                    <td>
+                      ${u.avatar_url 
+                        ? `<img src="${u.avatar_url}" alt="${u.name}" style="width:36px;height:36px;border-radius:50%;object-fit:cover">`
+                        : `<div style="width:36px;height:36px;border-radius:50%;background:var(--accent-gradient);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:white">${u.name.charAt(0).toUpperCase()}</div>`
+                      }
+                    </td>
                     <td><span style="font-weight:600">${u.name}</span></td>
                     <td>${u.email}</td>
+                    <td><span style="font-size:0.8rem;color:var(--text-muted)">${u.additional_email || '—'}</span></td>
                     <td>${u.phone || '—'}</td>
                     <td>
                       ${u.is_admin ? 
@@ -1038,6 +1228,16 @@ const AdminPage = {
                       }
                     </td>
                     <td style="font-size:0.85rem;color:var(--text-muted)">${new Date(u.created_at).toLocaleDateString()}</td>
+                    <td>
+                      <div style="display:flex;gap:6px">
+                        <button class="admin-action-btn" onclick="AdminPage.showUserForm(${u.id})" title="Edit User">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteUser(${u.id}, '${u.name.replace(/'/g, "\\'")}')" title="Delete User">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 `).join('')}
             </tbody>
@@ -1047,6 +1247,345 @@ const AdminPage = {
     } catch (error) {
       console.error('Users error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load users', error.message);
+    }
+  },
+
+  async showUserForm(userId) {
+    let user = null;
+    if (userId) {
+      user = await DB.getUserById(userId);
+    }
+
+    const isEdit = !!user;
+    const currentUser = App.getUser();
+    const isSelf = isEdit && currentUser && user.id === currentUser.id;
+
+    Components.showModal(isEdit ? 'Edit User' : 'Add User', `
+      <form id="userForm" onsubmit="AdminPage.saveUser(event, ${userId || 'null'})" style="display:flex;flex-direction:column;gap:14px">
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="uf_name" value="${isEdit ? user.name : ''}" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="uf_email" value="${isEdit ? user.email : ''}" required>
+          </div>
+        </div>
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" id="uf_phone" value="${isEdit && user.phone ? user.phone : ''}" placeholder="Optional">
+          </div>
+          <div class="form-group">
+            <label>Additional Email</label>
+            <input type="email" id="uf_additional_email" value="${isEdit && user.additional_email ? user.additional_email : ''}" placeholder="Optional">
+          </div>
+        </div>
+        ${!isEdit ? `
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="uf_password" placeholder="Min. 8 characters" minlength="8" required>
+          </div>
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <input type="password" id="uf_confirm" placeholder="Confirm password" required>
+          </div>
+        </div>
+        ` : ''}
+        <div class="form-group">
+          <label>Avatar URL</label>
+          <input type="url" id="uf_avatar" value="${isEdit && user.avatar_url ? user.avatar_url : ''}" placeholder="https://...avatar.jpg">
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="uf_is_admin" ${isEdit && user.is_admin ? 'checked' : ''}>
+            <span style="font-size:0.9rem">Administrator</span>
+          </label>
+        </div>
+        ${isSelf ? '<p style="font-size:0.8rem;color:var(--warning)"><i class="fas fa-info-circle"></i> Editing your own account. Changes apply immediately.</p>' : ''}
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-${isEdit ? 'save' : 'user-plus'}"></i> ${isEdit ? 'Save Changes' : 'Create User'}
+        </button>
+      </form>
+    `);
+  },
+
+  async saveUser(event, userId) {
+    event.preventDefault();
+    const name = document.getElementById('uf_name').value.trim();
+    const email = document.getElementById('uf_email').value.trim();
+    const phone = document.getElementById('uf_phone').value.trim();
+    const additionalEmail = document.getElementById('uf_additional_email').value.trim();
+    const avatar_url = document.getElementById('uf_avatar').value.trim() || null;
+    const is_admin = document.getElementById('uf_is_admin').checked ? 1 : 0;
+
+    if (!name || !email) {
+      Components.toast('Name and email are required', 'error');
+      return;
+    }
+
+    try {
+      if (userId) {
+        await DB.updateUser(userId, { name, email, phone: phone || null, additional_email: additionalEmail || null, avatar_url, is_admin });
+        // If editing own account, update local session
+        const currentUser = App.getUser();
+        if (currentUser && currentUser.id === userId) {
+          const updated = await DB.getUserById(userId);
+          localStorage.setItem('shop_user', JSON.stringify({
+            id: updated.id,
+            name: updated.name,
+            email: updated.email,
+            is_admin: !!updated.is_admin,
+            avatar_url: updated.avatar_url
+          }));
+          App.updateAuthUI();
+        }
+        Components.toast('User updated!', 'success');
+      } else {
+        const password = document.getElementById('uf_password').value;
+        const confirm = document.getElementById('uf_confirm').value;
+        if (password !== confirm) {
+          Components.toast('Passwords do not match', 'error');
+          return;
+        }
+        if (password.length < 8) {
+          Components.toast('Password must be at least 8 characters', 'error');
+          return;
+        }
+        await DB.createUser(name, email, password, is_admin);
+        Components.toast('User created!', 'success');
+      }
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadUsers();
+    } catch (error) {
+      if (error.message.includes('UNIQUE')) {
+        Components.toast('This email is already registered', 'error');
+      } else {
+        Components.toast('Failed to save user: ' + error.message, 'error');
+      }
+    }
+  },
+
+  confirmDeleteUser(userId, userName) {
+    const currentUser = App.getUser();
+    if (currentUser && currentUser.id === userId) {
+      Components.toast('You cannot delete your own account', 'error');
+      return;
+    }
+    Components.showModal('Delete User', `
+      <p style="color:var(--text-secondary);margin-bottom:20px">
+        Are you sure you want to delete <strong>${userName}</strong>? Their orders, reviews, and messages will be unlinked (not deleted).
+      </p>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" style="background:var(--error)" onclick="AdminPage.deleteUser(${userId})">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    `);
+  },
+
+  async deleteUser(userId) {
+    try {
+      await DB.deleteUser(userId);
+      Components.toast('User deleted', 'success');
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadUsers();
+    } catch (error) {
+      Components.toast('Failed to delete user: ' + error.message, 'error');
+    }
+  },
+
+  // ===================== MESSAGES =====================
+  async loadMessages() {
+    const container = document.getElementById('adminContent');
+
+    try {
+      const messages = await DB.getAllMessages();
+
+      container.innerHTML = `
+        <div class="admin-toolbar">
+          <h3 style="font-size:1rem;font-weight:600">Inbox</h3>
+          <span style="color:var(--text-muted);font-size:0.85rem">${messages.length} message${messages.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width:30px">#</th>
+                <th>From</th>
+                <th>Subject</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Reply</th>
+                <th>Date</th>
+                <th style="width:120px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${messages.length === 0 ?
+                '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">No messages yet</td></tr>' :
+                messages.map(m => `
+                  <tr style="${!m.is_read && !m.admin_reply ? 'background:rgba(0,102,204,0.03)' : ''}${m.admin_reply ? 'opacity:0.7' : ''}">
+                    <td style="color:var(--text-muted);font-size:0.85rem">#${m.id}</td>
+                    <td>
+                      <div style="font-weight:600;font-size:0.85rem">${m.name}</div>
+                      <div style="font-size:0.75rem;color:var(--text-muted)">${m.email}</div>
+                    </td>
+                    <td><span style="font-size:0.85rem;font-weight:500">${m.subject || '—'}</span></td>
+                    <td>
+                      <span style="font-size:0.85rem;color:var(--text-secondary);display:block;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(m.message || '').replace(/"/g, '&quot;')}">
+                        ${m.message ? m.message.substring(0, 60) + (m.message.length > 60 ? '...' : '') : '—'}
+                      </span>
+                    </td>
+                    <td>
+                      ${!m.is_read && !m.admin_reply 
+                        ? '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:rgba(245,158,11,0.15);color:var(--warning)">New</span>'
+                        : m.admin_reply 
+                          ? '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:rgba(0,230,118,0.15);color:var(--success)">Replied</span>'
+                          : '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:var(--bg-input);color:var(--text-muted)">Read</span>'
+                      }
+                    </td>
+                    <td>
+                      ${m.admin_reply 
+                        ? `<span style="font-size:0.8rem;color:var(--text-secondary);display:block;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(m.admin_reply || '').replace(/"/g, '&quot;')}">${m.admin_reply.substring(0, 30)}${m.admin_reply.length > 30 ? '...' : ''}</span>`
+                        : '<span style="font-size:0.75rem;color:var(--text-muted)">—</span>'
+                      }
+                    </td>
+                    <td style="font-size:0.8rem;color:var(--text-muted)">${new Date(m.created_at).toLocaleDateString()}</td>
+                    <td>
+                      <div style="display:flex;gap:6px">
+                        <button class="admin-action-btn" onclick="AdminPage.showMessageDetail(${m.id})" title="View & Reply">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteMessage(${m.id})" title="Delete">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } catch (error) {
+      console.error('Messages error:', error);
+      container.innerHTML = Components.emptyState('😔', 'Failed to load messages', error.message);
+    }
+  },
+
+  async showMessageDetail(messageId) {
+    try {
+      // Mark as read
+      await DB.markMessageRead(messageId);
+
+      const messages = await DB.query('SELECT * FROM contact_messages WHERE id = ?', [messageId]);
+      const msg = messages[0];
+      if (!msg) {
+        Components.toast('Message not found', 'error');
+        return;
+      }
+
+      Components.showModal(`Message from ${msg.name}`, `
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:2px">Name</div>
+              <div style="font-weight:600">${msg.name}</div>
+            </div>
+            <div>
+              <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:2px">Email</div>
+              <div style="font-weight:600">${msg.email}</div>
+            </div>
+          </div>
+          ${msg.subject ? `
+          <div>
+            <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:2px">Subject</div>
+            <div style="font-weight:600">${msg.subject}</div>
+          </div>` : ''}
+          <div>
+            <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:4px">Message</div>
+            <div style="padding:14px;background:var(--bg-input);border-radius:var(--radius-sm);font-size:0.9rem;line-height:1.7;white-space:pre-wrap">${msg.message}</div>
+          </div>
+          <div style="font-size:0.75rem;color:var(--text-muted)">
+            ${new Date(msg.created_at).toLocaleString()}
+          </div>
+          
+          ${msg.admin_reply ? `
+          <div style="padding:14px;background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.15);border-radius:var(--radius-sm)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <i class="fas fa-reply" style="color:var(--success)"></i>
+              <span style="font-weight:600;font-size:0.85rem;color:var(--success)">Your Reply</span>
+            </div>
+            <div style="font-size:0.9rem;line-height:1.7;white-space:pre-wrap">${msg.admin_reply}</div>
+            ${msg.replied_at ? `<div style="font-size:0.75rem;color:var(--text-muted);margin-top:6px">Replied on ${new Date(msg.replied_at).toLocaleString()}</div>` : ''}
+          </div>
+          ` : `
+          <div style="padding:16px;background:rgba(0,102,204,0.06);border:1px solid rgba(0,102,204,0.1);border-radius:var(--radius-sm)">
+            <label style="font-weight:600;font-size:0.85rem;margin-bottom:8px;display:block">
+              <i class="fas fa-reply"></i> Write a Reply
+            </label>
+            <textarea id="replyMessage_${msg.id}" rows="4" style="resize:vertical;margin-bottom:10px" placeholder="Type your reply here..."></textarea>
+            <button class="btn btn-primary btn-sm" onclick="AdminPage.replyToMessage(${msg.id})">
+              <i class="fas fa-paper-plane"></i> Send Reply
+            </button>
+          </div>
+          `}
+        </div>
+      `, '540px');
+    } catch (error) {
+      Components.toast('Failed to load message details', 'error');
+    }
+  },
+
+  async replyToMessage(messageId) {
+    const replyInput = document.getElementById(`replyMessage_${messageId}`);
+    if (!replyInput || !replyInput.value.trim()) {
+      Components.toast('Please enter a reply', 'error');
+      return;
+    }
+
+    const admin = App.getUser();
+    if (!admin || !admin.is_admin) {
+      Components.toast('You must be an admin to reply', 'error');
+      return;
+    }
+
+    try {
+      await DB.replyToMessage(messageId, replyInput.value.trim(), admin.id);
+      Components.toast('Reply sent!', 'success');
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadMessages();
+    } catch (error) {
+      Components.toast('Failed to send reply: ' + error.message, 'error');
+    }
+  },
+
+  confirmDeleteMessage(messageId) {
+    Components.showModal('Delete Message', `
+      <p style="color:var(--text-secondary);margin-bottom:20px">
+        Are you sure you want to delete this message? This action cannot be undone.
+      </p>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" style="background:var(--error)" onclick="AdminPage.deleteMessage(${messageId})">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    `);
+  },
+
+  async deleteMessage(messageId) {
+    try {
+      await DB.deleteMessage(messageId);
+      Components.toast('Message deleted', 'success');
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadMessages();
+    } catch (error) {
+      Components.toast('Failed to delete message', 'error');
     }
   },
 

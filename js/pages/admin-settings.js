@@ -1,6 +1,6 @@
 // ============================================
 // pixabanimation — Admin Settings
-// Password change, security question, account
+// Full account management: name, email, profile pic, password
 // ============================================
 
 const AdminSettings = {
@@ -13,35 +13,84 @@ const AdminSettings = {
       return;
     }
 
+    // Fetch fresh user data from DB
+    let fullUser;
+    try {
+      fullUser = await DB.getUserById(user.id);
+    } catch (e) {
+      fullUser = user;
+    }
+
+    const avatarUrl = fullUser?.avatar_url || '';
+    const additionalEmail = fullUser?.additional_email || '';
+    const phone = fullUser?.phone || '';
+
     container.innerHTML = `
       <div class="admin-settings page-enter">
-        <!-- Account Info -->
+        <!-- Profile Picture & Basic Info -->
+        <div class="settings-card glass">
+          <div class="settings-card-header">
+            <i class="fas fa-user-circle"></i>
+            <h3>Profile Picture</h3>
+          </div>
+          <div class="settings-card-body">
+            <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+              <div style="position:relative">
+                ${avatarUrl 
+                  ? `<img src="${avatarUrl}" alt="Profile" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border-light)">`
+                  : `<div style="width:80px;height:80px;border-radius:50%;background:var(--accent-gradient);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;color:white">${user.name.charAt(0).toUpperCase()}</div>`
+                }
+              </div>
+              <div style="flex:1;min-width:200px">
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <input type="url" id="settings_avatar_url" value="${avatarUrl}" placeholder="https://...avatar.jpg" style="flex:1;min-width:180px">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="Components.openMediaPickerFor('settings_avatar_url', AdminSettings.saveAvatar)">
+                    <i class="fas fa-image"></i> Browse Media
+                  </button>
+                  <button class="btn btn-primary btn-sm" onclick="AdminSettings.saveAvatar()">
+                    <i class="fas fa-save"></i> Save
+                  </button>
+                </div>
+                <span style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;display:block">
+                  Click <strong>Browse Media</strong> to pick from uploaded images, or paste a URL directly.
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Information -->
         <div class="settings-card glass">
           <div class="settings-card-header">
             <i class="fas fa-user-shield"></i>
             <h3>Account Information</h3>
           </div>
           <div class="settings-card-body">
-            <div class="settings-info-grid">
-              <div class="settings-info-item">
-                <div class="settings-info-label">Name</div>
-                <div class="settings-info-value">${user.name || '—'}</div>
-              </div>
-              <div class="settings-info-item">
-                <div class="settings-info-label">Email</div>
-                <div class="settings-info-value">${user.email || '—'}</div>
-              </div>
-              <div class="settings-info-item">
-                <div class="settings-info-label">Role</div>
-                <div class="settings-info-value">
-                  <span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(0,102,204,0.15);color:var(--accent-1)">Administrator</span>
+            <form onsubmit="AdminSettings.saveAccount(event)" style="display:flex;flex-direction:column;gap:14px;max-width:560px">
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <input type="text" id="settings_name" value="${user.name || ''}" required>
+                </div>
+                <div class="form-group">
+                  <label>Login Email</label>
+                  <input type="email" id="settings_email" value="${user.email || ''}" required>
                 </div>
               </div>
-              <div class="settings-info-item">
-                <div class="settings-info-label">User ID</div>
-                <div class="settings-info-value" style="font-family:monospace;font-size:0.85rem">#${user.id}</div>
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label>Additional Email</label>
+                  <input type="email" id="settings_additional_email" value="${additionalEmail}" placeholder="Optional secondary email">
+                </div>
+                <div class="form-group">
+                  <label>Phone</label>
+                  <input type="tel" id="settings_phone" value="${phone}" placeholder="+1 (555) 000-0000">
+                </div>
               </div>
-            </div>
+              <button type="submit" class="btn btn-primary" style="align-self:flex-start">
+                <i class="fas fa-save"></i> Save Changes
+              </button>
+            </form>
           </div>
         </div>
 
@@ -148,7 +197,7 @@ const AdminSettings = {
     try {
       const users = await DB.query('SELECT id FROM admin_security WHERE user_id = ?', [user.id]);
       if (users.length > 0) {
-        const info = document.querySelector('.settings-card:nth-child(3) .settings-card-body p');
+        const info = document.querySelector('.settings-card:nth-child(4) .settings-card-body p');
         if (info) {
           info.innerHTML = '✅ Security question is configured. You can update it below.';
           info.style.color = 'var(--success)';
@@ -156,6 +205,64 @@ const AdminSettings = {
       }
     } catch (e) {
       // Table might not exist yet
+    }
+  },
+
+  async saveAvatar() {
+    const avatarUrl = document.getElementById('settings_avatar_url').value.trim();
+    const user = App.getUser();
+    if (!user) return;
+
+    try {
+      await DB.updateUserProfile(user.id, { avatar_url: avatarUrl || null });
+      // Update local session
+      const stored = App.getUser();
+      stored.avatar_url = avatarUrl || null;
+      localStorage.setItem('shop_user', JSON.stringify(stored));
+      Components.toast('Profile picture updated!', 'success');
+    } catch (error) {
+      Components.toast('Failed to update profile picture: ' + error.message, 'error');
+    }
+  },
+
+  async saveAccount(event) {
+    event.preventDefault();
+    const user = App.getUser();
+    if (!user) return;
+
+    const name = document.getElementById('settings_name').value.trim();
+    const email = document.getElementById('settings_email').value.trim();
+    const additionalEmail = document.getElementById('settings_additional_email').value.trim();
+    const phone = document.getElementById('settings_phone').value.trim();
+
+    if (!name) {
+      Components.toast('Name is required', 'error');
+      return;
+    }
+    if (!email) {
+      Components.toast('Email is required', 'error');
+      return;
+    }
+
+    try {
+      await DB.updateUserProfile(user.id, {
+        name,
+        email,
+        additional_email: additionalEmail || null,
+        phone: phone || null
+      });
+      // Update local session
+      const stored = App.getUser();
+      stored.name = name;
+      stored.email = email;
+      localStorage.setItem('shop_user', JSON.stringify(stored));
+      Components.toast('Account information updated!', 'success');
+    } catch (error) {
+      if (error.message.includes('UNIQUE')) {
+        Components.toast('This email is already in use by another account', 'error');
+      } else {
+        Components.toast('Failed to update account: ' + error.message, 'error');
+      }
     }
   },
 
@@ -181,7 +288,7 @@ const AdminSettings = {
       return;
     }
 
-    // Verify current password against stored hash in database
+    // Verify current password
     const userData = await DB.getUserByEmail(user.email);
     if (userData) {
       const hashedCurrent = await DB.hashPassword(currentPw);
@@ -192,7 +299,6 @@ const AdminSettings = {
     }
 
     try {
-      // Update password in the database (hashed automatically)
       await DB.updateUserPassword(user.id, newPw);
       Components.toast('Password changed successfully!', 'success');
       event.target.reset();
@@ -220,12 +326,11 @@ const AdminSettings = {
     }
 
     try {
-      // Hash the answer (simple hash for demo)
       const answerHash = this.hashAnswer(answer);
       await DB.setSecurityQuestion(user.id, question, answerHash, recoveryEmail || null);
       Components.toast('Security question saved successfully!', 'success');
-      
-      const info = document.querySelector('.settings-card:nth-child(3) .settings-card-body p');
+
+      const info = document.querySelector('.settings-card:nth-child(4) .settings-card-body p');
       if (info) {
         info.innerHTML = '✅ Security question is configured. You can update it below.';
         info.style.color = 'var(--success)';
@@ -237,13 +342,12 @@ const AdminSettings = {
   },
 
   hashAnswer(answer) {
-    // Simple hash for demonstration
     let hash = 0;
     const str = answer.toLowerCase().trim();
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32bit integer
+      hash = hash & hash;
     }
     return 'hash_' + Math.abs(hash).toString(16);
   },

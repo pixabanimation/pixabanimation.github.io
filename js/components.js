@@ -172,6 +172,124 @@ const Components = {
     document.body.appendChild(overlay);
   },
 
+  // Media Picker Modal — select an image from the Media Library
+  async openMediaPicker(onSelect) {
+    try {
+      const media = await DB.getMedia({ media_type: 'image' });
+
+      let gridHtml = '';
+      if (media.length === 0) {
+        gridHtml = `
+          <div style="text-align:center;padding:40px;color:var(--text-muted)">
+            <i class="fas fa-image" style="font-size:2.5rem;margin-bottom:12px;display:block;opacity:0.3"></i>
+            <p>No images in the Media Library yet.</p>
+            <p style="font-size:0.85rem;margin-top:4px">Upload images in the Admin → Media tab first.</p>
+          </div>
+        `;
+      } else {
+        gridHtml = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;max-height:400px;overflow-y:auto;padding:4px">`;
+        media.forEach(m => {
+          const url = m.secure_url || m.url;
+          gridHtml += `
+            <div onclick="Components.selectMediaItem('${url.replace(/'/g, "\\'")}')" 
+                 style="cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid transparent;transition:border 0.2s;aspect-ratio:1"
+                 onmouseover="this.style.borderColor='var(--accent-1)'" 
+                 onmouseout="this.style.borderColor='transparent'"
+                 title="${m.original_name || m.filename}">
+              <img src="${url}" alt="${m.original_name || 'Image'}" 
+                   style="width:100%;height:100%;object-fit:cover;display:block">
+            </div>
+          `;
+        });
+        gridHtml += `</div>`;
+      }
+
+      // Store the callback globally so onclick can reach it
+      window.__mediaPickerCallback = onSelect;
+
+      this.showModal('Select Image', `
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:4px">
+            Choose an image from the Media Library. Only images are shown.
+          </p>
+          ${gridHtml}
+          <div style="display:flex;gap:8px;margin-top:8px;padding-top:12px;border-top:1px solid var(--border-light)">
+            <input type="url" id="mediaPickerUrl" placeholder="Or paste an image URL directly..." style="flex:1">
+            <button class="btn btn-primary btn-sm" onclick="Components.useMediaPickerUrl()">
+              <i class="fas fa-check"></i> Use URL
+            </button>
+          </div>
+        </div>
+      `, '520px');
+    } catch (error) {
+      console.error('Media picker error:', error);
+      this.toast('Failed to load media library', 'error');
+    }
+  },
+
+  // Called when a media item is clicked in the picker
+  selectMediaItem(url) {
+    if (window.__mediaPickerCallback) {
+      window.__mediaPickerCallback(url);
+      window.__mediaPickerCallback = null;
+    }
+    document.querySelector('.modal-overlay')?.remove();
+  },
+
+  // Called when the user enters a custom URL
+  useMediaPickerUrl() {
+    const url = document.getElementById('mediaPickerUrl')?.value?.trim();
+    if (!url) {
+      this.toast('Please enter a URL or select an image', 'error');
+      return;
+    }
+    if (window.__mediaPickerCallback) {
+      window.__mediaPickerCallback(url);
+      window.__mediaPickerCallback = null;
+    }
+    document.querySelector('.modal-overlay')?.remove();
+  },
+
+  // Reusable: open media picker and fill an input field by ID, with optional extra callback
+  openMediaPickerFor(inputId, extraCallback) {
+    const self = this;
+    this.openMediaPicker(function(url) {
+      const input = document.getElementById(inputId);
+      if (input) input.value = url;
+      if (typeof extraCallback === 'function') {
+        extraCallback(url);
+      } else if (typeof extraCallback === 'string') {
+        // Support string references like 'AdminSettings.saveAvatar'
+        const parts = extraCallback.split('.');
+        let ctx = window;
+        for (let i = 0; i < parts.length; i++) {
+          ctx = ctx[parts[i]];
+          if (!ctx) break;
+        }
+        if (typeof ctx === 'function') ctx(url);
+      }
+    });
+  },
+
+  // Reusable: generates HTML for an image URL input with a Browse Media Library button
+  // extraCallback: optional function or dotted string (e.g. 'AdminSettings.saveAvatar') called after setting the value
+  mediaField(inputId, currentValue, placeholder, extraCallback) {
+    const callbackRef = extraCallback
+      ? `'${inputId}', ${extraCallback}`
+      : `'${inputId}'`;
+    return `
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="url" id="${inputId}" value="${currentValue || ''}" placeholder="${placeholder || 'https://...'}" style="flex:1">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="Components.openMediaPickerFor(${callbackRef})" style="white-space:nowrap">
+          <i class="fas fa-image"></i> Browse
+        </button>
+      </div>
+      <span style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;display:block">
+        Click <strong>Browse</strong> to pick from the Media Library, or paste a URL directly.
+      </span>
+    `;
+  },
+
   // Stars HTML
   stars(rating) {
     const full = Math.floor(rating);

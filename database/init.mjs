@@ -28,6 +28,43 @@ async function main() {
     }
   }
 
+  // Migration: Add additional_email to users table
+  console.log("🔄 Running user table migrations...");
+  const userMigrations = [
+    "ALTER TABLE users ADD COLUMN additional_email TEXT",
+    "ALTER TABLE users ADD COLUMN avatar_url TEXT"
+  ];
+  for (const migration of userMigrations) {
+    try {
+      await client.execute(migration);
+      console.log(`  ✅ User migration: ${migration.substring(0, 50)}...`);
+    } catch (err) {
+      if (!err.message.includes('duplicate column') && !err.message.includes('already exists')) {
+        console.error(`  ⚠️ User migration: ${migration.substring(0, 50)}... (might already exist)`);
+      }
+    }
+  }
+
+  // Migration: Add admin reply columns to contact_messages table
+  console.log("🔄 Running contact_messages migrations...");
+  const contactMigrations = [
+    "ALTER TABLE contact_messages ADD COLUMN user_id INTEGER REFERENCES users(id) ON DELETE SET NULL",
+    "ALTER TABLE contact_messages ADD COLUMN admin_reply TEXT",
+    "ALTER TABLE contact_messages ADD COLUMN replied_by INTEGER REFERENCES users(id) ON DELETE SET NULL",
+    "ALTER TABLE contact_messages ADD COLUMN replied_at DATETIME",
+    "ALTER TABLE contact_messages ADD COLUMN is_read INTEGER DEFAULT 0"
+  ];
+  for (const migration of contactMigrations) {
+    try {
+      await client.execute(migration);
+      console.log(`  ✅ Contact migration: ${migration.substring(0, 50)}...`);
+    } catch (err) {
+      if (!err.message.includes('duplicate column') && !err.message.includes('already exists')) {
+        console.error(`  ⚠️ Contact migration: ${migration.substring(0, 50)}... (might already exist)`);
+      }
+    }
+  }
+
   // Migration: Add transaction columns to existing orders table
   const orderMigrations = [
     "ALTER TABLE orders ADD COLUMN transaction_id TEXT",

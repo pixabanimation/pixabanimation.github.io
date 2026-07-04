@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS users (
   avatar_url TEXT,
   phone TEXT,
   address TEXT,
+  additional_email TEXT,
   is_admin INTEGER DEFAULT 0,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -118,14 +119,21 @@ CREATE TABLE IF NOT EXISTS wishlist_items (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Contacts table
+-- Contacts / Messages table (user-to-admin messaging)
 CREATE TABLE IF NOT EXISTS contact_messages (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   subject TEXT,
   message TEXT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  admin_reply TEXT,
+  replied_by INTEGER,
+  replied_at DATETIME,
+  is_read INTEGER DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY (replied_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
 -- Newsletter subscribers table
