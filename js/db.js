@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Database Layer (Turso/libsql)
+// pixabanimation — Database Layer (Turso/libsql)
 // ============================================
 
 const DB = {

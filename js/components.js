@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Reusable UI Components
+// pixabanimation — Reusable UI Components
 // ============================================
 
 const Components = {

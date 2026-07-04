@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Encrypted Database Credentials
+// pixabanimation — Encrypted Database Credentials
 // ============================================
 // These credentials are XOR-obfuscated to prevent
 // casual viewing in the source code. They are

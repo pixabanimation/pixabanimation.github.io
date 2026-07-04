@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Profile Page
+// pixabanimation — Profile Page
 // ============================================
 
 const ProfilePage = {

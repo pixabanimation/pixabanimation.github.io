@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Wishlist Page
+// pixabanimation — Wishlist Page
 // ============================================
 
 const WishlistPage = {

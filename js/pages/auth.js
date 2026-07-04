@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Auth Pages (Login & Register)
+// pixabanimation — Auth Pages (Login & Register)
 // ============================================
 
 const AuthPage = {
@@ -62,7 +62,7 @@ const AuthPage = {
         <div class="auth-card glass">
           <div class="auth-header">
             <h1>Create Account</h1>
-            <p>Join ShopVerse and start shopping</p>
+            <p>Join pixabanimation and start shopping</p>
           </div>
           <form class="auth-form" onsubmit="AuthPage.register(event)">
             <div class="form-group">

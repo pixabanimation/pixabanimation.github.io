@@ -51,7 +51,7 @@ INSERT OR IGNORE INTO users (id, name, email, password, is_admin) VALUES
 
 -- Admin user (password: "admin123" — SHA-256 hashed)
 INSERT OR IGNORE INTO users (id, name, email, password, is_admin) VALUES
-(2, 'Admin', 'admin@shopverse.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 1);
+(2, 'Admin', 'admin@pixabanimation.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 1);
 
 -- Sample reviews for video products
 INSERT OR IGNORE INTO reviews (id, product_id, author_name, rating, comment) VALUES

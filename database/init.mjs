@@ -8,7 +8,7 @@ const client = createClient({
 });
 
 async function main() {
-  console.log("🚀 Initializing ShopVerse database...");
+  console.log("🚀 Initializing pixabanimation database...");
 
   // Read schema
   const schema = readFileSync("schema.sql", "utf-8");

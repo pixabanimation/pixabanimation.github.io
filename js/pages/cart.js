@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Cart Page
+// pixabanimation — Cart Page
 // ============================================
 
 const CartPage = {

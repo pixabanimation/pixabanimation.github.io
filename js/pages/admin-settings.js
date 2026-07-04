@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Admin Settings
+// pixabanimation — Admin Settings
 // Password change, security question, account
 // ============================================
 

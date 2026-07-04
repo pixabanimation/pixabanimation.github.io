@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Admin Dashboard
+// pixabanimation — Admin Dashboard
 // ============================================
 
 const AdminPage = {

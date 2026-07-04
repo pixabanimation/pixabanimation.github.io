@@ -1,10 +1,10 @@
 // ============================================
-// ShopVerse — Main Application Controller
+// pixabanimation — Main Application Controller
 // ============================================
 
 const App = {
   async init() {
-    console.log('🚀 ShopVerse initializing...');
+    console.log('🚀 pixabanimation initializing...');
 
     // Initialize database client (must run after the Turso module script)
     DB.init();
@@ -42,7 +42,7 @@ const App = {
     // Start router
     Router.start();
 
-    console.log('✅ ShopVerse ready!');
+    console.log('✅ pixabanimation ready!');
   },
 
   setupNavigation() {

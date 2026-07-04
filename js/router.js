@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Hash-based SPA Router
+// pixabanimation — Hash-based SPA Router
 // ============================================
 
 const Router = {

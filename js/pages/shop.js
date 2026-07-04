@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Shop Page
+// pixabanimation — Shop Page
 // ============================================
 
 const ShopPage = {

@@ -1,5 +1,5 @@
 // ============================================
-// ShopVerse — Admin Media Manager
+// pixabanimation — Admin Media Manager
 // Uploads via Cloudinary unsigned upload
 // Auto-configured with cloud.txt credentials
 // ============================================
