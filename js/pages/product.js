@@ -44,6 +44,47 @@ const ProductPage = {
         return `${m}:${s.toString().padStart(2, '0')}`;
       };
 
+      // Inject Product structured data
+      const productSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        'name': product.name,
+        'description': product.description,
+        'image': product.image_url,
+        'sku': `SKU-${String(product.id).padStart(4, '0')}`,
+        'brand': {
+          '@type': 'Brand',
+          'name': 'PixabAnimation'
+        },
+        'offers': {
+          '@type': 'Offer',
+          'url': `https://pixabanimation.github.io/#/product/${product.slug}`,
+          'priceCurrency': 'USD',
+          'price': parseFloat(product.price),
+          'priceValidUntil': new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          'availability': product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          'itemCondition': 'https://schema.org/NewCondition'
+        }
+      };
+
+      if (product.rating && product.reviews_count) {
+        productSchema.aggregateRating = {
+          '@type': 'AggregateRating',
+          'ratingValue': product.rating,
+          'reviewCount': product.reviews_count
+        };
+      }
+
+      // Remove any previous Product schema script to avoid accumulation
+      const oldSchema = document.getElementById('productSchema');
+      if (oldSchema) oldSchema.remove();
+
+      const schemaScript = document.createElement('script');
+      schemaScript.id = 'productSchema';
+      schemaScript.type = 'application/ld+json';
+      schemaScript.textContent = JSON.stringify(productSchema);
+      document.head.appendChild(schemaScript);
+
       content.innerHTML = `
         <div class="product-detail page-enter">
           <div class="product-images">
@@ -66,14 +107,14 @@ const ProductPage = {
             </div>
             ` : `
             <div class="product-main-image" id="mainImage">
-              <img src="${allImages[0] || product.image_url}" alt="${product.name}">
+              <img src="${allImages[0] || product.image_url}" alt="${product.name} — PixabAnimation Premium Motion Graphic" width="600" height="600" loading="eager">
             </div>
             ${allImages.length > 1 ? `
             <div class="product-thumbnails">
               ${allImages.map((img, i) => `
                 <div class="product-thumbnail ${i === 0 ? 'active' : ''}" 
                      onclick="ProductPage.switchImage(this, '${img}')">
-                  <img src="${img}" alt="${product.name}">
+                  <img src="${img}" alt="${product.name} — View ${i + 1}" width="80" height="80" loading="lazy">
                 </div>
               `).join('')}
             </div>` : ''}`}

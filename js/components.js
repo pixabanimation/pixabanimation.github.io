@@ -37,7 +37,7 @@ const Components = {
            style="animation-delay: ${index * 0.05}s"
            data-product-id="${product.id}">
         <div class="product-card-image" onclick="Router.navigate('#/product/${product.slug}')">
-          <img src="${product.image_url}" alt="${product.name}" loading="lazy">
+          <img src="${product.image_url}" alt="${product.name} — PixabAnimation Motion Graphic Asset" width="300" height="300" loading="lazy">
           <div class="product-card-badges">
             ${product.featured ? '<span class="product-card-badge badge-featured">Featured</span>' : ''}
             ${hasDiscount ? `<span class="product-card-badge badge-sale">-${discountPercent}%</span>` : ''}
