@@ -178,7 +178,7 @@ const HomePage = {
         </section>
 
         <!-- ============================================ -->
-        <!-- CATEGORIES — Apple.com Section                -->
+        <!-- CATEGORIES — Apple-Style Album Cover Slider   -->
         <!-- ============================================ -->
         <section style="padding:80px 24px;max-width:1100px;margin:0 auto;background:#f5f5f7">
           <div style="text-align:center;margin-bottom:44px">
@@ -186,8 +186,25 @@ const HomePage = {
               Explore Categories
             </h2>
           </div>
-          <div class="categories-grid">
-            ${categories.map((c, i) => Components.categoryCard(c, i)).join('')}
+          <div class="category-slider-wrapper" id="categorySlider">
+            <button class="category-slider-arrow category-slider-arrow--prev" aria-label="Previous categories">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="category-slider-stage" id="categorySliderStage">
+              <div class="category-slider-track" id="categorySliderTrack">
+                ${categories.map((c, i) => `
+                  <div class="category-slider-card-wrap" data-index="${i}">
+                    ${Components.categoryCard(c, i)}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+            <button class="category-slider-arrow category-slider-arrow--next" aria-label="Next categories">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="category-slider-dots" id="categorySliderDots">
+            ${categories.map((_, i) => `<span class="category-slider-dot${i === 0 ? ' active' : ''}" data-index="${i}"></span>`).join('')}
           </div>
         </section>
 
@@ -343,6 +360,9 @@ const HomePage = {
 
       App.updateWishlistIcons();
       VideoPlayer.init();
+
+      // Init category slider
+      HomePage.initCategorySlider();
     } catch (error) {
       console.error('Home page error:', error);
       content.innerHTML = Components.emptyState(
@@ -353,5 +373,205 @@ const HomePage = {
         '#/'
       );
     }
+  },
+
+  // iTunes 10 Cover Flow — scroll-snap with 3D transforms
+  initCategorySlider() {
+    // Cleanup previous instance
+    if (this._sliderCleanup) {
+      this._sliderCleanup();
+    }
+
+    const track = document.getElementById('categorySliderTrack');
+    const wraps = document.querySelectorAll('.category-slider-card-wrap');
+    const prevBtn = document.querySelector('.category-slider-arrow--prev');
+    const nextBtn = document.querySelector('.category-slider-arrow--next');
+    const dots = document.querySelectorAll('.category-slider-dot');
+    if (!track || wraps.length === 0) return;
+
+    let rafId = null;
+    let autoScrollInterval;
+    const total = wraps.length;
+    const snapTransitions = []; // store timeout IDs for cleanup
+
+    // --- Apply 3D transforms based on scroll position ---
+    function applyTransforms(transitionDuration) {
+      const trackRect = track.getBoundingClientRect();
+      const containerCenter = trackRect.left + trackRect.width / 2;
+      const halfCard = 100; // half of card width (200px / 2)
+
+      wraps.forEach((wrap) => {
+        const cardRect = wrap.getBoundingClientRect();
+        const cardCenter = cardRect.left + cardRect.width / 2;
+        const distance = (cardCenter - containerCenter) / halfCard;
+
+        const absDist = Math.abs(distance);
+        const clampedDist = Math.min(3, absDist);
+
+        // Rotate Y: up to -45° away from center
+        const rotY = -distance * 45;
+        const clampedRot = Math.max(-70, Math.min(70, rotY));
+
+        // Scale: center = 1, fade to 0.65 at edges
+        const scale = Math.max(0.65, 1 - clampedDist * 0.1);
+
+        // TranslateZ: push back as we get farther from center
+        const translateZ = -Math.min(clampedDist * 60, 180);
+
+        // Opacity: fade at extremes
+        const opacity = clampedDist <= 1.5 ? 1 : Math.max(0, 1 - (clampedDist - 1.5) * 0.4);
+
+        // Z-index: cards closer to center on top
+        const zIndex = Math.round(100 - clampedDist * 20);
+
+        wrap.style.zIndex = zIndex;
+        wrap.style.opacity = opacity;
+
+        // Only add transition when snapping (arrows/dots), not during scroll
+        if (transitionDuration) {
+          wrap.style.transition = `transform ${transitionDuration}s cubic-bezier(0.4, 0, 0.2, 1)`;
+        } else {
+          wrap.style.transition = 'none';
+        }
+
+        // Apply transforms: translateZ first (push back), then rotateY, then scale
+        // Container perspective handles the 3D space
+        wrap.style.transform = `translateZ(${translateZ}px) rotateY(${clampedRot}deg) scale(${scale})`;
+      });
+
+      // Update active dot based on closest card to center
+      let closestIdx = 0;
+      let closestDist = Infinity;
+      wraps.forEach((wrap, i) => {
+        const r = wrap.getBoundingClientRect();
+        const d = Math.abs(r.left + r.width / 2 - containerCenter);
+        if (d < closestDist) {
+          closestDist = d;
+          closestIdx = i;
+        }
+      });
+      dots.forEach((d, i) => d.classList.toggle('active', i === closestIdx));
+    }
+
+    // --- Throttled scroll handler ---
+    function onScroll() {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        applyTransforms();
+        rafId = null;
+      });
+    }
+
+    track.addEventListener('scroll', onScroll, { passive: true });
+
+    // --- Arrow navigation ---
+    const onPrev = () => {
+      track.scrollBy({ left: -200, behavior: 'smooth' });
+      // Add snap transition for smooth transform animation during scroll-snap
+      applyTransforms(0.4);
+      resetAutoScroll();
+    };
+    const onNext = () => {
+      track.scrollBy({ left: 200, behavior: 'smooth' });
+      applyTransforms(0.4);
+      resetAutoScroll();
+    };
+    prevBtn?.addEventListener('click', onPrev);
+    nextBtn?.addEventListener('click', onNext);
+
+    // --- Dot navigation ---
+    const dotHandlers = [];
+    dots.forEach((dot) => {
+      const handler = () => {
+        const index = parseInt(dot.dataset.index);
+        const target = wraps[index];
+        if (target) {
+          applyTransforms(0.4);
+          target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+        resetAutoScroll();
+      };
+      dot.addEventListener('click', handler);
+      dotHandlers.push({ el: dot, handler });
+    });
+
+    // --- Keyboard navigation ---
+    const onKeydown = (e) => {
+      if (e.key === 'ArrowLeft') {
+        track.scrollBy({ left: -200, behavior: 'smooth' });
+        applyTransforms(0.4);
+        resetAutoScroll();
+      }
+      if (e.key === 'ArrowRight') {
+        track.scrollBy({ left: 200, behavior: 'smooth' });
+        applyTransforms(0.4);
+        resetAutoScroll();
+      }
+    };
+    track.addEventListener('keydown', onKeydown);
+    track.setAttribute('tabindex', '0');
+    track.setAttribute('role', 'slider');
+    track.setAttribute('aria-label', 'Category carousel');
+
+    // --- Auto-scroll every 5 seconds, wraps to start ---
+    function startAutoScroll() {
+      if (autoScrollInterval) clearInterval(autoScrollInterval);
+      // Don't auto-scroll if all cards fit in viewport
+      if (track.scrollWidth <= track.clientWidth + 1) return;
+      autoScrollInterval = setInterval(() => {
+        // Check if we're near the end — if so, wrap to first card
+        const isNearEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 100;
+        if (isNearEnd) {
+          applyTransforms(0.4);
+          wraps[0]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+          applyTransforms(0.4);
+          track.scrollBy({ left: 200, behavior: 'smooth' });
+        }
+      }, 5000);
+    }
+
+    function resetAutoScroll() {
+      clearInterval(autoScrollInterval);
+      startAutoScroll();
+    }
+
+    // Pause on hover
+    const onMouseEnter = () => clearInterval(autoScrollInterval);
+    const onMouseLeave = startAutoScroll;
+    track.addEventListener('mouseenter', onMouseEnter);
+    track.addEventListener('mouseleave', onMouseLeave);
+
+    // --- Resize handler ---
+    const onResize = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        applyTransforms();
+        rafId = null;
+      });
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+
+    // --- Init ---
+    requestAnimationFrame(() => {
+      applyTransforms();
+    });
+
+    startAutoScroll();
+
+    // --- Store cleanup function ---
+    this._sliderCleanup = () => {
+      clearInterval(autoScrollInterval);
+      if (rafId) cancelAnimationFrame(rafId);
+      track.removeEventListener('scroll', onScroll);
+      track.removeEventListener('keydown', onKeydown);
+      track.removeEventListener('mouseenter', onMouseEnter);
+      track.removeEventListener('mouseleave', onMouseLeave);
+      prevBtn?.removeEventListener('click', onPrev);
+      nextBtn?.removeEventListener('click', onNext);
+      dotHandlers.forEach(({ el, handler }) => el.removeEventListener('click', handler));
+      window.removeEventListener('resize', onResize);
+      snapTransitions.forEach(t => clearTimeout(t));
+    };
   }
 };
