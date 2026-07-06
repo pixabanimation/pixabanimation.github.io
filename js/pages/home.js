@@ -5,6 +5,8 @@
 
 const HomePage = {
   async render(params) {
+    // Enable full-page scroll snap for the homepage
+    document.documentElement.classList.add('snap-scroll');
     const content = document.getElementById('pageContent');
     
     content.innerHTML = `

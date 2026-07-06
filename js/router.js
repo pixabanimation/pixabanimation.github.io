@@ -6,6 +6,7 @@ const Router = {
   routes: {},
   currentRoute: null,
   beforeHooks: [],
+  progressTimeout: null,
 
   register(path, handler) {
     this.routes[path] = handler;
@@ -18,16 +19,20 @@ const Router = {
 
     const path = hash.replace(/^#/, '') || '/';
     
+    // Remove homepage scroll-snap on any navigation away
+    document.documentElement.classList.remove('snap-scroll');
+    
     // Run before hooks
     for (const hook of this.beforeHooks) {
       await hook(path);
     }
 
-    // Show loader
+    // Show loader and start progress bar
     const loader = document.getElementById('pageLoader');
     const content = document.getElementById('pageContent');
     if (loader) loader.style.display = 'flex';
     if (content) content.style.display = 'none';
+    this.startProgress();
 
     // Find matching route
     let handler = null;
@@ -70,9 +75,10 @@ const Router = {
       this.renderNotFound();
     }
 
-    // Hide loader
+    // Hide loader and complete progress bar
     if (loader) loader.style.display = 'none';
     if (content) content.style.display = 'block';
+    this.completeProgress();
 
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -105,6 +111,42 @@ const Router = {
         href === '/' ? path === '/' : path.startsWith(href)
       );
     });
+  },
+
+  startProgress() {
+    const bar = document.getElementById('navProgressBar');
+    if (!bar) return;
+    // Cancel any pending completion timers to avoid stale resets
+    if (this.progressTimeout) {
+      clearTimeout(this.progressTimeout);
+      this.progressTimeout = null;
+    }
+    // Reset and show the bar
+    bar.classList.remove('complete');
+    bar.style.width = '0%';
+    bar.style.opacity = '1';
+    bar.classList.add('active');
+    // Animate to 60% quickly to simulate progress
+    requestAnimationFrame(() => {
+      bar.style.width = '60%';
+    });
+  },
+
+  completeProgress() {
+    const bar = document.getElementById('navProgressBar');
+    if (!bar) return;
+    // Jump to 100% then fade out
+    bar.classList.add('complete');
+    bar.style.width = '100%';
+    this.progressTimeout = setTimeout(() => {
+      bar.style.opacity = '0';
+      bar.classList.remove('active');
+      // Reset width after fade transition completes
+      this.progressTimeout = setTimeout(() => {
+        bar.style.width = '0%';
+        this.progressTimeout = null;
+      }, 500);
+    }, 300);
   },
 
   renderNotFound() {
