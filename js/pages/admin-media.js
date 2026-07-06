@@ -212,7 +212,7 @@ const AdminMedia = {
         <div class="media-item-preview">
           ${isVideo ? VideoPlayer.render({
             src: media.secure_url || media.url,
-            poster: media.thumbnail_url || '',
+            poster: media.thumbnail_url || AdminMedia.generateThumbnailUrl(media.secure_url || media.url) || '',
             width: '100%',
             height: '100%',
             className: 'media-video-player'
@@ -364,7 +364,7 @@ const AdminMedia = {
           width: result.width || null,
           height: result.height || null,
           duration: result.duration || null,
-          thumbnail_url: isVideo ? (result.secure_url?.replace('/upload/', '/upload/w_400,h_225,c_fill/') || null) : null
+          thumbnail_url: isVideo ? this.generateThumbnailUrl(result.secure_url) : null
         });
 
         updateProgress(100);
@@ -470,6 +470,25 @@ const AdminMedia = {
       this.loadMedia();
     } catch (error) {
       Components.toast('Failed to delete', 'error');
+    }
+  },
+
+  /**
+   * Generate a static image thumbnail URL from a Cloudinary video URL
+   * Converts from: /video/upload/v{version}/{public_id}.{ext}
+   * To:           /image/upload/so_auto,w_400,h_225,c_fill/v{version}/{public_id}.jpg
+   * This tells Cloudinary to serve a static JPG thumbnail with auto-detected best frame
+   */
+  generateThumbnailUrl(videoUrl) {
+    if (!videoUrl) return null;
+    // Only transform Cloudinary video URLs
+    if (!videoUrl.includes('/video/upload/')) return null;
+    try {
+      return videoUrl
+        .replace('/video/upload/', '/image/upload/so_auto,w_400,h_225,c_fill/')
+        .replace(/\.(mp4|webm|mov|avi|mkv)(\?.*)?$/i, '.jpg');
+    } catch (e) {
+      return null;
     }
   }
 };
