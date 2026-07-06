@@ -222,6 +222,8 @@
         <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
           <span></span><span></span><span></span>
         </button>
+        <!-- Mobile-centered clock (hidden on desktop) -->
+        <div class="nav-clock nav-clock--mobile" id="navClockMobile" aria-label="Current time">12:00:00 AM</div>
         <ul class="nav-links" id="navLinks">
           <li class="nav-brand-item">
             <a href="#/" class="nav-brand">
@@ -239,6 +241,7 @@
           <li><a href="#/profile" class="nav-link nav-action-mobile" id="profileBtnMobile" data-nav style="display:none"><i class="fas fa-user"></i> Profile</a></li>
         </ul>
         <div class="nav-actions">
+          <div class="nav-clock nav-clock--desktop" id="navClock" aria-label="Current time">12:00:00 AM</div>
           <button class="nav-icon-btn" id="searchToggle" aria-label="Search">
             <i class="fas fa-search"></i>
           </button>

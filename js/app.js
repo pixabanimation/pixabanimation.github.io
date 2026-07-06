@@ -39,6 +39,9 @@ const App = {
     // Initialize video players
     VideoPlayer.init();
 
+    // Start the nav clock
+    this.startNavClock();
+
     // Start router
     Router.start();
 
@@ -525,7 +528,28 @@ const App = {
     return div.innerHTML;
   },
 
+  // === Nav Clock (12-hour format with seconds) ===
+  startNavClock() {
+    const clockEls = document.querySelectorAll('.nav-clock');
+    if (!clockEls.length) return;
+
+    const updateClock = () => {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12; // Convert 0 to 12
+      const timeStr = `${hours}:${minutes}:${seconds} ${ampm}`;
+      clockEls.forEach(el => { el.textContent = timeStr; });
+    };
+
+    updateClock();
+    setInterval(updateClock, 1000);
+  },
+
   async subscribeNewsletter(event) {
+
     if (event) event.preventDefault();
     
     // Try footer form first, then hero form

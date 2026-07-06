@@ -19,9 +19,6 @@ const Router = {
 
     const path = hash.replace(/^#/, '') || '/';
     
-    // Remove homepage scroll-snap on any navigation away
-    document.documentElement.classList.remove('snap-scroll');
-    
     // Run before hooks
     for (const hook of this.beforeHooks) {
       await hook(path);

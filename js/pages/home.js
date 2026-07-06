@@ -5,8 +5,6 @@
 
 const HomePage = {
   async render(params) {
-    // Enable full-page scroll snap for the homepage
-    document.documentElement.classList.add('snap-scroll');
     const content = document.getElementById('pageContent');
     
     content.innerHTML = `
@@ -52,7 +50,7 @@ const HomePage = {
         <!-- ============================================ -->
         <!-- HERO — Apple.com-Inspired White/Light         -->
         <!-- ============================================ -->
-        <section style="padding:120px 24px 80px;position:relative;overflow:hidden;display:flex;align-items:center;background:#fff;min-height:auto">
+        <section class="hero" style="background:#fff;min-height:auto">
           <div class="hero-content" style="width:100%;max-width:1100px">
             <div class="hero-text" style="animation:fadeInUp 0.8s ease-out">
               <h1 style="font-family:var(--font-display);font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:700;line-height:1.05;letter-spacing:-0.005em;margin-bottom:8px;color:#1d1d1f">
