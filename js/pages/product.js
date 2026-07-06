@@ -85,7 +85,10 @@ const ProductPage = {
       schemaScript.textContent = JSON.stringify(productSchema);
       document.head.appendChild(schemaScript);
 
-      content.innerHTML = `
+      // Store current product for addToCart and other methods
+    this.currentProduct = product;
+
+    content.innerHTML = `
         <div class="product-detail page-enter">
           <div class="product-images">
             ${isVideo ? `
@@ -290,6 +293,7 @@ const ProductPage = {
   },
 
   currentQty: 1,
+  currentProduct: null,
 
   changeQty(delta) {
     this.currentQty = Math.max(1, Math.min(99, this.currentQty + delta));
@@ -297,16 +301,34 @@ const ProductPage = {
   },
 
   async addToCart() {
-    const slug = Router.currentRoute.split('/product/')[1];
-    try {
-      const product = await DB.getProduct(slug);
-      if (product) {
-        await DB.addToCart(product.id, this.currentQty);
-        Components.toast(`${product.name} added to cart!`, 'success');
-        App.updateCartBadge();
+    // Use the stored product if available (set during render), fallback to DB lookup
+    let product = this.currentProduct;
+    
+    // If no stored product, try to parse slug from route and look up
+    if (!product) {
+      try {
+        const slug = Router.currentRoute ? Router.currentRoute.split('/product/')[1] : null;
+        if (slug) {
+          const decodedSlug = decodeURIComponent(slug);
+          product = await DB.getProduct(decodedSlug);
+        }
+      } catch (routeError) {
+        console.error('ProductPage.addToCart: failed to parse route', routeError);
       }
+    }
+
+    if (!product) {
+      Components.toast('Could not find product information. Please try refreshing the page.', 'error');
+      return;
+    }
+
+    try {
+      await DB.addToCart(product.id, this.currentQty);
+      Components.toast(`${product.name} added to cart!`, 'success');
+      App.updateCartBadge();
     } catch (error) {
-      Components.toast('Failed to add to cart', 'error');
+      console.error('ProductPage.addToCart error:', error);
+      Components.toast('Failed to add to cart. Please try again.', 'error');
     }
   },
 
