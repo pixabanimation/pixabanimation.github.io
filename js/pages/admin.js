@@ -899,7 +899,7 @@ const AdminPage = {
                   <tr>
                     <td><span style="font-weight:700">#${o.id}</span></td>
                     <td><span style="font-size:0.85rem;color:var(--text-muted)">${new Date(o.created_at).toLocaleDateString()}</span></td>
-                    <td><span style="font-size:0.85rem">${o.shipping_address ? o.shipping_address.split(',')[0] : '—'}</span></td>
+                    <td><span style="font-size:0.85rem">${o.customer_info ? o.customer_info.split(',')[0] : '—'}</span></td>
                     <td>${o.item_count}</td>
                     <td style="font-weight:600;color:var(--accent-1)">$${parseFloat(o.total).toFixed(2)}</td>
                     <td><span style="font-size:0.8rem;text-transform:capitalize">${o.payment_method || '—'}</span></td>
@@ -972,7 +972,7 @@ const AdminPage = {
                 <tr style="background:rgba(255,215,64,0.03)">
                   <td><span style="font-weight:700">#${o.id}</span></td>
                   <td><span style="font-size:0.85rem;color:var(--text-muted)">${new Date(o.created_at).toLocaleDateString()}</span></td>
-                  <td><span style="font-size:0.85rem">${o.shipping_address ? o.shipping_address.split(',')[0] : '—'}</span></td>
+                  <td><span style="font-size:0.85rem">${o.customer_info ? o.customer_info.split(',')[0] : '—'}</span></td>
                   <td style="font-weight:600;color:var(--accent-1)">$${parseFloat(o.total).toFixed(2)}</td>
                   <td><span style="text-transform:capitalize;font-size:0.85rem">${o.payment_provider || o.payment_method || '—'}</span></td>
                   <td><span style="font-family:monospace;font-size:0.8rem;background:var(--bg-input);padding:2px 8px;border-radius:4px">${o.transaction_id}</span></td>
@@ -1018,10 +1018,24 @@ const AdminPage = {
               ${this.statusBadge(order.status)}
             </div>
           </div>
-          <div style="padding:12px;background:var(--bg-input);border-radius:var(--radius-sm)">
-            <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:4px">Shipping Address</div>
-            <div style="font-size:0.9rem">${order.shipping_address || 'No address'}</div>
-          </div>
+          ${order.customer_info ? (() => {
+            const parts = order.customer_info.split(',').map(s => s.trim());
+            const name = parts[0] || '';
+            const email = parts[1] || '';
+            return `
+            <div style="padding:12px;background:var(--bg-input);border-radius:var(--radius-sm)">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px">Customer</div>
+                  <div style="font-size:0.9rem;font-weight:600">${name}</div>
+                </div>
+                <div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px">Email</div>
+                  <div style="font-size:0.9rem">${email || '—'}</div>
+                </div>
+              </div>
+            </div>`;
+          })() : ''}
           ${order.transaction_id ? `
           <div style="padding:12px;background:rgba(0,102,204,0.06);border:1px solid rgba(0,102,204,0.1);border-radius:var(--radius-sm)">
             <div style="display:flex;flex-direction:column;gap:8px">
@@ -1063,10 +1077,7 @@ const AdminPage = {
               <span>Subtotal</span>
               <span>$${parseFloat(order.subtotal || 0).toFixed(2)}</span>
             </div>
-            <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.85rem">
-              <span>Shipping</span>
-              <span>${parseFloat(order.shipping || 0) === 0 ? 'FREE' : '$' + parseFloat(order.shipping).toFixed(2)}</span>
-            </div>
+
             <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.85rem">
               <span>Tax</span>
               <span>$${parseFloat(order.tax || 0).toFixed(2)}</span>

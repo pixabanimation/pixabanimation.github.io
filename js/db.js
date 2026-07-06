@@ -297,13 +297,13 @@ const DB = {
 
   // === Orders ===
   async createOrder(orderData) {
-    const { total, subtotal, shipping, tax, shipping_address, payment_method, transaction_id, payment_provider, items } = orderData;
+    const { total, subtotal, tax, customer_info, payment_method, transaction_id, payment_provider, items } = orderData;
     const sessionId = this.getSessionId();
 
     const result = await this.execute(
-      `INSERT INTO orders (session_id, total, subtotal, shipping, tax, shipping_address, payment_method, transaction_id, payment_provider, status) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
-      [sessionId, total, subtotal, shipping || 0, tax || 0, shipping_address, payment_method, transaction_id || null, payment_provider || null]
+      `INSERT INTO orders (session_id, total, subtotal, tax, customer_info, payment_method, transaction_id, payment_provider, status) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+      [sessionId, total, subtotal, tax || 0, customer_info, payment_method, transaction_id || null, payment_provider || null]
     );
 
     const orderId = result.lastInsertRowid;

@@ -65,6 +65,23 @@ async function main() {
     }
   }
 
+  // Migration: Rename shipping_address to customer_info and drop shipping column
+  console.log("🔄 Running orders table schema migrations...");
+  const orderRenameMigrations = [
+    "ALTER TABLE orders RENAME COLUMN shipping_address TO customer_info",
+    "ALTER TABLE orders DROP COLUMN shipping"
+  ];
+  for (const migration of orderRenameMigrations) {
+    try {
+      await client.execute(migration);
+      console.log(`  ✅ Order migration: ${migration.substring(0, 50)}...`);
+    } catch (err) {
+      if (!err.message.includes('duplicate column') && !err.message.includes('no such column')) {
+        console.error(`  ⚠️ Order migration: ${migration.substring(0, 50)}... (might already be applied)`);
+      }
+    }
+  }
+
   // Migration: Add transaction columns to existing orders table
   const orderMigrations = [
     "ALTER TABLE orders ADD COLUMN transaction_id TEXT",

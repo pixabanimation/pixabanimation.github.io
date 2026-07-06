@@ -46,9 +46,8 @@ const CartPage = {
       }
 
       const subtotal = total;
-      const shipping = subtotal >= 50 ? 0 : 5.99;
       const tax = subtotal * 0.08;
-      const grandTotal = subtotal + shipping + tax;
+      const grandTotal = subtotal + tax;
 
       container.innerHTML = `
         <div class="cart-content">
@@ -61,7 +60,6 @@ const CartPage = {
               <h3 class="ds-body-strong" style="color:#1d1d1f;margin:0">Order Summary</h3>
             </div>
             <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
-            <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Shipping</span><span>${shipping === 0 ? '<span style="color:var(--success)">FREE</span>' : `$${shipping.toFixed(2)}`}</span></div>
             <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Tax (8%)</span><span>$${tax.toFixed(2)}</span></div>
             <div class="summary-row" style="color:rgba(0,0,0,0.64)">
               <span>Coupon</span>
@@ -78,7 +76,11 @@ const CartPage = {
               <span style="font-weight:700;font-size:1.1rem">Total</span>
               <span style="font-weight:700;font-size:1.1rem;color:var(--ds-primary)" id="cartTotal">$${grandTotal.toFixed(2)}</span>
             </div>
-            <a href="#/checkout" class="ds-pill-cta" style="justify-content:center;padding:14px 24px;font-size:15px;width:100%;margin-top:16px">
+            <div style="display:flex;align-items:center;gap:8px;padding:12px 14px;margin-top:16px;background:rgba(0,102,204,0.06);border:1px solid rgba(0,102,204,0.1);border-radius:10px;font-size:0.8rem;color:var(--ds-primary)">
+              <i class="fas fa-envelope" style="font-size:0.85rem;flex-shrink:0"></i>
+              <span>No shipping needed — digital delivery to your email after purchase</span>
+            </div>
+            <a href="#/checkout" class="ds-pill-cta" style="justify-content:center;padding:14px 24px;font-size:15px;width:100%;margin-top:12px">
               <i class="fas fa-lock"></i> Proceed to Checkout
             </a>
             <div style="text-align:center;margin-top:12px">

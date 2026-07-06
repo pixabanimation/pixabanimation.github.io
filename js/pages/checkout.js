@@ -27,26 +27,7 @@ const CheckoutPage = {
     await this.loadCheckout();
   },
 
-  getCountryStatesHtml(countryCode) {
-    const states = Countries.getStates(countryCode);
-    if (states.length === 0) {
-      return `
-        <div class="form-group full-width">
-          <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province / Region</label>
-          <input type="text" id="shipState" placeholder="Enter your state, province, or region" class="state-input">
-        </div>
-      `;
-    }
-    return `
-      <div class="form-group full-width">
-        <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province</label>
-        <select id="shipState" required>
-          <option value="">Select ${Countries.getName(countryCode)} ${countryCode === 'GB' ? 'region' : 'state'}</option>
-          ${Countries.renderStateOptions(countryCode)}
-        </select>
-      </div>
-    `;
-  },
+
 
   async loadCheckout() {
     const container = document.getElementById('checkoutContent');
@@ -62,56 +43,25 @@ const CheckoutPage = {
       }
 
       const subtotal = cartItems.reduce((sum, item) => sum + parseFloat(item.price) * item.quantity, 0);
-      const shipping = subtotal >= 50 ? 0 : 5.99;
       const tax = subtotal * 0.08;
-      const grandTotal = subtotal + shipping + tax;
-
-      const defaultCountry = 'US';
+      const grandTotal = subtotal + tax;
 
       container.innerHTML = `
         <form class="checkout-form" onsubmit="CheckoutPage.placeOrder(event)">
-          <!-- Shipping Information -->
+          <!-- Customer Information -->
           <div style="border:1px solid rgba(0,0,0,0.06);border-radius:14px;padding:28px">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
               <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--ds-primary);flex-shrink:0;background:rgba(0,102,204,0.06);border-radius:8px"><i class="fas fa-user"></i></div>
-              <h3 class="ds-body-strong" style="color:#1d1d1f;margin:0">Shipping Information</h3>
+              <h3 class="ds-body-strong" style="color:#1d1d1f;margin:0">Customer Information</h3>
             </div>
             <div class="checkout-grid">
               <div class="form-group full-width">
                 <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Full Name</label>
                 <input type="text" id="shipName" placeholder="John Doe" required>
               </div>
-              <div class="form-group">
+              <div class="form-group full-width">
                 <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Email</label>
                 <input type="email" id="shipEmail" placeholder="john@example.com" required>
-              </div>
-              <div class="form-group">
-                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Phone</label>
-                <input type="tel" id="shipPhone" placeholder="+1 (555) 000-0000">
-              </div>
-              <div class="form-group full-width">
-                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Address</label>
-                <input type="text" id="shipAddress" placeholder="123 Main Street, Apt 4B" required>
-              </div>
-              <div class="form-group full-width">
-                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Country</label>
-                <div style="position:relative">
-                  <select id="shipCountry" onchange="CheckoutPage.onCountryChange()" required>
-                    <option value="">🌍 Select your country</option>
-                    ${Countries.renderOptions(defaultCountry)}
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">City</label>
-                <input type="text" id="shipCity" placeholder="New York" required>
-              </div>
-              <div class="form-group" id="stateFieldContainer">
-                ${this.getCountryStatesHtml(defaultCountry)}
-              </div>
-              <div class="form-group">
-                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">ZIP / Postal Code</label>
-                <input type="text" id="shipZip" placeholder="10001" required>
               </div>
             </div>
           </div>
@@ -193,7 +143,6 @@ const CheckoutPage = {
             </div>
             <div style="margin-top:12px">
               <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
-              <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Shipping</span><span>${shipping === 0 ? '<span style="color:var(--success)">FREE</span>' : `$${shipping.toFixed(2)}`}</span></div>
               <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Tax (8%)</span><span>$${tax.toFixed(2)}</span></div>
               <div class="summary-row total"><span>Total</span><span class="amount">$${grandTotal.toFixed(2)}</span></div>
             </div>
@@ -210,40 +159,7 @@ const CheckoutPage = {
     }
   },
 
-  onCountryChange() {
-    const countryCode = document.getElementById('shipCountry').value;
-    const stateContainer = document.getElementById('stateFieldContainer');
-    
-    if (!countryCode) {
-      stateContainer.innerHTML = `
-        <div class="form-group full-width">
-          <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province / Region</label>
-          <input type="text" id="shipState" placeholder="Enter your state, province, or region">
-        </div>
-      `;
-      return;
-    }
 
-    const states = Countries.getStates(countryCode);
-    if (states.length === 0) {
-      stateContainer.innerHTML = `
-        <div class="form-group full-width">
-          <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province / Region</label>
-          <input type="text" id="shipState" placeholder="Enter your state, province, or region" class="state-input">
-        </div>
-      `;
-    } else {
-      stateContainer.innerHTML = `
-        <div class="form-group full-width">
-          <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province</label>
-          <select id="shipState" required>
-            <option value="">Select ${Countries.getName(countryCode)} ${countryCode === 'GB' ? 'region' : 'state'}</option>
-            ${Countries.renderStateOptions(countryCode)}
-          </select>
-        </div>
-      `;
-    }
-  },
 
   async placeOrder(event) {
     event.preventDefault();
@@ -262,14 +178,6 @@ const CheckoutPage = {
 
       const name = document.getElementById('shipName').value;
       const email = document.getElementById('shipEmail').value;
-      const address = document.getElementById('shipAddress').value;
-      const city = document.getElementById('shipCity').value;
-      const countryCode = document.getElementById('shipCountry').value;
-      const countryName = Countries.getName(countryCode) || countryCode;
-      const countryFlag = Countries.getFlag(countryCode) || '';
-      const stateEl = document.getElementById('shipState');
-      const state = stateEl ? stateEl.value || stateEl.placeholder || '' : '';
-      const zip = document.getElementById('shipZip').value;
       const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
       const transactionId = document.getElementById('transactionId').value.trim();
 
@@ -280,26 +188,15 @@ const CheckoutPage = {
         return;
       }
 
-      if (!countryCode) {
-        Components.toast('Please select your country', 'error');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-lock"></i> Place Order';
-        return;
-      }
-
       const subtotal = cartItems.reduce((sum, item) => sum + parseFloat(item.price) * item.quantity, 0);
-      const shipping = subtotal >= 50 ? 0 : 5.99;
       const tax = subtotal * 0.08;
-      const total = subtotal + shipping + tax;
-
-      const shippingAddress = `${name}, ${address}, ${city}${state ? ', ' + state : ''}, ${countryFlag} ${countryName}, ${zip}`;
+      const total = subtotal + tax;
 
       const orderId = await DB.createOrder({
         total,
         subtotal,
-        shipping,
         tax,
-        shipping_address: shippingAddress,
+        customer_info: `${name}, ${email}`,
         payment_method: paymentMethod,
         transaction_id: transactionId,
         payment_provider: paymentMethod,
@@ -333,7 +230,7 @@ const CheckoutPage = {
               <span style="font-weight:600;color:#1d1d1f">Transaction:</span> ${transactionId}
             </p>
             <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
-              <span style="font-weight:600;color:#1d1d1f">Shipping to:</span> ${countryFlag} ${countryName}${state ? ', ' + state : ''}
+              <span style="font-weight:600;color:#1d1d1f">Email:</span> ${email}
             </p>
             <p class="ds-caption" style="color:rgba(0,0,0,0.50)">
               You will receive the download link once admin approves the transaction.
