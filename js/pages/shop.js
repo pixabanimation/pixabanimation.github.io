@@ -3,6 +3,9 @@
 // ============================================
 
 const ShopPage = {
+  loadedCount: 0,
+  currentFilters: null,
+
   async render(params) {
     const content = document.getElementById('pageContent');
     const { query } = params;
@@ -39,6 +42,13 @@ const ShopPage = {
         ${categorySlug ? `<div style="text-align:center;margin-top:32px">
           <a href="#/shop" class="ds-pill-cta-secondary" style="font-size:13px;padding:8px 18px"><i class="fas fa-times"></i> Clear Filters</a>
         </div>` : ''}
+        <div style="text-align:center;margin-top:32px;display:none" id="shopLoadMoreContainer">
+          <button onclick="ShopPage.loadMore()" class="ds-pill-cta" id="shopLoadMoreBtn" style="padding:12px 28px;font-size:15px;cursor:pointer;border:none;font-family:var(--font-primary)">
+            <i class="fas fa-cog" id="shopLoadMoreSpinner" style="margin-right:8px;animation:spin 1s linear infinite;display:none"></i>
+            <i class="fas fa-chevron-down" style="margin-right:8px"></i>
+            Load More
+          </button>
+        </div>
       </div>
     `;
 
@@ -63,13 +73,18 @@ const ShopPage = {
   async loadProducts(filters) {
     const grid = document.getElementById('shopGrid');
     const results = document.getElementById('shopResults');
+    const loadMoreContainer = document.getElementById('shopLoadMoreContainer');
+
+    this.loadedCount = 0;
+    this.currentFilters = filters;
 
     try {
       const products = await DB.getProducts({
         category: filters.category,
         search: filters.search,
         sort: filters.sort,
-        limit: 50
+        limit: 8,
+        offset: 0
       });
 
       if (products.length === 0) {
@@ -81,14 +96,21 @@ const ShopPage = {
           '#/shop'
         );
         results.textContent = '0 products found';
+        if (loadMoreContainer) loadMoreContainer.style.display = 'none';
       } else {
         grid.innerHTML = `
           <div class="product-grid">
             ${products.map((p, i) => Components.productCard(p, i)).join('')}
           </div>
         `;
+        this.loadedCount = products.length;
         results.textContent = `${products.length} products found`;
         App.updateWishlistIcons();
+
+        // Show load more only if we got a full batch (more products may exist)
+        if (loadMoreContainer) {
+          loadMoreContainer.style.display = products.length >= 8 ? '' : 'none';
+        }
       }
     } catch (error) {
       console.error('Failed to load products:', error);
@@ -97,6 +119,58 @@ const ShopPage = {
         'Failed to load products',
         'Please check your connection and try again.'
       );
+      if (loadMoreContainer) loadMoreContainer.style.display = 'none';
+    }
+  },
+
+  async loadMore() {
+    const btn = document.getElementById('shopLoadMoreBtn');
+    const spinner = document.getElementById('shopLoadMoreSpinner');
+    const container = document.getElementById('shopLoadMoreContainer');
+    const results = document.getElementById('shopResults');
+
+    if (!btn || btn.disabled) return;
+    btn.disabled = true;
+    if (spinner) spinner.style.display = 'inline-block';
+
+    try {
+      const moreProducts = await DB.getProducts({
+        category: this.currentFilters?.category,
+        search: this.currentFilters?.search,
+        sort: this.currentFilters?.sort,
+        limit: 8,
+        offset: this.loadedCount
+      });
+
+      if (moreProducts.length === 0) {
+        if (container) container.remove();
+        return;
+      }
+
+      const grid = document.querySelector('#shopGrid .product-grid');
+      if (grid) {
+        grid.insertAdjacentHTML('beforeend', moreProducts.map((p, i) => Components.productCard(p, this.loadedCount + i)).join(''));
+      }
+
+      this.loadedCount += moreProducts.length;
+      if (results) results.textContent = `${this.loadedCount} products found`;
+      App.updateWishlistIcons();
+
+      if (moreProducts.length < 8) {
+        btn.textContent = 'All products loaded';
+        btn.onclick = null;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'default';
+        setTimeout(() => {
+          if (container) container.style.display = 'none';
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('Failed to load more products:', error);
+      Components.toast('Failed to load more products', 'error');
+    } finally {
+      btn.disabled = false;
+      if (spinner) spinner.style.display = 'none';
     }
   },
 

@@ -31,7 +31,7 @@ const HomePage = {
 
       // Get products for top categories
       const categoryProducts = {};
-      const featuredSlugs = ['videos'];
+      const featuredSlugs = ['videos', 'adobe-after-effect-plugins'];
       for (const slug of featuredSlugs) {
         try {
           categoryProducts[slug] = await DB.getProductsByCategory(slug, 8);
@@ -169,13 +169,39 @@ const HomePage = {
           <div class="product-grid">
             ${allProducts.slice(0, 8).map((p, i) => Components.productCard(p, i)).join('')}
           </div>
+          <div style="text-align:center;margin-top:44px" id="loadMoreContainer">
+            <button onclick="HomePage.loadMore()" class="ds-pill-cta" id="loadMoreBtn" style="padding:12px 28px;font-size:15px;cursor:pointer;border:none;font-family:var(--font-primary)">
+              <i class="fas fa-cog" id="loadMoreSpinner" style="margin-right:8px;animation:spin 1s linear infinite;display:none"></i>
+              <i class="fas fa-chevron-down" style="margin-right:8px"></i>
+              Load More
+            </button>
+          </div>
+        </section>
+
+        ${(categoryProducts['adobe-after-effect-plugins'] || []).length > 0 ? `
+        <!-- ============================================ -->
+        <!-- AFTER EFFECTS PLUGINS — Category Spotlight    -->
+        <!-- ============================================ -->
+        <section style="padding:80px 24px;max-width:1100px;margin:0 auto;background:#fff;border-top:1px solid rgba(0,0,0,0.04)">
+          <div style="text-align:center;margin-bottom:48px">
+            <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,2.8vw,2.5rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;margin-bottom:12px;color:#1d1d1f">
+              After Effects Plugins
+            </h2>
+            <p style="font-family:var(--font-primary);font-size:clamp(0.95rem,1vw,1.05rem);font-weight:400;line-height:1.5;letter-spacing:-0.022em;color:rgba(0,0,0,0.5);max-width:520px;margin:0 auto">
+              Extend your creative toolkit with powerful After Effects plugins and extensions.
+            </p>
+          </div>
+          <div class="product-grid">
+            ${(categoryProducts['adobe-after-effect-plugins'] || []).slice(0, 8).map((p, i) => Components.productCard(p, i)).join('')}
+          </div>
           <div style="text-align:center;margin-top:44px">
-            <a href="#/shop" class="ds-pill-cta" style="padding:12px 28px;font-size:15px">
-              View Full Catalog
+            <a href="#/shop?category=after-effects-plugin" class="ds-pill-cta" style="padding:12px 28px;font-size:15px">
+              View All Plugins
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </section>
+        ` : ''}
 
         <!-- ============================================ -->
         <!-- CATEGORIES — Apple-Style Album Cover Slider   -->
@@ -372,6 +398,51 @@ const HomePage = {
         'Try Again',
         '#/'
       );
+    }
+  },
+
+  loadedCount: 8,
+
+  async loadMore() {
+    const btn = document.getElementById('loadMoreBtn');
+    const spinner = document.getElementById('loadMoreSpinner');
+    const container = document.getElementById('loadMoreContainer');
+
+    if (!btn || btn.disabled) return;
+    btn.disabled = true;
+    if (spinner) spinner.style.display = 'inline-block';
+
+    try {
+      const moreProducts = await DB.getProducts({ limit: 8, offset: this.loadedCount });
+
+      if (moreProducts.length === 0) {
+        if (container) container.remove();
+        return;
+      }
+
+      const grid = document.querySelector('.product-grid');
+      if (grid) {
+        grid.insertAdjacentHTML('beforeend', moreProducts.map((p, i) => Components.productCard(p, this.loadedCount + i)).join(''));
+      }
+
+      this.loadedCount += moreProducts.length;
+      App.updateWishlistIcons();
+
+      if (moreProducts.length < 8) {
+        btn.textContent = 'All products loaded';
+        btn.onclick = null;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'default';
+        setTimeout(() => {
+          if (container) container.style.display = 'none';
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('Failed to load more products:', error);
+      Components.toast('Failed to load more products', 'error');
+    } finally {
+      btn.disabled = false;
+      if (spinner) spinner.style.display = 'none';
     }
   },
 
