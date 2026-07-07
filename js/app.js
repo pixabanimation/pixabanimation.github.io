@@ -74,7 +74,6 @@ const App = {
     const suggestionsEl = document.getElementById('searchSuggestions');
 
     let searchDebounceTimer = null;
-    let searchResults = { products: [], categories: [] };
     this.searchHighlightIndex = -1;
     this.searchRequestId = 0;
 
@@ -99,12 +98,10 @@ const App = {
     searchInput?.addEventListener('input', (e) => {
       const query = e.target.value.trim();
       clearTimeout(searchDebounceTimer);
-      
       if (query.length < 1) {
         this.closeSuggestions();
         return;
       }
-      
       searchDebounceTimer = setTimeout(() => {
         this.performSearch(query);
       }, 250);
@@ -114,7 +111,6 @@ const App = {
     searchInput?.addEventListener('keydown', (e) => {
       const items = suggestionsEl?.querySelectorAll('[data-suggestion-index]');
       const totalItems = items?.length || 0;
-
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
@@ -226,7 +222,7 @@ const App = {
         };
       }
       if (profileBtn) profileBtn.style.display = 'flex';
-      if (profileBtnMobile) profileBtnMobile.style.display = 'flex';
+      if (profileBtnMobile) profileBtnMobile.classList.add('show-profile');
     } else {
       if (loginBtn) {
         loginBtn.innerHTML = 'Sign In';
@@ -239,7 +235,7 @@ const App = {
         loginBtnMobile.onclick = null;
       }
       if (profileBtn) profileBtn.style.display = 'none';
-      if (profileBtnMobile) profileBtnMobile.style.display = 'none';
+      if (profileBtnMobile) profileBtnMobile.classList.remove('show-profile');
     }
   },
 
@@ -397,7 +393,6 @@ const App = {
         DB.searchCategories(query)
       ]);
 
-      // Ignore stale responses from earlier requests
       if (requestId !== this.searchRequestId) return;
 
       if (products.length === 0 && categories.length === 0) {
@@ -416,7 +411,6 @@ const App = {
       let html = '';
       let index = 0;
 
-      // Categories section
       if (categories.length > 0) {
         html += `<div class="search-suggestions-group">
           <div class="search-suggestions-group-title"><i class="fas fa-folder"></i> Categories</div>
@@ -430,7 +424,6 @@ const App = {
         html += `</div></div>`;
       }
 
-      // Products section
       if (products.length > 0) {
         html += `<div class="search-suggestions-group">
           <div class="search-suggestions-group-title"><i class="fas fa-box"></i> Products</div>`;
@@ -460,7 +453,6 @@ const App = {
         html += `</div>`;
       }
 
-      // View all link
       html += `
         <div class="search-suggestion-view-all" onclick="App.onSearchSuggestionClick('viewAll', '${this.escapeHtml(query)}')">
           <i class="fas fa-arrow-right"></i> View all results for "${this.escapeHtml(query)}"
@@ -471,7 +463,6 @@ const App = {
       suggestionsEl.classList.add('active');
     } catch (error) {
       console.error('Search error:', error);
-      // Only show error if this is still the latest request
       if (requestId === this.searchRequestId) {
         suggestionsEl.innerHTML = `
           <div class="search-suggestion-empty">
@@ -504,11 +495,9 @@ const App = {
   onSearchSuggestionClick(type, value) {
     const searchBar = document.getElementById('searchBar');
     const searchInput = document.getElementById('searchInput');
-    
     this.closeSuggestions();
     searchBar?.classList.remove('active');
     if (searchInput) searchInput.value = '';
-
     switch (type) {
       case 'product':
         Router.navigate(`#/product/${value}`);

@@ -6,6 +6,73 @@ const ContactPage = {
   render() {
     const content = document.getElementById('pageContent');
 
+    // Remove any previous contact schema to avoid accumulation
+    const oldSchema = document.getElementById('contactSchema');
+    if (oldSchema) oldSchema.remove();
+
+    // Inject Organization + ContactPoint structured data
+    const organizationSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      '@id': 'https://pixabanimation.github.io/#organization',
+      'name': 'PixabAnimation',
+      'url': 'https://pixabanimation.github.io/',
+      'logo': 'https://pixabanimation.github.io/assets/pixabanimation-logo.png',
+      'description': 'Premium marketplace for motion graphics, animation assets, 4K video clips, and professional editing templates for creators worldwide.',
+      'foundingDate': '2025',
+      'email': 'spurno@icloud.com',
+      'telephone': '+8801521211774',
+      'address': {
+        '@type': 'PostalAddress',
+        'streetAddress': 'Dhanmondi 32',
+        'addressLocality': 'Dhaka',
+        'addressCountry': 'BD'
+      },
+      'sameAs': [
+        'https://facebook.com/pixabanimation',
+        'https://twitter.com/pixabanimation',
+        'https://instagram.com/pixabanimation',
+        'https://pinterest.com/pixabanimation',
+        'https://youtube.com/@pixabanimation'
+      ],
+      'contactPoint': [
+        {
+          '@type': 'ContactPoint',
+          'telephone': '+8801521211774',
+          'contactType': 'customer support',
+          'email': 'spurno@icloud.com',
+          'availableLanguage': ['English']
+        },
+        {
+          '@type': 'ContactPoint',
+          'telephone': '+8801521211774',
+          'contactType': 'sales',
+          'email': 'any_dj@icloud.com',
+          'availableLanguage': ['English']
+        }
+      ],
+      'openingHoursSpecification': [
+        {
+          '@type': 'OpeningHoursSpecification',
+          'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          'opens': '09:00',
+          'closes': '18:00'
+        },
+        {
+          '@type': 'OpeningHoursSpecification',
+          'dayOfWeek': 'Saturday',
+          'opens': '10:00',
+          'closes': '16:00'
+        }
+      ]
+    };
+
+    const schemaScript = document.createElement('script');
+    schemaScript.id = 'contactSchema';
+    schemaScript.type = 'application/ld+json';
+    schemaScript.textContent = JSON.stringify(organizationSchema);
+    document.head.appendChild(schemaScript);
+
     content.innerHTML = `
       <div class="contact-page page-enter">
         <div style="text-align:center;margin-bottom:40px">

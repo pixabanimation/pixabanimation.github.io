@@ -44,46 +44,126 @@ const ProductPage = {
         return `${m}:${s.toString().padStart(2, '0')}`;
       };
 
-      // Inject Product structured data
+      // Remove any previous schema scripts to avoid accumulation
+      document.querySelectorAll('#productSchema, #breadcrumbSchema').forEach(el => el.remove());
+
+      // ── Product structured data (JSON-LD) ──
+      const productUrl = `https://pixabanimation.github.io/#/product/${product.slug}`;
+      const allProductImages = product.image_url ? [product.image_url, ...(Array.isArray(images) ? images : [])] : [];
+      const uniqueImages = [...new Set(allProductImages.filter(Boolean))];
+
       const productSchema = {
         '@context': 'https://schema.org',
         '@type': 'Product',
+        '@id': productUrl,
         'name': product.name,
-        'description': product.description,
-        'image': product.image_url,
+        'description': product.description || `${product.name} — premium motion graphics asset from PixabAnimation.`,
+        'url': productUrl,
         'sku': `SKU-${String(product.id).padStart(4, '0')}`,
+        'mpn': `PIX-${product.id}`,
+        'image': uniqueImages.length > 1 ? uniqueImages : (uniqueImages[0] || 'https://pixabanimation.github.io/assets/pixabanimation-logo.png'),
+        'category': product.category_name || 'Motion Graphics',
+        'keywords': [product.name, product.category_name, 'motion graphics', 'animation asset', 'premium template'].filter(Boolean).join(', '),
         'brand': {
           '@type': 'Brand',
+          'name': 'PixabAnimation',
+          'url': 'https://pixabanimation.github.io'
+        },
+        'manufacturer': {
+          '@type': 'Organization',
           'name': 'PixabAnimation'
         },
         'offers': {
           '@type': 'Offer',
-          'url': `https://pixabanimation.github.io/#/product/${product.slug}`,
+          '@id': `${productUrl}#offer`,
+          'url': productUrl,
           'priceCurrency': 'USD',
           'price': parseFloat(product.price),
           'priceValidUntil': new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           'availability': product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-          'itemCondition': 'https://schema.org/NewCondition'
+          'itemCondition': 'https://schema.org/NewCondition',
+          'seller': {
+            '@type': 'Organization',
+            'name': 'PixabAnimation'
+          }
         }
       };
 
+      // Aggregate rating (if reviews exist)
       if (product.rating && product.reviews_count) {
         productSchema.aggregateRating = {
           '@type': 'AggregateRating',
-          'ratingValue': product.rating,
+          'ratingValue': Math.round(product.rating * 10) / 10,
+          'bestRating': 5,
+          'worstRating': 1,
+          'ratingCount': product.reviews_count,
           'reviewCount': product.reviews_count
         };
       }
 
-      // Remove any previous Product schema script to avoid accumulation
-      const oldSchema = document.getElementById('productSchema');
-      if (oldSchema) oldSchema.remove();
+      // Individual reviews (include up to 5)
+      if (reviews && reviews.length > 0) {
+        productSchema.review = reviews.slice(0, 5).map(r => ({
+          '@type': 'Review',
+          'author': {
+            '@type': 'Person',
+            'name': r.author_name || 'Verified Customer'
+          },
+          'datePublished': r.created_at ? new Date(r.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+          'reviewBody': r.comment || '',
+          'reviewRating': {
+            '@type': 'Rating',
+            'ratingValue': r.rating || 5,
+            'bestRating': 5
+          }
+        }));
+      }
 
+      // ── BreadcrumbList structured data ──
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        '@id': `${productUrl}#breadcrumb`,
+        'itemListElement': [
+          {
+            '@type': 'ListItem',
+            'position': 1,
+            'name': 'Home',
+            'item': 'https://pixabanimation.github.io/#/'
+          },
+          {
+            '@type': 'ListItem',
+            'position': 2,
+            'name': 'Shop',
+            'item': 'https://pixabanimation.github.io/#/shop'
+          },
+          ...(product.category_name ? [{
+            '@type': 'ListItem',
+            'position': 3,
+            'name': product.category_name,
+            'item': `https://pixabanimation.github.io/#/shop?category=${product.category_slug || ''}`
+          }] : []),
+          {
+            '@type': 'ListItem',
+            'position': product.category_name ? 4 : 3,
+            'name': product.name
+          }
+        ]
+      };
+
+      // Inject Product schema
       const schemaScript = document.createElement('script');
       schemaScript.id = 'productSchema';
       schemaScript.type = 'application/ld+json';
       schemaScript.textContent = JSON.stringify(productSchema);
       document.head.appendChild(schemaScript);
+
+      // Inject BreadcrumbList schema
+      const breadcrumbScript = document.createElement('script');
+      breadcrumbScript.id = 'breadcrumbSchema';
+      breadcrumbScript.type = 'application/ld+json';
+      breadcrumbScript.textContent = JSON.stringify(breadcrumbSchema);
+      document.head.appendChild(breadcrumbScript);
 
       // Store current product for addToCart and other methods
     this.currentProduct = product;

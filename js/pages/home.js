@@ -23,6 +23,41 @@ const HomePage = {
       </section>
     `;
 
+    // Remove any previous FAQ schema to avoid accumulation
+    // Remove any previous FAQ schema to avoid accumulation
+    const oldFaqSchema = document.getElementById('homeFaqSchema');
+    if (oldFaqSchema) oldFaqSchema.remove();
+
+    // FAQ data — shared between the rendered UI and structured data
+    const faqs = [
+      {q:'What file formats are included?',a:'All assets come in industry-standard formats. Video clips are provided as MP4/H.264 and ProRes 422 in 4K resolution. Motion graphics templates are available in .aep (After Effects), .mogrt (Premiere Pro), and .psd (Photoshop). Digital assets include AI, EPS, PNG, and SVG formats.'},
+      {q:'How does the instant download work?',a:'After your payment is verified (typically within a few hours for bank transfers, instantly for digital wallets), you will receive a secure download link via email. You can also access all purchased files from your profile dashboard under My Orders — no expiration, no limits.'},
+      {q:'Can I use these assets for commercial projects?',a:'Yes! All PixabAnimation assets come with a Standard License that covers commercial use in client projects, YouTube videos, social media content, advertising, broadcast, and film.'},
+      {q:'What payment methods do you accept?',a:'We accept Payoneer and Skrill for manual payment processing. Simply send the total amount to our designated account and submit the Transaction ID during checkout.'},
+      {q:'What is your refund policy?',a:'We offer a 14-day satisfaction guarantee. If an asset has a technical issue (corrupted file, wrong format, playback error), we will provide a replacement or full refund.'},
+      {q:'Do you offer custom animation services?',a:'Yes! We provide custom motion graphics and animation services for brands, agencies, and content creators. Reach out through our Contact page with your project brief.'}
+    ];
+
+
+    // Inject FAQPage JSON-LD structured data
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': faqs.map(f => ({
+        '@type': 'Question',
+        'name': f.q,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text': f.a
+        }
+      }))
+    };
+    const schemaScript = document.createElement('script');
+    schemaScript.id = 'homeFaqSchema';
+    schemaScript.type = 'application/ld+json';
+    schemaScript.textContent = JSON.stringify(faqSchema);
+    document.head.appendChild(schemaScript);
+
     try {
       const [featuredProducts, categories] = await Promise.all([
         DB.getFeaturedProducts(),
@@ -206,7 +241,7 @@ const HomePage = {
         <!-- ============================================ -->
         <!-- CATEGORIES — Apple-Style Album Cover Slider   -->
         <!-- ============================================ -->
-        <section style="padding:80px 24px;max-width:1100px;margin:0 auto;background:#f5f5f7">
+        <section style="padding:80px 24px;max-width:1100px;margin:0 auto;background:transparent">
           <div style="text-align:center;margin-bottom:44px">
             <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,2.8vw,2.5rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f">
               Explore Categories
@@ -271,6 +306,44 @@ const HomePage = {
         </section>
 
         <!-- ============================================ -->
+        <!-- WORLDWIDE CUSTOMER COUNTRIES — Flag Slider    -->
+        <!-- ============================================ -->
+        <section style="padding:48px 24px 40px;background:#f5f5f7;border-top:1px solid rgba(0,0,0,0.04)">
+          <div style="text-align:center;margin-bottom:24px">
+            <h2 style="font-family:var(--font-display);font-size:clamp(1rem,1.6vw,1.3rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f">
+              Worldwide Customer Countries
+            </h2>
+          </div>
+          <div style="max-width:900px;margin:0 auto">
+            <div class="country-slider-wrapper" id="countrySlider">
+              <button class="country-slider-arrow country-slider-arrow--prev" id="countryPrev" aria-label="Previous countries">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="country-slider-stage" id="countrySliderStage">
+                <div class="country-slider-track" id="countrySliderTrack">
+                  ${HomePage.countries.map((c, i) => `
+                    <div class="country-slide" data-index="${i}" title="${c.name}">
+                      <img src="https://flagcdn.com/w80/${c.code}.png"
+                           srcset="https://flagcdn.com/w160/${c.code}.png 2x"
+                           alt="${c.name}"
+                           width="80" height="60"
+                           loading="lazy"
+                           style="display:block;border-radius:6px;box-shadow:0 1px 6px rgba(0,0,0,0.08)">
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+              <button class="country-slider-arrow country-slider-arrow--next" id="countryNext" aria-label="Next countries">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <div class="country-slider-dots" id="countrySliderDots">
+              ${HomePage.countries.map((_, i) => `<span class="country-slider-dot${i === 0 ? ' active' : ''}" data-index="${i}"></span>`).join('')}
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================ -->
         <!-- NEWSLETTER — Apple.com Light CTA              -->
         <!-- ============================================ -->
         <section style="padding:80px 24px;text-align:center;position:relative;overflow:hidden;background:#f5f5f7;border-top:1px solid rgba(0,0,0,0.04)">
@@ -296,85 +369,71 @@ const HomePage = {
         </section>
 
         <!-- ============================================ -->
-        <!-- TESTIMONIALS — Apple.com Style                -->
+        <!-- TESTIMONIALS — Draggable Carousel             -->
         <!-- ============================================ -->
-        <section style="padding:80px 24px 100px;max-width:1100px;margin:0 auto;background:#fff">
-          <div style="text-align:center;margin-bottom:44px">
+        <section style="padding:80px 24px 80px;max-width:1100px;margin:0 auto;background:#fff">
+          <div style="text-align:center;margin-bottom:36px">
             <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,2.5vw,2.2rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f">
               Loved by Creators Worldwide
             </h2>
           </div>
-          <div class="home-testimonials-grid">
-            <div style="padding:28px 24px;background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:14px;box-shadow:0 1px 8px rgba(0,0,0,0.04)">
-              <div style="font-size:0.9rem;margin-bottom:12px;letter-spacing:1px;color:var(--ds-primary)">★★★★★</div>
-              <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.6;letter-spacing:-0.013em;color:rgba(0,0,0,0.56);margin-bottom:16px">
-                "The 4K nature reel is absolutely stunning. Best investment I've made for my video projects — the quality speaks for itself."
-              </p>
-              <div style="display:flex;align-items:center;gap:8px">
-                <div style="width:28px;height:28px;border-radius:50%;background:var(--ds-primary);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;color:white">SM</div>
-                <div>
-                  <div style="font-family:var(--font-primary);font-size:13px;font-weight:500;color:#1d1d1f">Sarah M.</div>
-                  <div style="font-family:var(--font-primary);font-size:11px;color:rgba(0,0,0,0.35)">Video Editor</div>
-                </div>
+          <div class="testimonial-slider-wrapper" id="testimonialSlider">
+            <button class="testimonial-slider-arrow testimonial-slider-arrow--prev" id="testimonialPrev" aria-label="Previous testimonials">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="testimonial-slider-stage" id="testimonialSliderStage">
+              <div class="testimonial-slider-track" id="testimonialSliderTrack">
+                ${HomePage.testimonials.map((t, i) => `
+                  <div class="testimonial-slide" data-index="${i}">
+                    <div style="padding:28px 24px;background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:14px;box-shadow:0 1px 8px rgba(0,0,0,0.04);height:100%;display:flex;flex-direction:column">
+                      <div style="font-size:0.85rem;margin-bottom:12px;letter-spacing:1px;color:var(--ds-primary)">${'\u2605'.repeat(t.rating)}${'\u2606'.repeat(5 - t.rating)}</div>
+                      <p style="flex:1;font-family:var(--font-primary);font-size:13.5px;font-weight:400;line-height:1.6;letter-spacing:-0.013em;color:rgba(0,0,0,0.56);margin-bottom:14px">
+                        "${t.text}"
+                      </p>
+                      <div style="display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid rgba(0,0,0,0.04)">
+                        <div style="width:32px;height:32px;border-radius:50%;background:var(--ds-primary);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;color:white;flex-shrink:0">${t.initials}</div>
+                        <div>
+                          <div style="font-family:var(--font-primary);font-size:13px;font-weight:500;color:#1d1d1f">${t.name}</div>
+                          <div style="font-family:var(--font-primary);font-size:11px;color:rgba(0,0,0,0.35)">${t.role}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
               </div>
             </div>
-            <div style="padding:28px 24px;background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:14px;box-shadow:0 1px 8px rgba(0,0,0,0.04)">
-              <div style="font-size:0.9rem;margin-bottom:12px;letter-spacing:1px;color:var(--ds-primary)">★★★★★</div>
-              <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.6;letter-spacing:-0.013em;color:rgba(0,0,0,0.56);margin-bottom:16px">
-                "PixabAnimation has the best motion graphics templates. My workflow has never been smoother. The drag-and-drop compatibility is a game-changer."
-              </p>
-              <div style="display:flex;align-items:center;gap:8px">
-                <div style="width:28px;height:28px;border-radius:50%;background:var(--ds-primary);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;color:white">AK</div>
-                <div>
-                  <div style="font-family:var(--font-primary);font-size:13px;font-weight:500;color:#1d1d1f">Alex K.</div>
-                  <div style="font-family:var(--font-primary);font-size:11px;color:rgba(0,0,0,0.35)">Motion Designer</div>
-                </div>
-              </div>
-            </div>
-            <div style="padding:28px 24px;background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:14px;box-shadow:0 1px 8px rgba(0,0,0,0.04)">
-              <div style="font-size:0.9rem;margin-bottom:12px;letter-spacing:1px;color:var(--ds-primary)">★★★★★</div>
-              <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.6;letter-spacing:-0.013em;color:rgba(0,0,0,0.56);margin-bottom:16px">
-                "Instant download, incredible quality, and the lower thirds bundle saved me hours. My go-to marketplace for animation assets."
-              </p>
-              <div style="display:flex;align-items:center;gap:8px">
-                <div style="width:28px;height:28px;border-radius:50%;background:var(--ds-primary);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;color:white">PR</div>
-                <div>
-                  <div style="font-family:var(--font-primary);font-size:13px;font-weight:500;color:#1d1d1f">Priya R.</div>
-                  <div style="font-family:var(--font-primary);font-size:11px;color:rgba(0,0,0,0.35)">Content Creator</div>
-                </div>
-              </div>
-            </div>
+            <button class="testimonial-slider-arrow testimonial-slider-arrow--next" id="testimonialNext" aria-label="Next testimonials">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="testimonial-slider-dots" id="testimonialSliderDots">
+            ${HomePage.testimonials.map((_, i) => `<span class="testimonial-slider-dot${i === 0 ? ' active' : ''}" data-index="${i}"></span>`).join('')}
           </div>
         </section>
         <!-- ============================================ -->
-        <!-- FAQ — Apple.com Disclosure Style              -->
+        <!-- FAQ — Grid Accordion                          -->
         <!-- ============================================ -->
-        <section style="padding:80px 24px 100px;background:#fff;border-top:1px solid rgba(0,0,0,0.04)">
-          <div style="max-width:720px;margin:0 auto">
-            <div style="text-align:center;margin-bottom:44px">
-              <h2 style="font-family:var(--font-display);font-size:clamp(1.6rem,2.5vw,2.2rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f">
-                Frequently Asked Questions
+        <section style="padding:60px 24px;background:#fff;border-top:1px solid rgba(0,0,0,0.04)">
+          <div style="max-width:900px;margin:0 auto">
+            <div style="text-align:center;margin-bottom:28px">
+              <h2 style="font-family:var(--font-display);font-size:clamp(1.3rem,2vw,1.6rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f">
+                FAQs
               </h2>
             </div>
-            <div style="display:flex;flex-direction:column;gap:8px" id="faqContainer">
-              ${[
-                {q:'What file formats are included?',a:'All assets come in industry-standard formats. Video clips are provided as MP4/H.264 and ProRes 422 in 4K resolution. Motion graphics templates are available in .aep (After Effects), .mogrt (Premiere Pro), and .psd (Photoshop). Digital assets include AI, EPS, PNG, and SVG formats.'},
-                {q:'How does the instant download work?',a:'After your payment is verified (typically within a few hours for bank transfers, instantly for digital wallets), you will receive a secure download link via email. You can also access all purchased files from your profile dashboard under My Orders — no expiration, no limits.'},
-                {q:'Can I use these assets for commercial projects?',a:'Yes! All PixabAnimation assets come with a Standard License that covers commercial use in client projects, YouTube videos, social media content, advertising, broadcast, and film.'},
-                {q:'What payment methods do you accept?',a:'We accept Payoneer and Skrill for manual payment processing. Simply send the total amount to our designated account and submit the Transaction ID during checkout.'},
-                {q:'What is your refund policy?',a:'We offer a 14-day satisfaction guarantee. If an asset has a technical issue (corrupted file, wrong format, playback error), we will provide a replacement or full refund.'},
-                {q:'Do you offer custom animation services?',a:'Yes! We provide custom motion graphics and animation services for brands, agencies, and content creators. Reach out through our Contact page with your project brief.'}
-              ].map((faq) => `
-                <div style="border:1px solid rgba(0,0,0,0.06);border-radius:12px;overflow:hidden;transition:border-color 0.2s ease;background:#fafafa"
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px" id="faqContainer">
+              ${faqs.map((faq) => `
+                <div style="border:1px solid rgba(0,0,0,0.06);border-radius:10px;overflow:hidden;transition:border-color 0.2s ease,box-shadow 0.2s ease;background:#fafafa;align-self:start"
+                     onmouseenter="this.style.borderColor='rgba(0,102,204,0.2)';this.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'"
+                     onmouseleave="this.style.borderColor='rgba(0,0,0,0.06)';this.style.boxShadow='none'"
                      onclick="this.classList.toggle('active');const panel=this.querySelector('.faq-answer');panel.style.maxHeight=panel.style.maxHeight||'0px';panel.style.maxHeight=panel.style.maxHeight==='0px'?panel.scrollHeight+'px':'0px';this.querySelector('.faq-chevron').style.transform=panel.style.maxHeight!=='0px'?'rotate(180deg)':'rotate(0deg)'">
-                  <div style="display:flex;align-items:center;gap:12px;padding:18px 22px;cursor:pointer;user-select:none">
-                    <span style="flex:1;font-family:var(--font-primary);font-size:15px;font-weight:500;letter-spacing:-0.01em;color:#1d1d1f;line-height:1.3">${faq.q}</span>
-                    <svg class="faq-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;transition:transform 0.3s ease;color:rgba(0,0,0,0.3)">
+                  <div style="display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;user-select:none">
+                    <span style="flex:1;font-family:var(--font-primary);font-size:13px;font-weight:500;letter-spacing:-0.01em;color:#1d1d1f;line-height:1.3">${faq.q}</span>
+                    <svg class="faq-chevron" width="12" height="12" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;transition:transform 0.3s ease;color:rgba(0,0,0,0.25)">
                       <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </div>
-                  <div class="faq-answer" style="max-height:0;overflow:hidden;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1);padding:0 22px 0 22px">
-                    <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.6;letter-spacing:-0.013em;color:rgba(0,0,0,0.48);padding-bottom:20px;margin:0;border-top:1px solid rgba(0,0,0,0.04);padding-top:16px">${faq.a}</p>
+                  <div class="faq-answer" style="max-height:0;overflow:hidden;transition:max-height 0.3s cubic-bezier(0.4,0,0.2,1);padding:0 14px 0 14px">
+                    <p style="font-family:var(--font-primary);font-size:12.5px;font-weight:400;line-height:1.5;letter-spacing:-0.01em;color:rgba(0,0,0,0.48);padding-bottom:14px;margin:0;border-top:1px solid rgba(0,0,0,0.04);padding-top:10px">${faq.a}</p>
                   </div>
                 </div>
               `).join('')}
@@ -387,7 +446,9 @@ const HomePage = {
       App.updateWishlistIcons();
       VideoPlayer.init();
 
-      // Init category slider
+      // Init sliders
+      HomePage.initCountrySlider();
+      HomePage.initTestimonialSlider();
       HomePage.initCategorySlider();
     } catch (error) {
       console.error('Home page error:', error);
@@ -400,6 +461,34 @@ const HomePage = {
       );
     }
   },
+
+  testimonials: [
+    {name:'Sarah M.', initials:'SM', role:'Video Editor', rating:5, text:'The 4K nature reel is absolutely stunning. Best investment I\'ve made for my video projects — the quality speaks for itself.'},
+    {name:'Alex K.', initials:'AK', role:'Motion Designer', rating:5, text:'PixabAnimation has the best motion graphics templates. My workflow has never been smoother. The drag-and-drop compatibility is a game-changer.'},
+    {name:'Priya R.', initials:'PR', role:'Content Creator', rating:5, text:'Instant download, incredible quality, and the lower thirds bundle saved me hours. My go-to marketplace for animation assets.'},
+    {name:'Marcus J.', initials:'MJ', role:'Film Director', rating:5, text:'The cinematic transitions pack elevated my short film to a whole new level. Every template feels like it was crafted by a seasoned professional.'},
+    {name:'Elena V.', initials:'EV', role:'Social Media Manager', rating:5, text:'I use PixabAnimation assets daily for client content. The variety and consistent quality keep me coming back. Highly recommend to any content team.'},
+    {name:'David L.', initials:'DL', role:'YouTuber', rating:4, text:'Great selection of intros and lower thirds. My channel looks way more professional now. Would love to see more gaming-themed templates in the future.'},
+    {name:'Aisha N.', initials:'AN', role:'Freelance Editor', rating:5, text:'As a freelancer, I need assets that work out of the box. Every download has been flawless — proper formats, clean files, instant delivery.'},
+    {name:'Tom W.', initials:'TW', role:'Advertising Creative', rating:5, text:'We used PixabAnimation for a brand campaign and the results were incredible. The AE templates saved our team over 20 hours of production time.'},
+    {name:'Lina K.', initials:'LK', role:'Animator', rating:5, text:'The 4K ProRes clips are studio-grade. No transcoding needed, no quality loss. This is the kind of marketplace the animation community has been waiting for.'},
+    {name:'Raj P.', initials:'RP', role:'Post-Production Supervisor', rating:5, text:'We\'ve integrated PixabAnimation into our studio\'s asset library. The consistency across categories makes it easy to mix and match for any project.'}
+  ],
+
+  countries: [
+    {name:'United States', code:'us'},
+    {name:'United Kingdom', code:'gb'},
+    {name:'Australia', code:'au'},
+    {name:'Spain', code:'es'},
+    {name:'Germany', code:'de'},
+    {name:'Italy', code:'it'},
+    {name:'France', code:'fr'},
+    {name:'Netherlands', code:'nl'},
+    {name:'Argentina', code:'ar'},
+    {name:'Brazil', code:'br'},
+    {name:'Switzerland', code:'ch'},
+    {name:'Greece', code:'gr'}
+  ],
 
   loadedCount: 8,
 
@@ -444,6 +533,315 @@ const HomePage = {
       btn.disabled = false;
       if (spinner) spinner.style.display = 'none';
     }
+  },
+
+  // Country flag slider — draggable horizontal scroll-snap
+  initCountrySlider() {
+    if (this._countryCleanup) {
+      this._countryCleanup();
+    }
+
+    const track = document.getElementById('countrySliderTrack');
+    const slides = document.querySelectorAll('.country-slide');
+    const prevBtn = document.getElementById('countryPrev');
+    const nextBtn = document.getElementById('countryNext');
+    const dots = document.querySelectorAll('.country-slider-dot');
+    if (!track || slides.length === 0) return;
+
+    let rafId = null;
+    let autoScrollInterval;
+
+    function updateActiveDot() {
+      const trackRect = track.getBoundingClientRect();
+      const containerCenter = trackRect.left + trackRect.width / 2;
+      let closestIdx = 0, closestDist = Infinity;
+      slides.forEach((slide, i) => {
+        const r = slide.getBoundingClientRect();
+        const d = Math.abs(r.left + r.width / 2 - containerCenter);
+        if (d < closestDist) { closestDist = d; closestIdx = i; }
+      });
+      dots.forEach((d, i) => d.classList.toggle('active', i === closestIdx));
+    }
+
+    function onScroll() {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => { updateActiveDot(); rafId = null; });
+    }
+    track.addEventListener('scroll', onScroll, { passive: true });
+
+    // Mouse drag
+    let isDragging = false, dragStartX = 0, dragScrollLeft = 0, dragDist = 0;
+    function onMouseDown(e) {
+      isDragging = true;
+      dragStartX = e.pageX - track.offsetLeft;
+      dragScrollLeft = track.scrollLeft;
+      dragDist = 0;
+      track.style.cursor = 'grabbing';
+      track.style.scrollSnapType = 'none';
+      track.style.scrollBehavior = 'auto';
+      track.style.userSelect = 'none';
+    }
+    function onMouseMove(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - track.offsetLeft;
+      dragDist = Math.abs(x - dragStartX);
+      track.scrollLeft = dragScrollLeft - (x - dragStartX) * 1.5;
+    }
+    function onMouseUp() {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.cursor = '';
+      track.style.scrollSnapType = '';
+      track.style.scrollBehavior = '';
+      track.style.userSelect = '';
+    }
+    track.addEventListener('mousedown', onMouseDown);
+    track.addEventListener('mousemove', onMouseMove);
+    track.addEventListener('mouseup', onMouseUp);
+    track.addEventListener('mouseleave', onMouseUp);
+
+    // Arrow navigation
+    const slideWidth = () => slides[0]?.getBoundingClientRect().width + 16 || 100;
+    const onPrev = () => { track.scrollBy({ left: -slideWidth(), behavior: 'smooth' }); resetAutoScroll(); };
+    const onNext = () => { track.scrollBy({ left: slideWidth(), behavior: 'smooth' }); resetAutoScroll(); };
+    prevBtn?.addEventListener('click', onPrev);
+    nextBtn?.addEventListener('click', onNext);
+
+    // Dot navigation
+    const dotHandlers = [];
+    dots.forEach((dot) => {
+      const handler = () => {
+        const index = parseInt(dot.dataset.index);
+        const target = slides[index];
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        resetAutoScroll();
+      };
+      dot.addEventListener('click', handler);
+      dotHandlers.push({ el: dot, handler });
+    });
+
+    // Keyboard
+    const onKeydown = (e) => {
+      if (e.key === 'ArrowLeft') { track.scrollBy({ left: -slideWidth(), behavior: 'smooth' }); resetAutoScroll(); }
+      if (e.key === 'ArrowRight') { track.scrollBy({ left: slideWidth(), behavior: 'smooth' }); resetAutoScroll(); }
+    };
+    track.addEventListener('keydown', onKeydown);
+    track.setAttribute('tabindex', '0');
+    track.setAttribute('role', 'slider');
+    track.setAttribute('aria-label', 'Customer countries carousel');
+
+    // Auto-scroll
+    function startAutoScroll() {
+      if (autoScrollInterval) clearInterval(autoScrollInterval);
+      if (track.scrollWidth <= track.clientWidth + 1) return;
+      autoScrollInterval = setInterval(() => {
+        const isNearEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 50;
+        if (isNearEnd) {
+          slides[0]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+          track.scrollBy({ left: slideWidth(), behavior: 'smooth' });
+        }
+      }, 4500);
+    }
+    function resetAutoScroll() { clearInterval(autoScrollInterval); startAutoScroll(); }
+
+    const onMouseEnter = () => clearInterval(autoScrollInterval);
+    const onMouseLeave = startAutoScroll;
+    track.addEventListener('mouseenter', onMouseEnter);
+    track.addEventListener('mouseleave', onMouseLeave);
+
+    const onResize = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => { updateActiveDot(); rafId = null; });
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+
+    requestAnimationFrame(() => { updateActiveDot(); });
+    startAutoScroll();
+
+    this._countryCleanup = () => {
+      clearInterval(autoScrollInterval);
+      if (rafId) cancelAnimationFrame(rafId);
+      track.removeEventListener('scroll', onScroll);
+      track.removeEventListener('keydown', onKeydown);
+      track.removeEventListener('mouseenter', onMouseEnter);
+      track.removeEventListener('mouseleave', startAutoScroll);
+      track.removeEventListener('mousedown', onMouseDown);
+      track.removeEventListener('mousemove', onMouseMove);
+      track.removeEventListener('mouseup', onMouseUp);
+      track.removeEventListener('mouseleave', onMouseUp);
+      prevBtn?.removeEventListener('click', onPrev);
+      nextBtn?.removeEventListener('click', onNext);
+      dotHandlers.forEach(({ el, handler }) => el.removeEventListener('click', handler));
+      window.removeEventListener('resize', onResize);
+    };
+  },
+
+  // Testimonial slider — draggable horizontal scroll-snap
+  initTestimonialSlider() {
+    if (this._testimonialCleanup) {
+      this._testimonialCleanup();
+    }
+
+    const track = document.getElementById('testimonialSliderTrack');
+    const slides = document.querySelectorAll('.testimonial-slide');
+    const prevBtn = document.getElementById('testimonialPrev');
+    const nextBtn = document.getElementById('testimonialNext');
+    const dots = document.querySelectorAll('.testimonial-slider-dot');
+    if (!track || slides.length === 0) return;
+
+    let rafId = null;
+    let autoScrollInterval;
+
+    // --- Update active dot ---
+    function updateActiveDot() {
+      const trackRect = track.getBoundingClientRect();
+      const containerCenter = trackRect.left + trackRect.width / 2;
+      let closestIdx = 0;
+      let closestDist = Infinity;
+      slides.forEach((slide, i) => {
+        const r = slide.getBoundingClientRect();
+        const d = Math.abs(r.left + r.width / 2 - containerCenter);
+        if (d < closestDist) { closestDist = d; closestIdx = i; }
+      });
+      dots.forEach((d, i) => d.classList.toggle('active', i === closestIdx));
+    }
+
+    // --- Scroll handler ---
+    function onScroll() {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => { updateActiveDot(); rafId = null; });
+    }
+    track.addEventListener('scroll', onScroll, { passive: true });
+
+    // --- Mouse drag ---
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragScrollLeft = 0;
+    let dragDist = 0;
+
+    function onMouseDown(e) {
+      isDragging = true;
+      dragStartX = e.pageX - track.offsetLeft;
+      dragScrollLeft = track.scrollLeft;
+      dragDist = 0;
+      track.style.cursor = 'grabbing';
+      track.style.scrollSnapType = 'none';
+      track.style.userSelect = 'none';
+    }
+
+    function onMouseMove(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - track.offsetLeft;
+      const walk = (x - dragStartX) * 1.2;
+      dragDist = Math.abs(walk);
+      track.scrollLeft = dragScrollLeft - walk;
+    }
+
+    function onMouseUp() {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.cursor = '';
+      track.style.scrollSnapType = '';
+      track.style.userSelect = '';
+      setTimeout(() => { updateActiveDot(); }, 50);
+    }
+
+    track.addEventListener('mousedown', onMouseDown);
+    track.addEventListener('mousemove', onMouseMove);
+    track.addEventListener('mouseup', onMouseUp);
+    track.addEventListener('mouseleave', onMouseUp);
+
+    // Prevent slide click when dragging
+    slides.forEach(slide => {
+      slide.addEventListener('click', (e) => {
+        if (dragDist > 5) e.stopPropagation();
+      }, true);
+    });
+
+    // --- Arrow navigation ---
+    const slideWidth = () => slides[0]?.getBoundingClientRect().width + 16 || 340;
+    const onPrev = () => { track.scrollBy({ left: -slideWidth(), behavior: 'smooth' }); resetAutoScroll(); };
+    const onNext = () => { track.scrollBy({ left: slideWidth(), behavior: 'smooth' }); resetAutoScroll(); };
+    prevBtn?.addEventListener('click', onPrev);
+    nextBtn?.addEventListener('click', onNext);
+
+    // --- Dot navigation ---
+    const dotHandlers = [];
+    dots.forEach((dot) => {
+      const handler = () => {
+        const index = parseInt(dot.dataset.index);
+        const target = slides[index];
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        resetAutoScroll();
+      };
+      dot.addEventListener('click', handler);
+      dotHandlers.push({ el: dot, handler });
+    });
+
+    // --- Keyboard ---
+    const onKeydown = (e) => {
+      if (e.key === 'ArrowLeft') { track.scrollBy({ left: -slideWidth(), behavior: 'smooth' }); resetAutoScroll(); }
+      if (e.key === 'ArrowRight') { track.scrollBy({ left: slideWidth(), behavior: 'smooth' }); resetAutoScroll(); }
+    };
+    track.addEventListener('keydown', onKeydown);
+    track.setAttribute('tabindex', '0');
+    track.setAttribute('role', 'slider');
+    track.setAttribute('aria-label', 'Testimonial carousel');
+
+    // --- Auto-scroll every 5s ---
+    function startAutoScroll() {
+      if (autoScrollInterval) clearInterval(autoScrollInterval);
+      if (track.scrollWidth <= track.clientWidth + 1) return;
+      autoScrollInterval = setInterval(() => {
+        const isNearEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 50;
+        if (isNearEnd) {
+          slides[0]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+          track.scrollBy({ left: slideWidth(), behavior: 'smooth' });
+        }
+      }, 5000);
+    }
+
+    function resetAutoScroll() {
+      clearInterval(autoScrollInterval);
+      startAutoScroll();
+    }
+
+    const onMouseEnter = () => clearInterval(autoScrollInterval);
+    const onMouseLeave = startAutoScroll;
+    track.addEventListener('mouseenter', onMouseEnter);
+    track.addEventListener('mouseleave', onMouseLeave);
+
+    // --- Resize ---
+    const onResize = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => { updateActiveDot(); rafId = null; });
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+
+    // Init
+    requestAnimationFrame(() => { updateActiveDot(); });
+    startAutoScroll();
+
+    this._testimonialCleanup = () => {
+      clearInterval(autoScrollInterval);
+      if (rafId) cancelAnimationFrame(rafId);
+      track.removeEventListener('scroll', onScroll);
+      track.removeEventListener('keydown', onKeydown);
+      track.removeEventListener('mouseenter', onMouseEnter);
+      track.removeEventListener('mouseleave', onMouseLeave);
+      track.removeEventListener('mousedown', onMouseDown);
+      track.removeEventListener('mousemove', onMouseMove);
+      track.removeEventListener('mouseup', onMouseUp);
+      track.removeEventListener('mouseleave', onMouseUp);
+      prevBtn?.removeEventListener('click', onPrev);
+      nextBtn?.removeEventListener('click', onNext);
+      dotHandlers.forEach(({ el, handler }) => el.removeEventListener('click', handler));
+      window.removeEventListener('resize', onResize);
+    };
   },
 
   // iTunes 10 Cover Flow — scroll-snap with 3D transforms
@@ -534,6 +932,57 @@ const HomePage = {
     }
 
     track.addEventListener('scroll', onScroll, { passive: true });
+
+    // --- Mouse drag/swipe support ---
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragScrollLeft = 0;
+    let dragDist = 0;
+
+    function onMouseDown(e) {
+      isDragging = true;
+      dragStartX = e.pageX - track.offsetLeft;
+      dragScrollLeft = track.scrollLeft;
+      dragDist = 0;
+      track.style.cursor = 'grabbing';
+      track.style.scrollSnapType = 'none';
+      track.style.userSelect = 'none';
+    }
+
+    function onMouseMove(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - track.offsetLeft;
+      const walk = (x - dragStartX) * 1.5;
+      dragDist = Math.abs(walk);
+      track.scrollLeft = dragScrollLeft - walk;
+    }
+
+    function onMouseUp() {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.cursor = '';
+      track.style.scrollSnapType = '';
+      track.style.userSelect = '';
+      // Re-snap after a quick timeout so the snap animation plays
+      setTimeout(() => {
+        applyTransforms(0.3);
+      }, 10);
+    }
+
+    track.addEventListener('mousedown', onMouseDown);
+    track.addEventListener('mousemove', onMouseMove);
+    track.addEventListener('mouseup', onMouseUp);
+    track.addEventListener('mouseleave', onMouseUp);
+
+    // Prevent card click when user was dragging (use capture phase to fire before child onclick)
+    wraps.forEach(wrap => {
+      wrap.addEventListener('click', (e) => {
+        if (dragDist > 5) {
+          e.stopPropagation();
+        }
+      }, true);
+    });
 
     // --- Arrow navigation ---
     const onPrev = () => {
@@ -638,6 +1087,10 @@ const HomePage = {
       track.removeEventListener('keydown', onKeydown);
       track.removeEventListener('mouseenter', onMouseEnter);
       track.removeEventListener('mouseleave', onMouseLeave);
+      track.removeEventListener('mousedown', onMouseDown);
+      track.removeEventListener('mousemove', onMouseMove);
+      track.removeEventListener('mouseup', onMouseUp);
+      track.removeEventListener('mouseleave', onMouseUp);
       prevBtn?.removeEventListener('click', onPrev);
       nextBtn?.removeEventListener('click', onNext);
       dotHandlers.forEach(({ el, handler }) => el.removeEventListener('click', handler));
