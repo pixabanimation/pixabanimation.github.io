@@ -601,6 +601,33 @@ const HomePage = {
     track.addEventListener('mouseup', onMouseUp);
     track.addEventListener('mouseleave', onMouseUp);
 
+    // Touch support
+    function onTouchStart(e) {
+      const touch = e.touches[0];
+      isDragging = true;
+      dragStartX = touch.pageX - track.offsetLeft;
+      dragScrollLeft = track.scrollLeft;
+      dragDist = 0;
+      track.style.scrollSnapType = 'none';
+      track.style.scrollBehavior = 'auto';
+    }
+    function onTouchMove(e) {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      const x = touch.pageX - track.offsetLeft;
+      dragDist = Math.abs(x - dragStartX);
+      track.scrollLeft = dragScrollLeft - (x - dragStartX) * 1.5;
+    }
+    function onTouchEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.scrollSnapType = '';
+      track.style.scrollBehavior = '';
+    }
+    track.addEventListener('touchstart', onTouchStart, { passive: true });
+    track.addEventListener('touchmove', onTouchMove, { passive: true });
+    track.addEventListener('touchend', onTouchEnd, { passive: true });
+
     // Arrow navigation
     const slideWidth = () => slides[0]?.getBoundingClientRect().width + 16 || 100;
     const onPrev = () => { track.scrollBy({ left: -slideWidth(), behavior: 'smooth' }); resetAutoScroll(); };
@@ -671,6 +698,9 @@ const HomePage = {
       track.removeEventListener('mousemove', onMouseMove);
       track.removeEventListener('mouseup', onMouseUp);
       track.removeEventListener('mouseleave', onMouseUp);
+      track.removeEventListener('touchstart', onTouchStart);
+      track.removeEventListener('touchmove', onTouchMove);
+      track.removeEventListener('touchend', onTouchEnd);
       prevBtn?.removeEventListener('click', onPrev);
       nextBtn?.removeEventListener('click', onNext);
       dotHandlers.forEach(({ el, handler }) => el.removeEventListener('click', handler));
@@ -753,6 +783,33 @@ const HomePage = {
     track.addEventListener('mousemove', onMouseMove);
     track.addEventListener('mouseup', onMouseUp);
     track.addEventListener('mouseleave', onMouseUp);
+
+    // Touch support
+    function onTouchStart(e) {
+      const touch = e.touches[0];
+      isDragging = true;
+      dragStartX = touch.pageX - track.offsetLeft;
+      dragScrollLeft = track.scrollLeft;
+      dragDist = 0;
+      track.style.scrollSnapType = 'none';
+      track.style.scrollBehavior = 'auto';
+    }
+    function onTouchMove(e) {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      const x = touch.pageX - track.offsetLeft;
+      dragDist = Math.abs(x - dragStartX);
+      track.scrollLeft = dragScrollLeft - (x - dragStartX) * 1.2;
+    }
+    function onTouchEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.scrollSnapType = '';
+      track.style.scrollBehavior = '';
+    }
+    track.addEventListener('touchstart', onTouchStart, { passive: true });
+    track.addEventListener('touchmove', onTouchMove, { passive: true });
+    track.addEventListener('touchend', onTouchEnd, { passive: true });
 
     // Prevent slide click when dragging
     slides.forEach(slide => {
@@ -837,6 +894,9 @@ const HomePage = {
       track.removeEventListener('mousemove', onMouseMove);
       track.removeEventListener('mouseup', onMouseUp);
       track.removeEventListener('mouseleave', onMouseUp);
+      track.removeEventListener('touchstart', onTouchStart);
+      track.removeEventListener('touchmove', onTouchMove);
+      track.removeEventListener('touchend', onTouchEnd);
       prevBtn?.removeEventListener('click', onPrev);
       nextBtn?.removeEventListener('click', onNext);
       dotHandlers.forEach(({ el, handler }) => el.removeEventListener('click', handler));
@@ -975,6 +1035,34 @@ const HomePage = {
     track.addEventListener('mouseup', onMouseUp);
     track.addEventListener('mouseleave', onMouseUp);
 
+    // Touch support
+    function onTouchStart(e) {
+      const touch = e.touches[0];
+      isDragging = true;
+      dragStartX = touch.pageX - track.offsetLeft;
+      dragScrollLeft = track.scrollLeft;
+      dragDist = 0;
+      track.style.scrollSnapType = 'none';
+      track.style.scrollBehavior = 'auto';
+    }
+    function onTouchMove(e) {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      const x = touch.pageX - track.offsetLeft;
+      dragDist = Math.abs(x - dragStartX);
+      track.scrollLeft = dragScrollLeft - (x - dragStartX) * 1.5;
+    }
+    function onTouchEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.scrollSnapType = '';
+      track.style.scrollBehavior = '';
+      setTimeout(() => { applyTransforms(0.3); }, 10);
+    }
+    track.addEventListener('touchstart', onTouchStart, { passive: true });
+    track.addEventListener('touchmove', onTouchMove, { passive: true });
+    track.addEventListener('touchend', onTouchEnd, { passive: true });
+
     // Prevent card click when user was dragging (use capture phase to fire before child onclick)
     wraps.forEach(wrap => {
       wrap.addEventListener('click', (e) => {
@@ -1091,6 +1179,9 @@ const HomePage = {
       track.removeEventListener('mousemove', onMouseMove);
       track.removeEventListener('mouseup', onMouseUp);
       track.removeEventListener('mouseleave', onMouseUp);
+      track.removeEventListener('touchstart', onTouchStart);
+      track.removeEventListener('touchmove', onTouchMove);
+      track.removeEventListener('touchend', onTouchEnd);
       prevBtn?.removeEventListener('click', onPrev);
       nextBtn?.removeEventListener('click', onNext);
       dotHandlers.forEach(({ el, handler }) => el.removeEventListener('click', handler));
