@@ -975,6 +975,66 @@ const DB = {
 
   async getAllBlogPosts(filters = {}) {
     return this.getBlogPosts(filters);
+  },
+
+  // === Blog Ads Management ===
+  async getAllAds() {
+    return this.query('SELECT * FROM blog_ads ORDER BY sort_order ASC, created_at DESC');
+  },
+
+  async getAdById(id) {
+    const ads = await this.query('SELECT * FROM blog_ads WHERE id = ?', [id]);
+    return ads.length > 0 ? ads[0] : null;
+  },
+
+  async getActiveAdsForPage(pageName, adType) {
+    let sql = "SELECT * FROM blog_ads WHERE is_active = 1";
+    const params = [];
+    if (adType) {
+      sql += ' AND ad_type = ?';
+      params.push(adType);
+    }
+    sql += " AND (target_pages = 'all' OR target_pages LIKE ?)";
+    params.push(`%"${pageName}"%`);
+    sql += ' ORDER BY sort_order ASC LIMIT 1';
+    return this.query(sql, params);
+  },
+
+  async createAd(data) {
+    const { name, ad_type, icon, title, description, cta_text, cta_url, target_pages, is_active, sort_order } = data;
+    const result = await this.execute(
+      `INSERT INTO blog_ads (name, ad_type, icon, title, description, cta_text, cta_url, target_pages, is_active, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [name, ad_type || 'ad1', icon || 'fa-cube', title, description, cta_text || 'Learn More', cta_url || 'https://pixabanimation.github.io/#/shop', target_pages || 'all', is_active !== undefined ? (is_active ? 1 : 0) : 1, sort_order || 0]
+    );
+    return result.lastInsertRowid;
+  },
+
+  async updateAd(id, data) {
+    const fields = [];
+    const params = [];
+    const allowedFields = ['name', 'ad_type', 'icon', 'title', 'description', 'cta_text', 'cta_url', 'target_pages', 'is_active', 'sort_order'];
+    for (const [key, value] of Object.entries(data)) {
+      if (allowedFields.includes(key)) {
+        fields.push(`${key} = ?`);
+        params.push(value);
+      }
+    }
+    if (fields.length === 0) return;
+    fields.push('updated_at = CURRENT_TIMESTAMP');
+    params.push(id);
+    return this.execute(
+      `UPDATE blog_ads SET ${fields.join(', ')} WHERE id = ?`,
+      params
+    );
+  },
+
+  async deleteAd(id) {
+    return this.execute('DELETE FROM blog_ads WHERE id = ?', [id]);
+  },
+
+  async toggleAd(id, isActive) {
+    return this.execute('UPDATE blog_ads SET is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [isActive ? 1 : 0, id]);
   }
 };
 

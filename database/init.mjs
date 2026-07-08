@@ -121,6 +121,29 @@ async function main() {
     }
   }
 
+  // Migration: Add blog_ads table if it doesn't exist
+  console.log("🔄 Adding blog_ads table...");
+  try {
+    await client.execute(`CREATE TABLE IF NOT EXISTS blog_ads (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      ad_type TEXT NOT NULL DEFAULT 'ad1' CHECK(ad_type IN ('ad1','ad2','ad3')),
+      icon TEXT DEFAULT 'fa-cube',
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      cta_text TEXT DEFAULT 'Learn More',
+      cta_url TEXT DEFAULT 'https://pixabanimation.github.io/#/shop',
+      target_pages TEXT DEFAULT 'all',
+      is_active INTEGER DEFAULT 1,
+      sort_order INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );`);
+    console.log("  ✅ blog_ads table ready");
+  } catch (err) {
+    console.error("  ⚠️ Could not create blog_ads table:", err.message);
+  }
+
   // Migration: Hash any existing plaintext passwords
   console.log("🔄 Hashing existing plaintext passwords...");
   try {

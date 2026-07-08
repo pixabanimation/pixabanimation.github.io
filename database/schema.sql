@@ -207,6 +207,23 @@ CREATE TABLE IF NOT EXISTS blog_posts (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Blog Ads table (admin-managed advertisements)
+CREATE TABLE IF NOT EXISTS blog_ads (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  ad_type TEXT NOT NULL DEFAULT 'ad1' CHECK(ad_type IN ('ad1','ad2','ad3')),
+  icon TEXT DEFAULT 'fa-cube',
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  cta_text TEXT DEFAULT 'Learn More',
+  cta_url TEXT DEFAULT 'https://pixabanimation.github.io/#/shop',
+  target_pages TEXT DEFAULT 'all',
+  is_active INTEGER DEFAULT 1,
+  sort_order INTEGER DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Security questions for password recovery
 CREATE TABLE IF NOT EXISTS admin_security (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

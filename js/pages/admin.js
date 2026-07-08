@@ -69,6 +69,9 @@ const AdminPage = {
             <button class="admin-nav-item" data-tab="blog" onclick="AdminPage.switchTab('blog');AdminPage.closeSidebar()">
               <i class="fas fa-pen-fancy"></i> Blog
             </button>
+            <button class="admin-nav-item" data-tab="ads" onclick="AdminPage.switchTab('ads');AdminPage.closeSidebar()">
+              <i class="fas fa-bullhorn"></i> Ads
+            </button>
             <hr class="admin-divider">
             <button class="admin-nav-item" data-tab="settings" onclick="AdminPage.switchTab('settings');AdminPage.closeSidebar()">
               <i class="fas fa-cog"></i> Settings
@@ -148,6 +151,7 @@ const AdminPage = {
       case 'reviews': this.loadReviews(); break;
       case 'messages': this.loadMessages(); break;
       case 'blog': this.loadBlogPosts(); break;
+      case 'ads': this.loadAds(); break;
       case 'settings': AdminSettings.render(); break;
     }
   },
@@ -2029,6 +2033,286 @@ const AdminPage = {
     } catch (error) {
       Components.toast('Failed to delete', 'error');
     }
+  },
+
+  // ===================== ADS MANAGEMENT =====================
+  async loadAds() {
+    const container = document.getElementById('adminContent');
+    try {
+      const ads = await DB.getAllAds();
+      const blogPageFiles = [
+        'ai-assistants-for-designers.html', 'ai-design-tools-creative-workflow.html',
+        'ai-driven-personalization-digital-media.html', 'ai-motion-graphics-revolution.html',
+        'ai-powered-voice-synthesis-video.html', 'ai-video-generation-2026.html',
+        'building-interactive-data-visualizations.html', 'building-motion-design-portfolio.html',
+        'building-personal-brand-designer.html', 'chatgpt-codex-vs-claude-coding.html',
+        'claude-ai-coding-productivity.html', 'client-management-creative-freelancers.html',
+        'color-theory-motion-designers.html', 'computer-vision-animation.html',
+        'freelancing-tips-motion-designers.html', 'future-of-web-animation-2026.html',
+        'generative-ai-copyright-creative-work.html', 'green-screen-compositing-tips.html',
+        'kinetic-typography-video-production.html', 'large-language-models-creatives.html',
+        'logo-animation-techniques.html', 'lottie-files-web-animation.html',
+        'machine-learning-visual-effects.html', 'marketing-motion-design-business.html',
+        'mastering-after-effects-expressions.html', 'motion-design-principles-beginners.html',
+        'motion-graphics-stock-video-resources.html', 'neural-networks-image-processing.html',
+        'performance-optimization-web-animations.html', 'pricing-animation-services.html',
+        'remote-collaboration-creative-teams.html', 'responsive-design-creative-portfolios.html',
+        'seamless-loop-animations.html', 'svg-animation-techniques.html',
+        'threejs-3d-web-experiences.html', 'top-motion-design-tools-2026.html',
+        'typography-trends-2026.html', 'understanding-diffusion-models.html',
+        'visual-storytelling-data-animation.html', 'web-animation-css-javascript.html'
+      ];
+
+      container.innerHTML = `
+        <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+          <div>
+            <h3 style="font-size:1rem;font-weight:600;margin:0">Blog Advertisements</h3>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0">Manage ads displayed across all 40 blog pages. ${ads.filter(a => a.is_active).length} active of ${ads.length} total.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="AdminPage.showAdForm(null, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})">
+            <i class="fas fa-plus"></i> Create Ad
+          </button>
+        </div>
+        ${ads.length === 0 ? `
+        <div style="text-align:center;padding:60px;border:2px dashed var(--border-light);border-radius:var(--radius-lg)">
+          <i class="fas fa-bullhorn" style="font-size:3rem;color:var(--text-muted);margin-bottom:16px;display:block"></i>
+          <h3 style="margin-bottom:8px">No ads yet</h3>
+          <p style="color:var(--text-muted);margin-bottom:20px">Create your first blog advertisement to display across your blog pages.</p>
+          <button class="btn btn-primary" onclick="AdminPage.showAdForm(null, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})">
+            <i class="fas fa-plus"></i> Create Your First Ad
+          </button>
+        </div>
+        ` : `
+        <div style="display:flex;flex-direction:column;gap:16px">
+          ${ads.map(ad => `
+            <div class="glass" style="padding:20px;border-radius:var(--radius-md);display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;opacity:${ad.is_active ? '1' : '0.5'}">
+              <div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                  <span style="font-size:1.2rem;color:var(--accent-1);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-cube'}"></i></span>
+                  <div>
+                    <span style="font-weight:600;font-size:0.95rem">${ad.name}</span>
+                    <span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(0,102,204,0.1);color:var(--accent-1);margin-left:8px;text-transform:uppercase;letter-spacing:0.5px">${ad.ad_type}</span>
+                    ${ad.is_active ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(16,185,129,0.15);color:var(--success);margin-left:4px">Active</span>' : '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:var(--bg-input);color:var(--text-muted);margin-left:4px">Inactive</span>'}
+                  </div>
+                </div>
+                <div style="font-size:0.85rem;font-weight:600;color:#1d1d1f;margin-bottom:2px">${ad.title}</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;line-height:1.4">${ad.description}</div>
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.75rem;color:var(--text-muted)">
+                  <span><i class="fas fa-bullseye"></i> ${ad.cta_text} → ${ad.cta_url.substring(0, 40)}${ad.cta_url.length > 40 ? '...' : ''}</span>
+                  <span><i class="fas fa-file"></i> Pages: ${ad.target_pages === 'all' ? 'All (40)' : JSON.parse(ad.target_pages || '[]').length + ' selected'}</span>
+                  <span><i class="fas fa-sort"></i> Order: ${ad.sort_order || 0}</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;flex-shrink:0">
+                <button class="admin-action-btn" onclick="AdminPage.toggleAd(${ad.id}, ${!ad.is_active})" title="${ad.is_active ? 'Deactivate' : 'Activate'}" style="color:${ad.is_active ? 'var(--warning)' : 'var(--success)'}">
+                  <i class="fas fa-${ad.is_active ? 'pause' : 'play'}"></i>
+                </button>
+                <button class="admin-action-btn" onclick="AdminPage.showAdForm(${ad.id}, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})" title="Edit">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteAd(${ad.id}, '${ad.name.replace(/'/g, "\\'")}')" title="Delete">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        `}
+      `;
+    } catch (error) {
+      console.error('Ads error:', error);
+      container.innerHTML = Components.emptyState('😔', 'Failed to load ads', error.message);
+    }
+  },
+
+  async showAdForm(adId, blogPageFiles) {
+    let ad = null;
+    if (adId) {
+      ad = await DB.getAdById(adId);
+    }
+    const isEdit = !!ad;
+
+    const pageOptions = blogPageFiles.map(f => ({
+      value: f,
+      label: f.replace('.html', '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    }));
+
+    // Sort page options by label
+    pageOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    const selectedPages = isEdit && ad.target_pages !== 'all' ? (() => {
+      try { return JSON.parse(ad.target_pages); } catch { return []; }
+    })() : [];
+    const isAllPages = isEdit && ad.target_pages === 'all';
+
+    Components.showModal(isEdit ? 'Edit Advertisement' : 'Create Advertisement', `
+      <form id="adForm" onsubmit="AdminPage.saveAd(event, ${adId || 'null'})" style="display:flex;flex-direction:column;gap:14px;max-height:70vh;overflow-y:auto">
+        <div class="form-group">
+          <label>Ad Name (internal label)</label>
+          <input type="text" id="af_name" value="${isEdit ? ad.name : ''}" placeholder="e.g. Summer Sale Banner" required>
+        </div>
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label>Ad Position Type</label>
+            <select id="af_ad_type">
+              <option value="ad1" ${isEdit && ad.ad_type === 'ad1' ? 'selected' : ''}>Position 1 (After intro)</option>
+              <option value="ad2" ${isEdit && ad.ad_type === 'ad2' ? 'selected' : ''}>Position 2 (Middle of article)</option>
+              <option value="ad3" ${isEdit && ad.ad_type === 'ad3' ? 'selected' : ''}>Position 3 (Before tags)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Icon (Font Awesome class)</label>
+            <input type="text" id="af_icon" value="${isEdit ? (ad.icon || 'fa-cube') : 'fa-cube'}" placeholder="fa-cube">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Headline</label>
+          <input type="text" id="af_title" value="${isEdit ? ad.title : ''}" placeholder="e.g. Premium Motion Graphics Assets" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="af_description" rows="2" style="resize:vertical" placeholder="Compelling description..." required>${isEdit ? ad.description : ''}</textarea>
+        </div>
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label>CTA Button Text</label>
+            <input type="text" id="af_cta_text" value="${isEdit ? (ad.cta_text || 'Learn More') : 'Browse Collection'}">
+          </div>
+          <div class="form-group">
+            <label>CTA URL</label>
+            <input type="url" id="af_cta_url" value="${isEdit ? ad.cta_url : 'https://pixabanimation.github.io/#/shop'}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Sort Order (lower numbers appear first)</label>
+          <input type="number" id="af_sort_order" min="0" value="${isEdit ? (ad.sort_order || 0) : 0}">
+        </div>
+        <div class="form-group">
+          <label>Target Pages</label>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <input type="checkbox" id="af_all_pages" ${isAllPages || !isEdit ? 'checked' : ''} onchange="document.getElementById('af_page_selection').style.display = this.checked ? 'none' : 'block'">
+            <label for="af_all_pages" style="margin:0;font-weight:500">All blog pages</label>
+          </div>
+          <div id="af_page_selection" style="display:${isAllPages || !isEdit ? 'none' : 'block'};max-height:200px;overflow-y:auto;border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:8px">
+            ${pageOptions.map(p => `
+              <label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:0.85rem;cursor:pointer">
+                <input type="checkbox" value="${p.value}" ${selectedPages.includes(p.value) ? 'checked' : ''} style="width:auto">
+                ${p.label}
+              </label>
+            `).join('')}
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="checkbox" id="af_is_active" ${(!isEdit || (isEdit && ad.is_active)) ? 'checked' : ''} style="width:auto">
+          <label for="af_is_active" style="margin:0;font-weight:500">Active (visible on pages)</label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Save Changes' : 'Create Advertisement'}
+        </button>
+      </form>
+    `, '640px');
+  },
+
+  async saveAd(event, adId) {
+    event.preventDefault();
+    const name = document.getElementById('af_name').value.trim();
+    const ad_type = document.getElementById('af_ad_type').value;
+    const icon = document.getElementById('af_icon').value.trim() || 'fa-cube';
+    const title = document.getElementById('af_title').value.trim();
+    const description = document.getElementById('af_description').value.trim();
+    const cta_text = document.getElementById('af_cta_text').value.trim();
+    const cta_url = document.getElementById('af_cta_url').value.trim();
+    const sort_order = parseInt(document.getElementById('af_sort_order').value) || 0;
+    const isAllPages = document.getElementById('af_all_pages').checked;
+    const is_active = document.getElementById('af_is_active').checked ? 1 : 0;
+
+    let target_pages = 'all';
+    if (!isAllPages) {
+      const checkboxes = document.querySelectorAll('#af_page_selection input[type="checkbox"]:checked');
+      target_pages = JSON.stringify(Array.from(checkboxes).map(cb => cb.value));
+    }
+
+    if (!name || !title || !description) {
+      Components.toast('Name, headline, and description are required', 'error');
+      return;
+    }
+
+    const data = { name, ad_type, icon, title, description, cta_text, cta_url, target_pages, is_active, sort_order };
+
+    try {
+      if (adId) {
+        await DB.updateAd(adId, data);
+        Components.toast('Ad updated!', 'success');
+      } else {
+        await DB.createAd(data);
+        Components.toast('Ad created!', 'success');
+      }
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadAds();
+    } catch (error) {
+      Components.toast('Failed to save ad: ' + error.message, 'error');
+    }
+  },
+
+  async toggleAd(adId, isActive) {
+    try {
+      await DB.toggleAd(adId, isActive);
+      Components.toast(isActive ? 'Ad activated' : 'Ad deactivated', 'success');
+      this.loadAds();
+    } catch (error) {
+      Components.toast('Failed to toggle ad', 'error');
+    }
+  },
+
+  confirmDeleteAd(adId, adName) {
+    Components.showModal('Delete Advertisement', `
+      <p style="color:var(--text-secondary);margin-bottom:20px">
+        Are you sure you want to delete <strong>${adName}</strong>? This action cannot be undone.
+      </p>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" style="background:var(--error)" onclick="AdminPage.deleteAd(${adId})">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    `);
+  },
+
+  async deleteAd(adId) {
+    try {
+      await DB.deleteAd(adId);
+      Components.toast('Ad deleted', 'success');
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadAds();
+    } catch (error) {
+      Components.toast('Failed to delete ad', 'error');
+    }
+  },
+
+  // Helper to get all blog page filenames for ads
+  getBlogPageFiles() {
+    return [
+      'ai-assistants-for-designers.html', 'ai-design-tools-creative-workflow.html',
+      'ai-driven-personalization-digital-media.html', 'ai-motion-graphics-revolution.html',
+      'ai-powered-voice-synthesis-video.html', 'ai-video-generation-2026.html',
+      'building-interactive-data-visualizations.html', 'building-motion-design-portfolio.html',
+      'building-personal-brand-designer.html', 'chatgpt-codex-vs-claude-coding.html',
+      'claude-ai-coding-productivity.html', 'client-management-creative-freelancers.html',
+      'color-theory-motion-designers.html', 'computer-vision-animation.html',
+      'freelancing-tips-motion-designers.html', 'future-of-web-animation-2026.html',
+      'generative-ai-copyright-creative-work.html', 'green-screen-compositing-tips.html',
+      'kinetic-typography-video-production.html', 'large-language-models-creatives.html',
+      'logo-animation-techniques.html', 'lottie-files-web-animation.html',
+      'machine-learning-visual-effects.html', 'marketing-motion-design-business.html',
+      'mastering-after-effects-expressions.html', 'motion-design-principles-beginners.html',
+      'motion-graphics-stock-video-resources.html', 'neural-networks-image-processing.html',
+      'performance-optimization-web-animations.html', 'pricing-animation-services.html',
+      'remote-collaboration-creative-teams.html', 'responsive-design-creative-portfolios.html',
+      'seamless-loop-animations.html', 'svg-animation-techniques.html',
+      'threejs-3d-web-experiences.html', 'top-motion-design-tools-2026.html',
+      'typography-trends-2026.html', 'understanding-diffusion-models.html',
+      'visual-storytelling-data-animation.html', 'web-animation-css-javascript.html'
+    ];
   },
 
   // ===================== COUPONS =====================
