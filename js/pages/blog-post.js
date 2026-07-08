@@ -211,7 +211,7 @@ const BlogPostPage = {
     
     const lines = content.split('\n');
     const blocks = [];
-    let currentList = null;
+    let currentList = [];
     let currentListType = null;
 
     const flushList = () => {
