@@ -872,6 +872,109 @@ const DB = {
 
   async deleteMedia(id) {
     return this.execute('DELETE FROM media WHERE id = ?', [id]);
+  },
+
+  // === Blog ===
+  async getBlogPosts(filters = {}) {
+    let sql = 'SELECT * FROM blog_posts WHERE 1=1';
+    const params = [];
+    if (filters.published !== undefined) {
+      sql += ' AND published = ?';
+      params.push(filters.published ? 1 : 0);
+    }
+    if (filters.category) {
+      sql += ' AND category = ?';
+      params.push(filters.category);
+    }
+    if (filters.featured) {
+      sql += ' AND featured = 1';
+    }
+    if (filters.search) {
+      sql += ' AND (title LIKE ? OR excerpt LIKE ? OR content LIKE ?)';
+      params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+    }
+    sql += ' ORDER BY created_at DESC';
+    if (filters.limit) {
+      sql += ' LIMIT ?';
+      params.push(filters.limit);
+    }
+    if (filters.offset) {
+      sql += ' OFFSET ?';
+      params.push(filters.offset);
+    }
+    return this.query(sql, params);
+  },
+
+  async getBlogPost(slug) {
+    const posts = await this.query('SELECT * FROM blog_posts WHERE slug = ?', [slug]);
+    return posts.length > 0 ? posts[0] : null;
+  },
+
+  async getBlogPostById(id) {
+    const posts = await this.query('SELECT * FROM blog_posts WHERE id = ?', [id]);
+    return posts.length > 0 ? posts[0] : null;
+  },
+
+  async createBlogPost(data) {
+    const { title, slug, excerpt, content, author, cover_image, category, tags, reading_time, published, featured, meta_title, meta_description } = data;
+    const result = await this.execute(
+      `INSERT INTO blog_posts (title, slug, excerpt, content, author, cover_image, category, tags, reading_time, published, featured, meta_title, meta_description)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [title, slug, excerpt || null, content, author || 'PixabAnimation', cover_image || null, category || null, JSON.stringify(tags || []), reading_time || 5, published ? 1 : 0, featured ? 1 : 0, meta_title || null, meta_description || null]
+    );
+    return result.lastInsertRowid;
+  },
+
+  async updateBlogPost(id, data) {
+    const fields = [];
+    const params = [];
+    const allowedFields = ['title', 'slug', 'excerpt', 'content', 'author', 'cover_image', 'category', 'tags', 'reading_time', 'published', 'featured', 'meta_title', 'meta_description'];
+    for (const [key, value] of Object.entries(data)) {
+      if (allowedFields.includes(key)) {
+        if (key === 'tags' && Array.isArray(value)) {
+          fields.push('tags = ?');
+          params.push(JSON.stringify(value));
+        } else {
+          fields.push(`${key} = ?`);
+          params.push(value);
+        }
+      }
+    }
+    if (fields.length === 0) return;
+    fields.push("updated_at = CURRENT_TIMESTAMP");
+    params.push(id);
+    return this.execute(
+      `UPDATE blog_posts SET ${fields.join(', ')} WHERE id = ?`,
+      params
+    );
+  },
+
+  async deleteBlogPost(id) {
+    return this.execute('DELETE FROM blog_posts WHERE id = ?', [id]);
+  },
+
+  async getBlogCategories() {
+    return this.query(
+      "SELECT category, COUNT(*) as count FROM blog_posts WHERE published = 1 AND category IS NOT NULL GROUP BY category ORDER BY count DESC"
+    );
+  },
+
+  async getRecentBlogPosts(limit = 5) {
+    return this.query(
+      "SELECT * FROM blog_posts WHERE published = 1 ORDER BY created_at DESC LIMIT ?",
+      [limit]
+    );
+  },
+
+  async getFeaturedBlogPosts(limit = 3) {
+    return this.query(
+      "SELECT * FROM blog_posts WHERE published = 1 AND featured = 1 ORDER BY created_at DESC LIMIT ?",
+      [limit]
+    );
+  },
+
+  async getAllBlogPosts(filters = {}) {
+    return this.getBlogPosts(filters);
   }
 };
 

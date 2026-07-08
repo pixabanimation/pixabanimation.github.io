@@ -187,6 +187,26 @@ CREATE TABLE IF NOT EXISTS password_reset_codes (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Blog posts table
+CREATE TABLE IF NOT EXISTS blog_posts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
+  excerpt TEXT,
+  content TEXT NOT NULL,
+  author TEXT DEFAULT 'PixabAnimation',
+  cover_image TEXT,
+  category TEXT,
+  tags TEXT DEFAULT '[]',
+  reading_time INTEGER DEFAULT 5,
+  published INTEGER DEFAULT 0,
+  featured INTEGER DEFAULT 0,
+  meta_title TEXT,
+  meta_description TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Security questions for password recovery
 CREATE TABLE IF NOT EXISTS admin_security (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

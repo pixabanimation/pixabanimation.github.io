@@ -23,7 +23,7 @@
     <loc>https://pixabanimation.github.io/#/contact</loc>
     <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>1</priority>
   </url>
   <url>
     <loc>https://pixabanimation.github.io/#/privacy-policy</loc>
@@ -61,4 +61,53 @@
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
+  <!-- Blog Listing -->
+  <url>
+    <loc>https://pixabanimation.github.io/blog/</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Blog Articles -->
+  <url><loc>https://pixabanimation.github.io/blog/ai-motion-graphics-revolution.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/claude-ai-coding-productivity.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/chatgpt-codex-vs-claude-coding.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/future-of-web-animation-2026.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/typography-trends-2026.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/ai-design-tools-creative-workflow.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/freelancing-tips-motion-designers.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/ai-video-generation-2026.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/large-language-models-creatives.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/generative-ai-copyright-creative-work.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/machine-learning-visual-effects.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/color-theory-motion-designers.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/motion-design-principles-beginners.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/logo-animation-techniques.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/green-screen-compositing-tips.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/kinetic-typography-video-production.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/visual-storytelling-data-animation.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/seamless-loop-animations.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/building-motion-design-portfolio.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/top-motion-design-tools-2026.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/web-animation-css-javascript.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/svg-animation-techniques.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/lottie-files-web-animation.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/threejs-3d-web-experiences.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/performance-optimization-web-animations.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/responsive-design-creative-portfolios.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/pricing-animation-services.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/client-management-creative-freelancers.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/building-personal-brand-designer.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/marketing-motion-design-business.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/neural-networks-image-processing.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/ai-powered-voice-synthesis-video.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/ai-assistants-for-designers.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/computer-vision-animation.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/ai-driven-personalization-digital-media.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/understanding-diffusion-models.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/remote-collaboration-creative-teams.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/motion-graphics-stock-video-resources.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pixabanimation.github.io/blog/building-interactive-data-visualizations.html</loc><lastmod>2026-07-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

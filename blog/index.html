@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PixabAnimation Blog — Motion Graphics, AI & Design Insights</title>
+  <meta name="description" content="Expert tutorials, creative insights, and industry trends on motion graphics, AI in design, animation, typography, freelancing, and creative technology.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://pixabanimation.github.io/blog/">
+  <meta property="og:title" content="PixabAnimation Blog — Insights for Creators">
+  <meta property="og:description" content="Expert tutorials, creative insights, and industry trends on motion graphics, AI, animation, and design.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pixabanimation.github.io/blog/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pixabanimation.github.io/blog/">
+  <meta property="og:site_name" content="PixabAnimation">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:site" content="@pixabanimation">
+  <meta name="twitter:creator" content="@pixabanimation">
+  <link rel="stylesheet" href="blog.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "PixabAnimation Blog",
+    "description": "Expert tutorials, creative insights, and industry trends on motion graphics, AI in design, animation, typography, freelancing, and creative technology.",
+    "url": "https://pixabanimation.github.io/blog/",
+    "publisher": {
+      "@type": "Organization",
+      "name": "PixabAnimation",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://pixabanimation.github.io/assets/pixabanimation-logo.png"
+      }
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pixabanimation.github.io/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://pixabanimation.github.io/blog/"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="blog-navbar" id="blogNavbar">
+    <div class="blog-nav-container">
+      <a href="https://pixabanimation.github.io/" class="blog-nav-brand">
+        <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation">
+        PixabAnimation
+      </a>
+      <button class="blog-nav-toggle" onclick="document.getElementById('blogNavLinks').classList.toggle('open')" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="blog-nav-links" id="blogNavLinks">
+        <li><a href="https://pixabanimation.github.io/">Home</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop">Shop</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop?category=videos">Videos</a></li>
+        <li><a href="https://pixabanimation.github.io/#/about">About</a></li>
+        <li><a href="https://pixabanimation.github.io/#/contact">Contact</a></li>
+        <li><a href="index.html" class="active">Blog</a></li>
+      </ul>
+      <div class="blog-nav-actions">
+        <a href="https://pixabanimation.github.io/#/shop"><i class="fas fa-store"></i> Shop</a>
+        <a href="https://pixabanimation.github.io/#/cart"><i class="fas fa-shopping-bag"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="blog-home-hero">
+    <h1>PixabAnimation Blog</h1>
+    <p>Expert tutorials, creative insights, and industry trends on motion graphics, AI in design, animation, typography, freelancing, and creative technology.</p>
+    <div class="blog-home-search">
+      <i class="fas fa-search icon"></i>
+      <input type="text" id="blogSearchInput" placeholder="Search articles..." onkeyup="searchArticles(this.value)">
+    </div>
+  </section>
+
+  <!-- Featured Article -->
+  <div class="blog-homepage">
+    <section class="blog-home-featured">
+      <h2>Featured Article</h2>
+      <div class="blog-home-grid">
+        <a href="ai-motion-graphics-revolution.html" class="blog-home-card blog-home-featured-card">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&q=80" alt="AI Revolution in Motion Graphics">
+          <div class="blog-home-card-body" style="justify-content:center;padding:32px">
+            <div class="blog-home-card-category">Artificial Intelligence</div>
+            <div class="blog-home-card-title" style="font-size:1.3rem">The AI Revolution in Motion Graphics</div>
+            <div class="blog-home-card-desc" style="font-size:.9rem">Discover how artificial intelligence is transforming motion graphics in 2026, from AI-powered animation tools to automated workflows.</div>
+            <div class="blog-home-card-meta"><span>📅 Jan 15, 2026</span><span>📝 PixabAnimation Team</span><span>12 min read</span></div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Article Grid -->
+    <section class="blog-home-featured">
+      <h2>All Articles</h2>
+      <div class="blog-home-grid" id="blogArticleGrid">
+        <a href="ai-motion-graphics-revolution.html" class="blog-home-card" data-category="AI" data-title="AI Revolution in Motion Graphics">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">The AI Revolution in Motion Graphics</div>
+            <div class="blog-home-card-desc">How AI is transforming motion graphics with automated rotoscoping, intelligent keyframing, and generative video.</div>
+            <div class="blog-home-card-meta"><span>Jan 15, 2026</span><span>12 min</span></div>
+          </div>
+        </a>
+
+        <a href="claude-ai-coding-productivity.html" class="blog-home-card" data-category="AI" data-title="Claude AI Coding">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">Claude AI for Coding: Productivity Tips</div>
+            <div class="blog-home-card-desc">Master Claude AI for coding with expert tips and techniques to boost your development productivity.</div>
+            <div class="blog-home-card-meta"><span>Jan 18, 2026</span><span>10 min</span></div>
+          </div>
+        </a>
+
+        <a href="chatgpt-codex-vs-claude-coding.html" class="blog-home-card" data-category="AI" data-title="ChatGPT vs Claude">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">ChatGPT Codex vs Claude for Coding</div>
+            <div class="blog-home-card-desc">In-depth comparison of ChatGPT Codex and Claude for coding tasks, strengths, weaknesses, and recommendations.</div>
+            <div class="blog-home-card-meta"><span>Jan 20, 2026</span><span>11 min</span></div>
+          </div>
+        </a>
+
+        <a href="future-of-web-animation-2026.html" class="blog-home-card" data-category="Web" data-title="Future of Web Animation">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Web</div>
+            <div class="blog-home-card-title">Future of Web Animation 2026</div>
+            <div class="blog-home-card-desc">Explore cutting-edge trends in web animation — WebGPU, scroll-driven animations, and immersive 3D experiences.</div>
+            <div class="blog-home-card-meta"><span>Jan 22, 2026</span><span>14 min</span></div>
+          </div>
+        </a>
+
+        <a href="typography-trends-2026.html" class="blog-home-card" data-category="Design" data-title="Typography Trends 2026">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Design</div>
+            <div class="blog-home-card-title">Typography Trends 2026</div>
+            <div class="blog-home-card-desc">Variable fonts, kinetic type, generative typography, and motion-driven lettering trends shaping design.</div>
+            <div class="blog-home-card-meta"><span>Jan 25, 2026</span><span>10 min</span></div>
+          </div>
+        </a>
+
+        <a href="ai-design-tools-creative-workflow.html" class="blog-home-card" data-category="AI" data-title="AI Design Tools">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">AI Design Tools for Creative Workflow</div>
+            <div class="blog-home-card-desc">Explore the best AI design tools transforming creative workflows — Adobe Firefly, Figma AI, and more.</div>
+            <div class="blog-home-card-meta"><span>Jan 28, 2026</span><span>11 min</span></div>
+          </div>
+        </a>
+
+        <a href="freelancing-tips-motion-designers.html" class="blog-home-card" data-category="Freelancing" data-title="Freelancing Tips">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1529119368496-2dfda6ec2804?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Freelancing</div>
+            <div class="blog-home-card-title">Freelancing Tips for Motion Designers</div>
+            <div class="blog-home-card-desc">Build a thriving freelance motion design business with expert tips on pricing, clients, and marketing.</div>
+            <div class="blog-home-card-meta"><span>Jan 30, 2026</span><span>12 min</span></div>
+          </div>
+        </a>
+
+        <a href="ai-video-generation-2026.html" class="blog-home-card" data-category="AI" data-title="AI Video Generation">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">AI Video Generation in 2026</div>
+            <div class="blog-home-card-desc">The complete guide to AI video generation — Sora, Runway Gen-3, Pika Labs, and how creators use them.</div>
+            <div class="blog-home-card-meta"><span>Feb 1, 2026</span><span>13 min</span></div>
+          </div>
+        </a>
+
+        <a href="mastering-after-effects-expressions.html" class="blog-home-card" data-category="Animation" data-title="After Effects Expressions">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1626544827763-d516dce335e2?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Animation</div>
+            <div class="blog-home-card-title">Mastering After Effects Expressions</div>
+            <div class="blog-home-card-desc">Master JavaScript-based animation automation in After Effects, from basics to advanced techniques.</div>
+            <div class="blog-home-card-meta"><span>Feb 3, 2026</span><span>15 min</span></div>
+          </div>
+        </a>
+
+        <a href="large-language-models-creatives.html" class="blog-home-card" data-category="AI" data-title="LLMs for Creatives">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">Understanding LLMs for Creatives</div>
+            <div class="blog-home-card-desc">A creative's guide to understanding large language models and how to leverage them in creative workflows.</div>
+            <div class="blog-home-card-meta"><span>Feb 5, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="generative-ai-copyright-creative-work.html" class="blog-home-card" data-category="AI" data-title="AI Copyright Guide">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">Generative AI Copyright Guide</div>
+            <div class="blog-home-card-desc">Navigate the complex landscape of generative AI copyright for creatives — ownership, licensing, and best practices.</div>
+            <div class="blog-home-card-meta"><span>Feb 7, 2026</span><span>10 min</span></div>
+          </div>
+        </a>
+
+        <a href="machine-learning-visual-effects.html" class="blog-home-card" data-category="Technology" data-title="ML for VFX">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Technology</div>
+            <div class="blog-home-card-title">Machine Learning for Visual Effects</div>
+            <div class="blog-home-card-desc">Discover how ML is transforming VFX — AI rotoscoping, neural rendering, and AI-assisted compositing.</div>
+            <div class="blog-home-card-meta"><span>Feb 8, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+
+        <a href="color-theory-motion-designers.html" class="blog-home-card" data-category="Design" data-title="Color Theory">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1560421683-6856ea585c78?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Design</div>
+            <div class="blog-home-card-title">Color Theory for Motion Designers</div>
+            <div class="blog-home-card-desc">Master color theory for motion design — harmonies, psychology, color grading, and accessibility.</div>
+            <div class="blog-home-card-meta"><span>Feb 9, 2026</span><span>10 min</span></div>
+          </div>
+        </a>
+
+        <a href="motion-design-principles-beginners.html" class="blog-home-card" data-category="Animation" data-title="Motion Design Principles">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Animation</div>
+            <div class="blog-home-card-title">Motion Design Principles for Beginners</div>
+            <div class="blog-home-card-desc">Learn the 12 principles of motion design — timing, spacing, easing, and animation fundamentals.</div>
+            <div class="blog-home-card-meta"><span>Feb 10, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="logo-animation-techniques.html" class="blog-home-card" data-category="Animation" data-title="Logo Animation">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Animation</div>
+            <div class="blog-home-card-title">Logo Animation Techniques</div>
+            <div class="blog-home-card-desc">Creating memorable brand introductions with reveal animations, morphing, and 3D logo animation.</div>
+            <div class="blog-home-card-meta"><span>Feb 11, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+
+        <a href="green-screen-compositing-tips.html" class="blog-home-card" data-category="VFX" data-title="Green Screen Tips">
+          <img class="blog-home-card-img" src="../assets/images/iphone-mockup.jpg" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">VFX</div>
+            <div class="blog-home-card-title">Green Screen Compositing Tips</div>
+            <div class="blog-home-card-desc">Expert tips for keying, lighting, spill suppression, and professional compositing workflows.</div>
+            <div class="blog-home-card-meta"><span>Feb 12, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="kinetic-typography-video-production.html" class="blog-home-card" data-category="Typography" data-title="Kinetic Typography">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Typography</div>
+            <div class="blog-home-card-title">Kinetic Typography in Video</div>
+            <div class="blog-home-card-desc">Techniques for animating text that captures attention and communicates effectively in video production.</div>
+            <div class="blog-home-card-meta"><span>Feb 13, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="visual-storytelling-data-animation.html" class="blog-home-card" data-category="Animation" data-title="Data Animation">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Animation</div>
+            <div class="blog-home-card-title">Data Animation for Storytelling</div>
+            <div class="blog-home-card-desc">Transform complex data into compelling animated visual narratives with effective data animation techniques.</div>
+            <div class="blog-home-card-meta"><span>Feb 14, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+
+        <a href="seamless-loop-animations.html" class="blog-home-card" data-category="Animation" data-title="Seamless Loops">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Animation</div>
+            <div class="blog-home-card-title">Seamless Loop Animations</div>
+            <div class="blog-home-card-desc">Design patterns and techniques for creating infinite motion sequences without visible loop points.</div>
+            <div class="blog-home-card-meta"><span>Feb 15, 2026</span><span>7 min</span></div>
+          </div>
+        </a>
+
+        <a href="building-motion-design-portfolio.html" class="blog-home-card" data-category="Career" data-title="Portfolio Building">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1529119368496-2dfda6ec2804?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Career</div>
+            <div class="blog-home-card-title">Building a Motion Design Portfolio</div>
+            <div class="blog-home-card-desc">Tips on showcasing work, case studies, platform selection, and attracting high-quality clients.</div>
+            <div class="blog-home-card-meta"><span>Feb 16, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+
+        <a href="top-motion-design-tools-2026.html" class="blog-home-card" data-category="Tools" data-title="Top Motion Tools">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1626544827763-d516dce335e2?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Tools</div>
+            <div class="blog-home-card-title">Top Motion Design Tools 2026</div>
+            <div class="blog-home-card-desc">Comprehensive guide to After Effects, Cinema 4D, Blender, DaVinci Resolve, and AI-powered tools.</div>
+            <div class="blog-home-card-meta"><span>Feb 17, 2026</span><span>10 min</span></div>
+          </div>
+        </a>
+
+        <a href="web-animation-css-javascript.html" class="blog-home-card" data-category="Web" data-title="Web Animation Guide">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Web</div>
+            <div class="blog-home-card-title">Web Animation with CSS & JS</div>
+            <div class="blog-home-card-desc">Complete guide to web animation — CSS transitions, JavaScript libraries, performance best practices.</div>
+            <div class="blog-home-card-meta"><span>Feb 18, 2026</span><span>11 min</span></div>
+          </div>
+        </a>
+
+        <a href="svg-animation-techniques.html" class="blog-home-card" data-category="Web" data-title="SVG Animation">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Web</div>
+            <div class="blog-home-card-title">SVG Animation Techniques</div>
+            <div class="blog-home-card-desc">Bring vector graphics to life with CSS, JavaScript, and GSAP SVG animation techniques.</div>
+            <div class="blog-home-card-meta"><span>Feb 19, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="lottie-files-web-animation.html" class="blog-home-card" data-category="Web" data-title="Lottie Animation">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Web</div>
+            <div class="blog-home-card-title">Lottie Files for Web Animation</div>
+            <div class="blog-home-card-desc">Complete guide to creating, optimizing, and integrating Lottie animations in web projects.</div>
+            <div class="blog-home-card-meta"><span>Feb 20, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+
+        <a href="threejs-3d-web-experiences.html" class="blog-home-card" data-category="Web" data-title="Three.js Guide">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Web</div>
+            <div class="blog-home-card-title">Three.js for 3D Web Experiences</div>
+            <div class="blog-home-card-desc">Create immersive 3D web experiences — scene setup, animation, interactivity, and performance optimization.</div>
+            <div class="blog-home-card-meta"><span>Feb 21, 2026</span><span>10 min</span></div>
+          </div>
+        </a>
+
+        <a href="performance-optimization-web-animations.html" class="blog-home-card" data-category="Web" data-title="Performance Optimization">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Web</div>
+            <div class="blog-home-card-title">Animation Performance Guide</div>
+            <div class="blog-home-card-desc">Optimize web animation performance — GPU acceleration, layout thrashing prevention, and rendering tips.</div>
+            <div class="blog-home-card-meta"><span>Feb 22, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="responsive-design-creative-portfolios.html" class="blog-home-card" data-category="Design" data-title="Responsive Portfolios">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Design</div>
+            <div class="blog-home-card-title">Responsive Design for Portfolios</div>
+            <div class="blog-home-card-desc">Build a responsive creative portfolio — layouts, typography, image optimization, and mobile-first design.</div>
+            <div class="blog-home-card-meta"><span>Feb 23, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+
+        <a href="pricing-animation-services.html" class="blog-home-card" data-category="Freelancing" data-title="Pricing Guide">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Freelancing</div>
+            <div class="blog-home-card-title">Pricing Your Animation Services</div>
+            <div class="blog-home-card-desc">Learn pricing models, rates, quoting strategies, and negotiation tips for motion designers.</div>
+            <div class="blog-home-card-meta"><span>Feb 24, 2026</span><span>10 min</span></div>
+          </div>
+        </a>
+
+        <a href="client-management-creative-freelancers.html" class="blog-home-card" data-category="Freelancing" data-title="Client Management">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Freelancing</div>
+            <div class="blog-home-card-title">Client Management for Creatives</div>
+            <div class="blog-home-card-desc">Master communication, feedback management, and long-term client relationship building.</div>
+            <div class="blog-home-card-meta"><span>Feb 25, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+
+        <a href="building-personal-brand-designer.html" class="blog-home-card" data-category="Career" data-title="Personal Branding">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Career</div>
+            <div class="blog-home-card-title">Building Your Personal Brand</div>
+            <div class="blog-home-card-desc">Stand out as a designer by defining your niche, creating consistent messaging, and authentic branding.</div>
+            <div class="blog-home-card-meta"><span>Feb 26, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="marketing-motion-design-business.html" class="blog-home-card" data-category="Freelancing" data-title="Marketing Business">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1533750516457-a7f992034fec?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Freelancing</div>
+            <div class="blog-home-card-title">Marketing Your Design Business</div>
+            <div class="blog-home-card-desc">Social media, content marketing, networking, and referral strategies for motion designers.</div>
+            <div class="blog-home-card-meta"><span>Feb 27, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+
+        <a href="neural-networks-image-processing.html" class="blog-home-card" data-category="Technology" data-title="Neural Networks">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Technology</div>
+            <div class="blog-home-card-title">Neural Networks in Image Processing</div>
+            <div class="blog-home-card-desc">Super-resolution, style transfer, denoising, and AI-powered editing tools for creatives.</div>
+            <div class="blog-home-card-meta"><span>Feb 28, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="ai-powered-voice-synthesis-video.html" class="blog-home-card" data-category="AI" data-title="AI Voice Synthesis">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">AI Voice Synthesis for Video</div>
+            <div class="blog-home-card-desc">Text-to-speech, voice cloning, and AI voiceover tools transforming video production.</div>
+            <div class="blog-home-card-meta"><span>Mar 1, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+
+        <a href="ai-assistants-for-designers.html" class="blog-home-card" data-category="AI" data-title="AI Assistants">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">AI Assistants for Designers</div>
+            <div class="blog-home-card-desc">How AI assistants are transforming design workflows from ideation to production.</div>
+            <div class="blog-home-card-meta"><span>Mar 2, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="computer-vision-animation.html" class="blog-home-card" data-category="Technology" data-title="Computer Vision">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Technology</div>
+            <div class="blog-home-card-title">Computer Vision in Animation</div>
+            <div class="blog-home-card-desc">Markerless motion capture, facial tracking, and gesture recognition for animation workflows.</div>
+            <div class="blog-home-card-meta"><span>Mar 3, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="ai-driven-personalization-digital-media.html" class="blog-home-card" data-category="AI" data-title="AI Personalization">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">AI Personalization in Media</div>
+            <div class="blog-home-card-desc">How machine learning creates personalized content experiences for audiences at scale.</div>
+            <div class="blog-home-card-meta"><span>Mar 4, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="understanding-diffusion-models.html" class="blog-home-card" data-category="AI" data-title="Diffusion Models">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">AI</div>
+            <div class="blog-home-card-title">Understanding Diffusion Models</div>
+            <div class="blog-home-card-desc">The technology behind Stable Diffusion, DALL-E, Midjourney, and AI image generation explained.</div>
+            <div class="blog-home-card-meta"><span>Mar 5, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+
+        <a href="remote-collaboration-creative-teams.html" class="blog-home-card" data-category="Career" data-title="Remote Collaboration">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Career</div>
+            <div class="blog-home-card-title">Remote Collaboration for Teams</div>
+            <div class="blog-home-card-desc">Tools, workflows, and best practices for motion design teams working remotely.</div>
+            <div class="blog-home-card-meta"><span>Mar 6, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="motion-graphics-stock-video-resources.html" class="blog-home-card" data-category="Resources" data-title="Stock Resources">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Resources</div>
+            <div class="blog-home-card-title">Stock Video Resources Guide</div>
+            <div class="blog-home-card-desc">Best platforms for motion backgrounds, animated templates, and stock footage in 2026.</div>
+            <div class="blog-home-card-meta"><span>Mar 7, 2026</span><span>8 min</span></div>
+          </div>
+        </a>
+
+        <a href="building-interactive-data-visualizations.html" class="blog-home-card" data-category="Web" data-title="Interactive Visualizations">
+          <img class="blog-home-card-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80" alt="" loading="lazy">
+          <div class="blog-home-card-body">
+            <div class="blog-home-card-category">Web</div>
+            <div class="blog-home-card-title">Interactive Data Visualizations</div>
+            <div class="blog-home-card-desc">Build engaging interactive data experiences with D3.js, animation, and performance optimization.</div>
+            <div class="blog-home-card-meta"><span>Mar 8, 2026</span><span>9 min</span></div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="blog-home-categories">
+      <h2>Categories</h2>
+      <div class="blog-home-cat-chips">
+        <a href="?category=AI">Artificial Intelligence</a>
+        <a href="?category=Animation">Animation</a>
+        <a href="?category=Design">Design</a>
+        <a href="?category=Typography">Typography</a>
+        <a href="?category=Web">Web Development</a>
+        <a href="?category=Freelancing">Freelancing</a>
+        <a href="?category=Career">Career</a>
+        <a href="?category=Technology">Technology</a>
+        <a href="?category=Tools">Tools</a>
+        <a href="?category=VFX">VFX</a>
+        <a href="?category=Resources">Resources</a>
+        <a href="?category=AI">AI Ethics</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="blog-footer">
+    <div class="blog-footer-content">
+      <div class="blog-footer-grid">
+        <div class="blog-footer-brand">
+          <div class="name"><img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="" style="width:24px;height:20px"> PixabAnimation</div>
+          <div class="desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</div>
+          <div class="blog-footer-social">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="blog-footer-col">
+          <h4>Shop</h4>
+          <a href="https://pixabanimation.github.io/#/shop">All Assets</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=videos">Animation & Video</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins">After Effects Plugins</a>
+        </div>
+        <div class="blog-footer-col">
+          <h4>Categories</h4>
+          <a href="https://pixabanimation.github.io/#/shop?category=videos">Motion Graphics</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup">Green Screen</a>
+          <a href="https://pixabanimation.github.io/#/shop">View All</a>
+        </div>
+        <div class="blog-footer-col">
+          <h4>Support</h4>
+          <a href="https://pixabanimation.github.io/#/contact">Contact Us</a>
+          <a href="https://pixabanimation.github.io/#/about">About Us</a>
+          <a href="https://pixabanimation.github.io/#/blog">Blog</a>
+          <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy Policy</a>
+        </div>
+        <div class="blog-footer-col blog-footer-col-newsletter">
+          <h4>Stay in the Loop</h4>
+          <p class="blog-footer-newsletter-text">Get early access to new releases, subscriber-only discounts, and creative inspiration.</p>
+          <form class="blog-footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
+          </form>
+          <p class="blog-footer-note">No spam. Unsubscribe anytime.</p>
+        </div>
+      </div>
+      <div class="blog-footer-bottom">
+        <div class="blog-footer-bottom-links">
+          <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
+          <span style="color:rgba(255,255,255,.3)">·</span>
+          <a href="https://pixabanimation.github.io/#/refund-policy">Refunds</a>
+          <span style="color:rgba(255,255,255,.3)">·</span>
+          <a href="https://pixabanimation.github.io/#/terms-of-use">Terms</a>
+          <span style="color:rgba(255,255,255,.3)">·</span>
+          <a href="https://pixabanimation.github.io/#/contact">Support</a>
+        </div>
+        <p class="blog-footer-bottom-copy">&copy; 2026 PixabAnimation. All rights reserved.</p>
+        <div class="blog-footer-payment-icons">
+          <i class="fab fa-cc-visa"></i>
+          <i class="fab fa-cc-mastercard"></i>
+          <i class="fab fa-cc-amex"></i>
+          <i class="fab fa-cc-paypal"></i>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function searchArticles(query) {
+      const cards = document.querySelectorAll('#blogArticleGrid .blog-home-card');
+      const q = query.toLowerCase().trim();
+      cards.forEach(card => {
+        const title = card.getAttribute('data-title') || '';
+        const category = card.getAttribute('data-category') || '';
+        const matches = !q || title.toLowerCase().includes(q) || category.toLowerCase().includes(q);
+        card.style.display = matches ? '' : 'none';
+      });
+    }
+    window.addEventListener('scroll', () => {
+      document.getElementById('blogNavbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+  </script>
+</body>
+</html>

@@ -26,6 +26,8 @@ const App = {
     Router.register('/terms-of-use', () => TermsOfUsePage.render());
     Router.register('/admin', () => AdminPage.render());
     Router.register('/forgot-password', (p) => ForgotPasswordPage.render(p));
+    Router.register('/blog', (p) => BlogPage.render(p));
+    Router.register('/blog/:slug', (p) => BlogPostPage.render(p));
 
     // Setup UI
     this.setupNavigation();

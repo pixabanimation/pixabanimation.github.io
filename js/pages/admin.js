@@ -66,6 +66,9 @@ const AdminPage = {
             <button class="admin-nav-item" data-tab="messages" onclick="AdminPage.switchTab('messages');AdminPage.closeSidebar()" id="adminMessagesNav">
               <i class="fas fa-envelope"></i> Messages
             </button>
+            <button class="admin-nav-item" data-tab="blog" onclick="AdminPage.switchTab('blog');AdminPage.closeSidebar()">
+              <i class="fas fa-pen-fancy"></i> Blog
+            </button>
             <hr class="admin-divider">
             <button class="admin-nav-item" data-tab="settings" onclick="AdminPage.switchTab('settings');AdminPage.closeSidebar()">
               <i class="fas fa-cog"></i> Settings
@@ -144,6 +147,7 @@ const AdminPage = {
       case 'subscribers': this.loadSubscribers(); break;
       case 'reviews': this.loadReviews(); break;
       case 'messages': this.loadMessages(); break;
+      case 'blog': this.loadBlogPosts(); break;
       case 'settings': AdminSettings.render(); break;
     }
   },
@@ -1779,6 +1783,251 @@ const AdminPage = {
       this.loadReviews();
     } catch (error) {
       Components.toast('Failed to delete review', 'error');
+    }
+  },
+
+  // ===================== BLOG =====================
+  async loadBlogPosts() {
+    const container = document.getElementById('adminContent');
+    try {
+      const posts = await DB.getAllBlogPosts({});
+      container.innerHTML = `
+        <div class="admin-toolbar">
+          <h3 style="font-size:1rem;font-weight:600">Blog Posts</h3>
+          <button class="btn btn-primary btn-sm" onclick="AdminPage.showBlogForm(null)">
+            <i class="fas fa-plus"></i> New Post
+          </button>
+        </div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Author</th>
+                <th>Read</th>
+                <th>Status</th>
+                <th>Featured</th>
+                <th>Date</th>
+                <th style="width:120px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${posts.length === 0 ?
+                '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No blog posts yet</td></tr>' :
+                posts.map(p => `
+                  <tr>
+                    <td style="color:var(--text-muted);font-size:0.85rem">#${p.id}</td>
+                    <td><span style="font-weight:600;font-size:0.9rem">${p.title}</span></td>
+                    <td><span style="font-size:0.8rem">${p.category || '—'}</span></td>
+                    <td><span style="font-size:0.85rem">${p.author || 'PixabAnimation'}</span></td>
+                    <td><span style="font-size:0.85rem">${p.reading_time || '—'} min</span></td>
+                    <td>
+                      ${p.published ? 
+                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(16,185,129,0.15);color:var(--success)">Published</span>' :
+                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:var(--bg-input);color:var(--text-muted)">Draft</span>'
+                      }
+                    </td>
+                    <td>
+                      <button class="admin-toggle ${p.featured ? 'active' : ''}" 
+                              onclick="AdminPage.toggleBlogFeatured(${p.id}, ${!p.featured})">
+                        <div class="admin-toggle-knob"></div>
+                      </button>
+                    </td>
+                    <td style="font-size:0.85rem;color:var(--text-muted)">${new Date(p.created_at).toLocaleDateString()}</td>
+                    <td>
+                      <div style="display:flex;gap:6px">
+                        <button class="admin-action-btn" onclick="AdminPage.showBlogForm(${p.id})" title="Edit">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <a href="#/blog/${p.slug}" target="_blank" class="admin-action-btn" title="Preview">
+                          <i class="fas fa-eye"></i>
+                        </a>
+                        <button class="admin-action-btn delete" onclick="AdminPage.deleteBlogPost(${p.id}, '${p.title.replace(/'/g, "\\'")}')" title="Delete">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } catch (error) {
+      console.error('Blog error:', error);
+      container.innerHTML = Components.emptyState('😔', 'Failed to load blog posts', error.message);
+    }
+  },
+
+  async showBlogForm(postId) {
+    let post = null;
+    if (postId) {
+      post = await DB.getBlogPostById(postId);
+    }
+    const isEdit = !!post;
+
+    Components.showModal(isEdit ? 'Edit Post' : 'New Blog Post', `
+      <form id="blogForm" onsubmit="AdminPage.saveBlogPost(event, ${postId || 'null'})" style="display:flex;flex-direction:column;gap:14px;max-height:70vh;overflow-y:auto">
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label>Title *</label>
+            <input type="text" id="bf_title" value="${isEdit ? post.title : ''}" required>
+          </div>
+          <div class="form-group">
+            <label>Slug</label>
+            <input type="text" id="bf_slug" value="${isEdit ? post.slug : ''}" placeholder="auto-generated">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Excerpt / Summary</label>
+          <textarea id="bf_excerpt" rows="2" style="resize:vertical" placeholder="Brief summary for card preview...">${isEdit ? (post.excerpt || '') : ''}</textarea>
+        </div>
+        <div class="form-group">
+          <label>Content * (Markdown supported: **bold**, *italic*, [links](url), !![image](url), ## headings)</label>
+          <textarea id="bf_content" rows="12" style="resize:vertical;font-family:monospace;font-size:0.85rem">${isEdit ? (post.content || '') : ''}</textarea>
+        </div>
+        <div class="admin-form-grid-3">
+          <div class="form-group">
+            <label>Category</label>
+            <input type="text" id="bf_category" value="${isEdit ? (post.category || '') : ''}" placeholder="e.g. AI, Design, Freelancing">
+          </div>
+          <div class="form-group">
+            <label>Author</label>
+            <input type="text" id="bf_author" value="${isEdit ? (post.author || 'PixabAnimation') : 'PixabAnimation'}">
+          </div>
+          <div class="form-group">
+            <label>Reading Time (min)</label>
+            <input type="number" id="bf_reading_time" min="1" value="${isEdit ? (post.reading_time || 5) : 5}">
+          </div>
+        </div>
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label>Cover Image URL</label>
+            <input type="url" id="bf_cover" value="${isEdit ? (post.cover_image || '') : ''}" placeholder="https://...image.jpg">
+          </div>
+          <div class="form-group">
+            <label>Tags (comma-separated)</label>
+            <input type="text" id="bf_tags" value="${isEdit ? (() => { try { return JSON.parse(post.tags || '[]').join(', '); } catch { return ''; } })() : ''}" placeholder="motion graphics, AI, tutorial">
+          </div>
+        </div>
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label>Meta Title (SEO)</label>
+            <input type="text" id="bf_meta_title" value="${isEdit ? (post.meta_title || '') : ''}" placeholder="Defaults to post title">
+          </div>
+          <div class="form-group">
+            <label>Meta Description (SEO)</label>
+            <input type="text" id="bf_meta_description" value="${isEdit ? (post.meta_description || '') : ''}" placeholder="Defaults to excerpt">
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="bf_published" ${isEdit && post.published ? 'checked' : ''}>
+            <span style="font-size:0.9rem">Published</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="bf_featured" ${isEdit && post.featured ? 'checked' : ''}>
+            <span style="font-size:0.9rem">Featured</span>
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-${isEdit ? 'save' : 'pen-fancy'}"></i> ${isEdit ? 'Update Post' : 'Publish Post'}
+        </button>
+      </form>
+    `, '640px');
+
+    // Auto-generate slug from title
+    const slugField = document.getElementById('bf_slug');
+    const titleField = document.getElementById('bf_title');
+    if (!slugField.value) {
+      titleField?.addEventListener('input', function() {
+        if (!slugField.dataset.manual) {
+          slugField.value = this.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 80);
+        }
+      });
+    }
+    slugField?.addEventListener('input', function() {
+      this.dataset.manual = 'true';
+    });
+  },
+
+  async saveBlogPost(event, postId) {
+    event.preventDefault();
+    const title = document.getElementById('bf_title').value.trim();
+    const slug = document.getElementById('bf_slug').value.trim() || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 80);
+    const excerpt = document.getElementById('bf_excerpt').value.trim();
+    const content = document.getElementById('bf_content').value.trim();
+    const category = document.getElementById('bf_category').value.trim();
+    const author = document.getElementById('bf_author').value.trim() || 'PixabAnimation';
+    const readingTime = parseInt(document.getElementById('bf_reading_time').value) || 5;
+    const coverImage = document.getElementById('bf_cover').value.trim();
+    const tagsStr = document.getElementById('bf_tags').value.trim();
+    const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const metaTitle = document.getElementById('bf_meta_title').value.trim();
+    const metaDescription = document.getElementById('bf_meta_description').value.trim();
+    const published = document.getElementById('bf_published').checked ? 1 : 0;
+    const featured = document.getElementById('bf_featured').checked ? 1 : 0;
+
+    if (!title || !content) {
+      Components.toast('Title and content are required', 'error');
+      return;
+    }
+
+    const data = { title, slug, excerpt, content, category, author, reading_time: readingTime, cover_image: coverImage || null, tags, meta_title: metaTitle || null, meta_description: metaDescription || null, published, featured };
+
+    try {
+      if (postId) {
+        await DB.updateBlogPost(postId, data);
+        Components.toast('Post updated!', 'success');
+      } else {
+        await DB.createBlogPost(data);
+        Components.toast('Post created!', 'success');
+      }
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadBlogPosts();
+    } catch (error) {
+      if (error.message.includes('UNIQUE')) {
+        Components.toast('A post with this slug already exists', 'error');
+      } else {
+        Components.toast('Failed to save post: ' + error.message, 'error');
+      }
+    }
+  },
+
+  async toggleBlogFeatured(postId, featured) {
+    try {
+      await DB.updateBlogPost(postId, { featured: featured ? 1 : 0 });
+      Components.toast(featured ? 'Featured' : 'Unfeatured', 'success');
+      this.loadBlogPosts();
+    } catch (error) {
+      Components.toast('Failed to update', 'error');
+    }
+  },
+
+  async deleteBlogPost(postId, postTitle) {
+    Components.showModal('Delete Post', `
+      <p style="color:var(--text-secondary);margin-bottom:20px">
+        Are you sure you want to delete <strong>${postTitle}</strong>? This action cannot be undone.
+      </p>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" style="background:var(--error)" onclick="AdminPage.confirmDeleteBlogPost(${postId})">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    `);
+  },
+
+  async confirmDeleteBlogPost(postId) {
+    try {
+      await DB.deleteBlogPost(postId);
+      Components.toast('Post deleted', 'success');
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadBlogPosts();
+    } catch (error) {
+      Components.toast('Failed to delete', 'error');
     }
   },
 
