@@ -98,6 +98,12 @@ INSERT OR IGNORE INTO newsletter_subscribers (id, email, name, active) VALUES
 (6, 'jordan.parker@email.com', 'Jordan Parker', 1),
 (7, 'unsubscribed.user@email.com', NULL, 0);
 
+-- Blog Ads (3 default placements matching all 40 blog pages)
+INSERT OR IGNORE INTO blog_ads (id, name, ad_type, icon, title, description, cta_text, cta_url, target_pages, is_active, sort_order) VALUES
+(1, 'Premium Motion Graphics Assets', 'ad1', 'fa-cube', 'Premium Motion Graphics Assets', 'Browse 500+ professional 4K motion backgrounds, animated templates, and stock footage — crafted for creators who demand the best.', 'Browse Collection', 'https://pixabanimation.github.io/#/shop', 'all', 1, 0),
+(2, '4K Video Clips & Templates', 'ad2', 'fa-film', '4K Video Clips & Templates', 'Royalty-free motion graphics, lower thirds, and title animations for your next project.', 'Explore Library', 'https://pixabanimation.github.io/#/shop?category=videos', 'all', 1, 0),
+(3, 'After Effects Templates', 'ad3', 'fa-layer-group', 'After Effects Templates', 'Professional logo reveals, typography animations, and infographic templates designed to make an impact.', 'View Collection', 'https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins', 'all', 1, 0);
+
 -- Sample contact messages with admin replies
 INSERT OR IGNORE INTO contact_messages (id, user_id, name, email, subject, message, admin_reply, replied_by, replied_at, is_read) VALUES
 (1, 2, 'John Smith', 'john.smith@email.com', 'Question about licensing', 'I am interested in using your nature reel for a commercial project. Can you tell me more about the licensing options?', 'Hi John! All our assets come with a Standard License that covers commercial use in client projects. For broadcast/film use, please reach out about our Extended License. Let me know if you have more questions!', 2, '2026-06-15 10:30:00', 1),

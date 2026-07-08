@@ -73,7 +73,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .blog-ad-text h3{font-size:1.1rem;font-weight:700;color:#1d1d1f;margin-bottom:4px;letter-spacing:-.01em;line-height:1.3}
 .blog-ad-text p{font-size:.85rem;color:rgba(0,0,0,.5);line-height:1.5;margin-bottom:10px}
 .blog-ad-cta{display:inline-flex;align-items:center;gap:6px;padding:8px 20px;background:linear-gradient(135deg,#0066cc,#0071e3);color:#fff;border-radius:9999px;font-size:.8rem;font-weight:500;text-decoration:none;transition:all .25s ease;letter-spacing:-.01em}
-.blog-ad-cta:hover{background:linear-gradient(135deg,#0071e3,#2997ff);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,102,204,.3)}
+.blog-content .blog-ad-cta{color:#fff;text-decoration:none}
+.blog-content .blog-ad-cta:hover{color:#fff;background:linear-gradient(135deg,#0071e3,#2997ff);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,102,204,.3)}
 .blog-ad-cta:active{transform:translateY(0)}
 .blog-ad-cta i{font-size:.7rem;transition:transform .2s ease}
 .blog-ad-cta:hover i{transform:translateX(2px)}
