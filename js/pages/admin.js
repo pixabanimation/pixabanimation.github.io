@@ -1022,6 +1022,10 @@ const AdminPage = {
             const parts = order.customer_info.split(',').map(s => s.trim());
             const name = parts[0] || '';
             const email = parts[1] || '';
+            const phone = parts[2] || '';
+            const countryCode = parts[3] || '';
+            const state = parts[4] || '';
+            const countryName = countryCode ? (Countries.getName ? Countries.getName(countryCode) : countryCode) : '';
             return `
             <div style="padding:12px;background:var(--bg-input);border-radius:var(--radius-sm)">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -1032,6 +1036,14 @@ const AdminPage = {
                 <div>
                   <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px">Email</div>
                   <div style="font-size:0.9rem">${email || '—'}</div>
+                </div>
+                <div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px">Phone</div>
+                  <div style="font-size:0.9rem">${phone || '—'}</div>
+                </div>
+                <div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px">Country</div>
+                  <div style="font-size:0.9rem">${countryName || (countryCode || '—')}${state ? `, ${state}` : ''}</div>
                 </div>
               </div>
             </div>`;

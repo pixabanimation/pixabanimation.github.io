@@ -63,6 +63,23 @@ const CheckoutPage = {
                 <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Email</label>
                 <input type="email" id="shipEmail" placeholder="john@example.com" required>
               </div>
+              <div class="form-group full-width">
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Phone Number</label>
+                <input type="tel" id="shipPhone" placeholder="+1 (555) 123-4567" required>
+              </div>
+              <div class="form-group full-width">
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Country</label>
+                <select id="shipCountry" onchange="CheckoutPage.onCountryChange()" required style="padding:12px 16px;border:1px solid rgba(0,0,0,0.1);border-radius:12px;font-size:0.9rem;background:white;color:#1d1d1f;width:100%;appearance:none;-webkit-appearance:none">
+                  <option value="">Select your country</option>
+                  ${Countries.renderOptions()}
+                </select>
+              </div>
+              <div class="form-group full-width" id="stateField" style="display:none">
+                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province</label>
+                <select id="shipState" style="padding:12px 16px;border:1px solid rgba(0,0,0,0.1);border-radius:12px;font-size:0.9rem;background:white;color:#1d1d1f;width:100%;appearance:none;-webkit-appearance:none">
+                  <option value="">Select state/province</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -77,22 +94,22 @@ const CheckoutPage = {
             </p>
             <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px" id="paymentOptions">
               <label class="payment-option-label" style="display:flex;align-items:center;gap:14px;padding:18px 20px;border:2px solid var(--ds-primary);border-radius:12px;cursor:pointer;background:rgba(0,102,204,0.03)" onclick="document.querySelectorAll('.payment-option-label').forEach(l=>{l.style.border='2px solid rgba(0,0,0,0.06)';l.style.background='transparent'});this.style.border='2px solid var(--ds-primary)';this.style.background='rgba(0,102,204,0.03)';this.querySelector('input').checked=true">
-                <input type="radio" name="payment" value="payoneer" checked style="width:auto;flex-shrink:0">
-                <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#FF6B35;color:white;font-size:1.1rem;flex-shrink:0"><i class="fas fa-university"></i></div>
-                <div style="flex:1">
-                  <div style="font-weight:600;font-size:0.95rem;color:#1d1d1f">Payoneer</div>
-                  <div class="ds-caption" style="color:rgba(0,0,0,0.50);margin-top:2px">
-                    Send to: <strong style="color:var(--ds-primary);background:rgba(0,102,204,0.08);padding:2px 8px;border-radius:4px">any_dj@live.com</strong>
-                  </div>
-                </div>
-              </label>
-              <label class="payment-option-label" style="display:flex;align-items:center;gap:14px;padding:18px 20px;border:2px solid rgba(0,0,0,0.06);border-radius:12px;cursor:pointer;background:transparent" onclick="document.querySelectorAll('.payment-option-label').forEach(l=>{l.style.border='2px solid rgba(0,0,0,0.06)';l.style.background='transparent'});this.style.border='2px solid var(--ds-primary)';this.style.background='rgba(0,102,204,0.03)';this.querySelector('input').checked=true">
-                <input type="radio" name="payment" value="skrill" style="width:auto;flex-shrink:0">
+                <input type="radio" name="payment" value="skrill" checked style="width:auto;flex-shrink:0">
                 <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#942B8B;color:white;font-size:1.1rem;flex-shrink:0"><i class="fas fa-money-bill-wave"></i></div>
                 <div style="flex:1">
                   <div style="font-weight:600;font-size:0.95rem;color:#1d1d1f">Skrill <span style="font-size:0.7rem;font-weight:400;color:var(--ds-primary);background:rgba(0,102,204,0.08);padding:1px 8px;border-radius:9999px">Recommended</span></div>
                   <div class="ds-caption" style="color:rgba(0,0,0,0.50);margin-top:2px">
                     Send to: <strong style="color:#942B8B;background:rgba(148,43,139,0.08);padding:2px 8px;border-radius:4px">spurno@icloud.com</strong>
+                  </div>
+                </div>
+              </label>
+              <label class="payment-option-label" style="display:flex;align-items:center;gap:14px;padding:18px 20px;border:2px solid rgba(0,0,0,0.06);border-radius:12px;cursor:pointer;background:transparent" onclick="document.querySelectorAll('.payment-option-label').forEach(l=>{l.style.border='2px solid rgba(0,0,0,0.06)';l.style.background='transparent'});this.style.border='2px solid var(--ds-primary)';this.style.background='rgba(0,102,204,0.03)';this.querySelector('input').checked=true">
+                <input type="radio" name="payment" value="payoneer" style="width:auto;flex-shrink:0">
+                <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#FF6B35;color:white;font-size:1.1rem;flex-shrink:0"><i class="fas fa-university"></i></div>
+                <div style="flex:1">
+                  <div style="font-weight:600;font-size:0.95rem;color:#1d1d1f">Payoneer</div>
+                  <div class="ds-caption" style="color:rgba(0,0,0,0.50);margin-top:2px">
+                    Send to: <strong style="color:var(--ds-primary);background:rgba(0,102,204,0.08);padding:2px 8px;border-radius:4px">any_dj@live.com</strong>
                   </div>
                 </div>
               </label>
@@ -161,6 +178,20 @@ const CheckoutPage = {
 
 
 
+  onCountryChange() {
+    const countryCode = document.getElementById('shipCountry').value;
+    const stateField = document.getElementById('stateField');
+    const stateSelect = document.getElementById('shipState');
+
+    if (!countryCode || !Countries.getStates(countryCode).length) {
+      stateField.style.display = 'none';
+      return;
+    }
+
+    stateField.style.display = 'block';
+    stateSelect.innerHTML = Countries.renderStateOptions(countryCode);
+  },
+
   async placeOrder(event) {
     event.preventDefault();
     const btn = event.target.querySelector('button[type="submit"]');
@@ -178,11 +209,22 @@ const CheckoutPage = {
 
       const name = document.getElementById('shipName').value;
       const email = document.getElementById('shipEmail').value;
+      const phone = document.getElementById('shipPhone').value;
+      const countryCode = document.getElementById('shipCountry').value;
+      const countryName = countryCode ? Countries.getName(countryCode) : '';
+      const state = document.getElementById('shipState') ? document.getElementById('shipState').value : '';
       const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
       const transactionId = document.getElementById('transactionId').value.trim();
 
       if (!transactionId) {
         Components.toast('Please enter your Transaction ID from your payment receipt', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-lock"></i> Place Order';
+        return;
+      }
+
+      if (!countryCode) {
+        Components.toast('Please select your country', 'error');
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-lock"></i> Place Order';
         return;
@@ -196,7 +238,7 @@ const CheckoutPage = {
         total,
         subtotal,
         tax,
-        customer_info: `${name}, ${email}`,
+        customer_info: `${name}, ${email}, ${phone}, ${countryCode}, ${state}`,
         payment_method: paymentMethod,
         transaction_id: transactionId,
         payment_provider: paymentMethod,
@@ -231,6 +273,12 @@ const CheckoutPage = {
             </p>
             <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
               <span style="font-weight:600;color:#1d1d1f">Email:</span> ${email}
+            </p>
+            <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
+              <span style="font-weight:600;color:#1d1d1f">Phone:</span> ${phone}
+            </p>
+            <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
+              <span style="font-weight:600;color:#1d1d1f">Country:</span> ${countryName}${state ? `, ${state}` : ''}
             </p>
             <p class="ds-caption" style="color:rgba(0,0,0,0.50)">
               You will receive the download link once admin approves the transaction.

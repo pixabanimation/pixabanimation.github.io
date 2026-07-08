@@ -22,21 +22,6 @@ A single-page application marketplace for premium motion graphics, 4K video clip
 - **📈 SEO optimized** — JSON-LD structured data (Organization, WebSite, Product, FAQPage, CollectionPage, BreadcrumbList), Open Graph, Twitter Cards, sitemap, robots.txt
 
 
-## 📚 Documentation
-
-Full documentation is available in the [`docs/`](docs/) directory:
-
-| Document | Description |
-|---|---|
-| [Architecture](docs/architecture.md) | App structure, file tree, initialization flow, design patterns |
-| [Pages](docs/pages.md) | Complete page-by-page reference with route map |
-| [Components](docs/components.md) | Reusable UI component library API |
-| [Database](docs/database.md) | Schema, table definitions, relationships, DB API |
-| [Routing](docs/routing.md) | Hash-based SPA router documentation |
-| [Admin Panel](docs/admin.md) | Dashboard, CRUD operations, media manager |
-| [SEO & Structured Data](docs/seo.md) | Meta tags, JSON-LD, sitemap, robots.txt |
-| [Deployment](docs/deployment.md) | Hosting, configuration, environment setup |
-
 ## 🏗 Tech Stack
 
 | Technology | Purpose |
