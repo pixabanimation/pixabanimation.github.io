@@ -1,210 +1,242 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Understanding Diffusion Models — PixabAnimation</title><meta name="description" content="Understand diffusion models powering AI image generation. Learn how they work, creative applications, and how motion designers can leverage this technology."><meta property="og:title" content="Understanding Diffusion Models"><meta property="og:description" content="How diffusion models power AI image generation."><meta property="og:image" content="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&q=80">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://pixabanimation.github.io/blog/understanding-diffusion-models.html">
-  <meta property="og:site_name" content="PixabAnimation">
-  <meta property="og:locale" content="en_US">
-  <meta property="article:published_time" content="2026-03-05">
-  <meta property="article:modified_time" content="2026-03-05">
-  <meta property="article:author" content="PixabAnimation Team">
-  <meta property="article:section" content="AI Technology">
-  <meta property="article:tag" content="Diffusion Models">
-  <meta property="article:tag" content="AI">
-  <meta property="article:tag" content="Image Generation">
-  <meta property="article:tag" content="Stable Diffusion">
-  <meta property="article:tag" content="Midjourney">
-  <meta property="article:tag" content="Machine Learning">
-    <meta name="twitter:site" content="@pixabanimation">
-  <meta name="twitter:creator" content="@pixabanimation">
-  <meta name="twitter:title" content="Understanding Diffusion Models">
-  <meta name="twitter:description" content="Understand diffusion models powering AI image generation. Learn how they work, creative applications, and how motion designers can leverage this technology.">
-  <meta name="twitter:image" content="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&q=80">
-  <link rel="canonical" href="https://pixabanimation.github.io/blog/understanding-diffusion-models.html"><link rel="stylesheet" href="blog.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">  <script type="application/ld+json">
+ <meta property="og:type" content="article">
+ <meta property="og:url" content="https://pixabanimation.github.io/blog/understanding-diffusion-models.html">
+ <meta property="og:site_name" content="PixabAnimation">
+ <meta property="og:locale" content="en_US">
+ <meta property="article:published_time" content="2026-03-05">
+ <meta property="article:modified_time" content="2026-03-05">
+ <meta property="article:author" content="PixabAnimation Team">
+ <meta property="article:section" content="AI Technology">
+ <meta property="article:tag" content="Diffusion Models">
+ <meta property="article:tag" content="AI">
+ <meta property="article:tag" content="Image Generation">
+ <meta property="article:tag" content="Stable Diffusion">
+ <meta property="article:tag" content="Midjourney">
+ <meta property="article:tag" content="Machine Learning">
+ <meta name="twitter:site" content="@pixabanimation">
+ <meta name="twitter:creator" content="@pixabanimation">
+ <meta name="twitter:title" content="Understanding Diffusion Models">
+ <meta name="twitter:description" content="Understand diffusion models powering AI image generation. Learn how they work, creative applications, and how motion designers can leverage this technology.">
+ <meta name="twitter:image" content="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&q=80">
+ <link rel="canonical" href="https://pixabanimation.github.io/blog/understanding-diffusion-models.html"><link rel="stylesheet" href="blog.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"> <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Understanding Diffusion Models",
-  "description": "Understand diffusion models powering AI image generation. Learn how they work, creative applications, and how motion designers can leverage this technology.",
-  "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&q=80",
-  "datePublished": "2026-03-05",
-  "dateModified": "2026-03-05",
-  "author": {
-    "@type": "Organization",
-    "name": "PixabAnimation Team",
-    "url": "https://pixabanimation.github.io"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "PixabAnimation",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://pixabanimation.github.io/assets/pixabanimation-logo.png"
-    }
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://pixabanimation.github.io/blog/understanding-diffusion-models.html"
-  },
-  "keywords": "Diffusion Models, AI, Image Generation, Stable Diffusion, Midjourney, Machine Learning",
-  "articleSection": "AI Technology",
-  "wordCount": 2200,
-  "timeRequired": "9 min read"
+ "@context": "https://schema.org",
+ "@type": "BlogPosting",
+ "headline": "Understanding Diffusion Models",
+ "description": "Understand diffusion models powering AI image generation. Learn how they work, creative applications, and how motion designers can leverage this technology.",
+ "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&q=80",
+ "datePublished": "2026-03-05",
+ "dateModified": "2026-03-05",
+ "author": {
+ "@type": "Organization",
+ "name": "PixabAnimation Team",
+ "url": "https://pixabanimation.github.io"
+ },
+ "publisher": {
+ "@type": "Organization",
+ "name": "PixabAnimation",
+ "logo": {
+ "@type": "ImageObject",
+ "url": "https://pixabanimation.github.io/assets/pixabanimation-logo.png"
+ }
+ },
+ "mainEntityOfPage": {
+ "@type": "WebPage",
+ "@id": "https://pixabanimation.github.io/blog/understanding-diffusion-models.html"
+ },
+ "keywords": "Diffusion Models, AI, Image Generation, Stable Diffusion, Midjourney, Machine Learning",
+ "articleSection": "AI Technology",
+ "wordCount": 2200,
+ "timeRequired": "9 min read"
 }
-  </script>
-  <script type="application/ld+json">
+ </script>
+ <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://pixabanimation.github.io"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Blog",
-      "item": "https://pixabanimation.github.io/blog/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Understanding Diffusion Models",
-      "item": "https://pixabanimation.github.io/blog/understanding-diffusion-models.html"
-    }
-  ]
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+ {
+ "@type": "ListItem",
+ "position": 1,
+ "name": "Home",
+ "item": "https://pixabanimation.github.io"
+ },
+ {
+ "@type": "ListItem",
+ "position": 2,
+ "name": "Blog",
+ "item": "https://pixabanimation.github.io/blog/"
+ },
+ {
+ "@type": "ListItem",
+ "position": 3,
+ "name": "Understanding Diffusion Models",
+ "item": "https://pixabanimation.github.io/blog/understanding-diffusion-models.html"
+ }
+ ]
 }
-  </script>
-  <link rel="icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="32x32">
-  <link rel="apple-touch-icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="180x180">
-  <meta name="msapplication-TileColor" content="#0066cc">
-  <meta name="theme-color" content="#ffffff">
+ </script>
+ <link rel="icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="32x32">
+ <link rel="apple-touch-icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="180x180">
+ <meta name="msapplication-TileColor" content="#0066cc">
+ <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="blog-navbar" id="blogNavbar">
-    <div class="blog-nav-container">
-      <a href="https://pixabanimation.github.io/" class="blog-nav-brand">
-        <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation">
-        PixabAnimation
-      </a>
-      <button class="blog-nav-toggle" onclick="document.getElementById('blogNavLinks').classList.toggle('open')" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="blog-nav-links" id="blogNavLinks">
-        <li><a href="https://pixabanimation.github.io/">Home</a></li>
-        <li><a href="https://pixabanimation.github.io/#/shop">Shop</a></li>
-        <li><a href="https://pixabanimation.github.io/#/shop?category=videos">Videos</a></li>
-        <li><a href="https://pixabanimation.github.io/#/about">About</a></li>
-        <li><a href="https://pixabanimation.github.io/#/contact">Contact</a></li>
-        <li><a href="index.html">Blog</a></li>
-      </ul>
-      <div class="blog-nav-actions">
-        <a href="https://pixabanimation.github.io/#/shop"><i class="fas fa-store"></i></a>
-        <a href="https://pixabanimation.github.io/#/cart"><i class="fas fa-shopping-bag"></i></a>
-      </div>
-    </div>
-  </nav><div class="blog-wrapper"><article>
+ <!-- Navigation -->
+ <nav class="blog-navbar" id="blogNavbar">
+ <div class="blog-nav-container">
+ <a href="https://pixabanimation.github.io/" class="blog-nav-brand">
+ <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation">
+ PixabAnimation
+ </a>
+ <button class="blog-nav-toggle" onclick="document.getElementById('blogNavLinks').classList.toggle('open')" aria-label="Toggle menu">
+ <span></span><span></span><span></span>
+ </button>
+ <ul class="blog-nav-links" id="blogNavLinks">
+ <li><a href="https://pixabanimation.github.io/">Home</a></li>
+ <li><a href="https://pixabanimation.github.io/#/shop">Shop</a></li>
+ <li><a href="https://pixabanimation.github.io/#/shop?category=videos">Videos</a></li>
+ <li><a href="https://pixabanimation.github.io/#/about">About</a></li>
+ <li><a href="https://pixabanimation.github.io/#/contact">Contact</a></li>
+ <li><a href="index.html">Blog</a></li>
+ </ul>
+ <div class="blog-nav-actions">
+ <a href="https://pixabanimation.github.io/#/shop"><i class="fas fa-store"></i></a>
+ <a href="https://pixabanimation.github.io/#/cart"><i class="fas fa-shopping-bag"></i></a>
+ </div>
+ </div>
+ </nav><div class="blog-wrapper"><article>
 <div style="margin-bottom:24px"><div class="blog-category"><span style="font-size:1.2rem">✦</span> AI Technology</div><h1>Understanding Diffusion Models: The Technology Behind AI Image Generation</h1><div class="blog-meta"><span>📅 March 5, 2026</span><span>•</span><span>👁️ 20.7K+ Views</span><span>•</span><span>📝 PixabAnimation Team</span></div></div>
 <div class="blog-cover"><img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200&q=80" alt="Diffusion Models" loading="lazy"></div>
 <div class="blog-content"><p>Diffusion models are the technology powering today's most advanced AI image and video generation tools — Stable Diffusion, DALL-E 4, Midjourney 7, and Sora. Understanding how these models work helps creative professionals use them more effectively and appreciate both their capabilities and limitations.</p>
 <h2>What is a Diffusion Model?</h2>
 <p>A diffusion model is a type of generative AI that learns to create data by gradually denoising random noise. The training process has two phases. In the forward diffusion phase, training images are progressively corrupted by adding noise until they become pure random noise. The model learns to reverse this process — starting from random noise and gradually removing it to generate a coherent image that matches the training data distribution. This process is guided by a text prompt that conditions the generation on the desired content.</p>
-<!-- Ad Banner 2 -->
-      <div class="blog-ad-container">
-        <div class="blog-ad-inner">
-          <span class="blog-ad-label">Advertisement</span>
-          <div class="blog-ad-content">
-            <div class="blog-ad-icon"><i class="fas fa-video"></i></div>
-            <div class="blog-ad-text">
-              <h3>4K Video Clips & Templates</h3>
-              <p>Royalty-free motion graphics, lower thirds, and title animations for your next project.</p>
-              <a href="https://pixabanimation.github.io/#/shop?category=videos" class="blog-ad-cta">Explore →</a>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <h2>How Creatives Use Diffusion Models</h2>
+ <!-- Ad Banner 1 -->
+ <div class="blog-ad-container">
+ <div class="blog-ad-inner">
+ <span class="blog-ad-label">Ad</span>
+ <div class="blog-ad-content">
+ <div class="blog-ad-icon"><i class="fas fa-cube"></i></div>
+ <div class="blog-ad-text">
+ <h3>Premium Motion Graphics Assets</h3>
+ <p>Browse 500+ professional 4K motion backgrounds, animated templates, and stock footage — crafted for creators who demand the best.</p>
+ <a href="https://pixabanimation.github.io/#/shop" class="blog-ad-cta">Browse Collection <i class="fas fa-arrow-right"></i></a>
+ </div>
+ </div>
+ </div>
+ </div>
+
+
+<!-- Ad Banner 2 -->
+ <div class="blog-ad-container">
+ <div class="blog-ad-inner">
+ <span class="blog-ad-label">Ad</span>
+ <div class="blog-ad-content">
+ <div class="blog-ad-icon"><i class="fas fa-video"></i></div>
+ <div class="blog-ad-text">
+ <h3>4K Video Clips & Templates</h3>
+ <p>Royalty-free motion graphics, lower thirds, and title animations for your next project.</p>
+ <a href="https://pixabanimation.github.io/#/shop?category=videos" class="blog-ad-cta">Explore Library <i class="fas fa-arrow-right"></i></a>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <h2>How Creatives Use Diffusion Models</h2>
 <p>Diffusion models serve multiple creative purposes. Text-to-image generation creates visuals from written descriptions. Image-to-image transforms existing images according to new prompts. Inpainting fills in or replaces specific areas of an image. Outpainting extends images beyond their original boundaries. Video generation creates short clips from text descriptions. For motion designers, diffusion models are valuable for concept art, background generation, texture creation, and visual exploration.</p>
 <h2>Control and Precision</h2>
 <p>Early diffusion models offered limited control over outputs. Modern models provide precise control through ControlNet for pose, depth, and edge guidance, IP-Adapter for style consistency from reference images, LoRA for fine-tuning on specific subjects or styles, regional prompting for composition control, and seed control for reproducible results. These controls make diffusion models practical tools for professional creative work.</p>
 <h2>Running Diffusion Models</h2>
 <p>Diffusion models can be accessed through cloud services or run locally. Cloud services like Midjourney, DALL-E, and Adobe Firefly offer convenience and regular updates. Local tools like ComfyUI, Automatic1111, and InvokeAI provide more control, privacy, and no usage limits but require capable hardware. For creative professionals, cloud services are best for quick ideation while local tools are better for production work requiring precise control.</p></div>
-<div class="back-section"><a href="https://pixabanimation.github.io/#/blog" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a></div>
+<div class="back-section"><a href="https://pixabanimation.github.io/#/blog" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+ <!-- Ad Banner 3 -->
+ <div class="blog-ad-container">
+ <div class="blog-ad-inner">
+ <span class="blog-ad-label">Ad</span>
+ <div class="blog-ad-content">
+ <div class="blog-ad-icon"><i class="fas fa-pen-fancy"></i></div>
+ <div class="blog-ad-text">
+ <h3>After Effects Templates</h3>
+ <p>Professional logo reveals, typography animations, and infographic templates designed to make an impact.</p>
+ <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="blog-ad-cta">View Collection <i class="fas fa-arrow-right"></i></a>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 </article>
 <aside class="sidebar"><div style="font-size:.85rem;font-weight:600;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #0066cc">Recent Posts</div><a href="ai-design-tools-creative-workflow.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;padding:8px;border-radius:8px"><span style="font-size:1.2rem">🎨</span><div><div style="font-size:.8rem;color:#1d1d1f">AI Design Tools</div></div></a><a href="large-language-models-creatives.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;padding:8px;border-radius:8px"><span style="font-size:1.2rem">🧠</span><div><div style="font-size:.8rem;color:#1d1d1f">LLMs for Creatives</div></div></a></aside>
 </div>
-  <!-- Footer -->
-  <footer class="blog-footer">
-    <div class="blog-footer-content">
-      <div class="blog-footer-grid">
-        <div class="blog-footer-brand">
-          <div class="name"><img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="" style="width:24px;height:20px"> PixabAnimation</div>
-          <div class="desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</div>
-          <div class="blog-footer-social">
-            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
-            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-          </div>
-        </div>
-        <div class="blog-footer-col">
-          <h4>Shop</h4>
-          <a href="https://pixabanimation.github.io/#/shop">All Assets</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=videos">Animation & Video</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins">After Effects Plugins</a>
-        </div>
-        <div class="blog-footer-col">
-          <h4>Categories</h4>
-          <a href="https://pixabanimation.github.io/#/shop?category=videos">Motion Graphics</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup">Green Screen</a>
-          <a href="https://pixabanimation.github.io/#/shop">View All</a>
-        </div>
-        <div class="blog-footer-col">
-          <h4>Support</h4>
-          <a href="https://pixabanimation.github.io/#/contact">Contact Us</a>
-          <a href="https://pixabanimation.github.io/#/about">About Us</a>
-          <a href="index.html">Blog</a>
-          <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
-        </div>
-        <div class="blog-footer-col blog-footer-col-newsletter">
-          <h4>Stay in the Loop</h4>
-          <p class="blog-footer-newsletter-text">Get early access to new releases, exclusive discounts, and creative inspiration.</p>
-          <form class="blog-footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
-            <input type="email" placeholder="Enter your email" required>
-            <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
-          </form>
-          <p class="blog-footer-note">No spam. Unsubscribe anytime.</p>
-        </div>
-      </div>
-      <div class="blog-footer-bottom">
-        <div class="blog-footer-bottom-links">
-          <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
-          <span style="color:rgba(255,255,255,.3)">·</span>
-          <a href="https://pixabanimation.github.io/#/refund-policy">Refunds</a>
-          <span style="color:rgba(255,255,255,.3)">·</span>
-          <a href="https://pixabanimation.github.io/#/terms-of-use">Terms</a>
-          <span style="color:rgba(255,255,255,.3)">·</span>
-          <a href="https://pixabanimation.github.io/#/contact">Support</a>
-        </div>
-        <p class="blog-footer-bottom-copy">&copy; 2026 PixabAnimation. All rights reserved.</p>
-        <div class="blog-footer-payment-icons">
-          <i class="fab fa-cc-visa"></i>
-          <i class="fab fa-cc-mastercard"></i>
-          <i class="fab fa-cc-amex"></i>
-          <i class="fab fa-cc-paypal"></i>
-        </div>
-      </div>
-    </div>
-  </footer>
-  <script>
-    window.addEventListener('scroll', () => {
-      document.getElementById('blogNavbar').classList.toggle('scrolled', window.scrollY > 50);
-    });
-  </script>
+ <!-- Footer -->
+ <footer class="blog-footer">
+ <div class="blog-footer-content">
+ <div class="blog-footer-grid">
+ <div class="blog-footer-brand">
+ <div class="name"><img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="" style="width:24px;height:20px"> PixabAnimation</div>
+ <div class="desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</div>
+ <div class="blog-footer-social">
+ <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+ <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+ <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+ <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+ <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+ </div>
+ </div>
+ <div class="blog-footer-col">
+ <h4>Shop</h4>
+ <a href="https://pixabanimation.github.io/#/shop">All Assets</a>
+ <a href="https://pixabanimation.github.io/#/shop?category=videos">Animation & Video</a>
+ <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins">After Effects Plugins</a>
+ </div>
+ <div class="blog-footer-col">
+ <h4>Categories</h4>
+ <a href="https://pixabanimation.github.io/#/shop?category=videos">Motion Graphics</a>
+ <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup">Green Screen</a>
+ <a href="https://pixabanimation.github.io/#/shop">View All</a>
+ </div>
+ <div class="blog-footer-col">
+ <h4>Support</h4>
+ <a href="https://pixabanimation.github.io/#/contact">Contact Us</a>
+ <a href="https://pixabanimation.github.io/#/about">About Us</a>
+ <a href="index.html">Blog</a>
+ <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
+ </div>
+ <div class="blog-footer-col blog-footer-col-newsletter">
+ <h4>Stay in the Loop</h4>
+ <p class="blog-footer-newsletter-text">Get early access to new releases, exclusive discounts, and creative inspiration.</p>
+ <form class="blog-footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
+ <input type="email" placeholder="Enter your email" required>
+ <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
+ </form>
+ <p class="blog-footer-note">No spam. Unsubscribe anytime.</p>
+ </div>
+ </div>
+ <div class="blog-footer-bottom">
+ <div class="blog-footer-bottom-links">
+ <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
+ <span style="color:rgba(255,255,255,.3)">·</span>
+ <a href="https://pixabanimation.github.io/#/refund-policy">Refunds</a>
+ <span style="color:rgba(255,255,255,.3)">·</span>
+ <a href="https://pixabanimation.github.io/#/terms-of-use">Terms</a>
+ <span style="color:rgba(255,255,255,.3)">·</span>
+ <a href="https://pixabanimation.github.io/#/contact">Support</a>
+ </div>
+ <p class="blog-footer-bottom-copy">&copy; 2026 PixabAnimation. All rights reserved.</p>
+ <div class="blog-footer-payment-icons">
+ <i class="fab fa-cc-visa"></i>
+ <i class="fab fa-cc-mastercard"></i>
+ <i class="fab fa-cc-amex"></i>
+ <i class="fab fa-cc-paypal"></i>
+ </div>
+ </div>
+ </div>
+ </footer>
+ <script>
+ window.addEventListener('scroll', () => {
+ document.getElementById('blogNavbar').classList.toggle('scrolled', window.scrollY > 50);
+ });
+ </script>
 </body></html>

@@ -1,134 +1,151 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>SVG Animation Techniques — PixabAnimation</title><meta name="description" content="Master SVG animation techniques. Learn CSS and JavaScript methods for animating SVG graphics — paths, shapes, morphing, and interactive SVG."><meta property="og:title" content="SVG Animation Techniques"><meta property="og:description" content="Master SVG animation with CSS and JavaScript."><meta property="og:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://pixabanimation.github.io/blog/svg-animation-techniques.html">
-  <meta property="og:site_name" content="PixabAnimation">
-  <meta property="og:locale" content="en_US">
-  <meta property="article:published_time" content="2026-02-19">
-  <meta property="article:modified_time" content="2026-02-19">
-  <meta property="article:author" content="PixabAnimation Team">
-  <meta property="article:section" content="Web Graphics">
-  <meta property="article:tag" content="SVG">
-  <meta property="article:tag" content="Animation">
-  <meta property="article:tag" content="Vector Graphics">
-  <meta property="article:tag" content="CSS Animation">
-  <meta property="article:tag" content="JavaScript">
-  <meta property="article:tag" content="Web Design">
-    <meta name="twitter:site" content="@pixabanimation">
-  <meta name="twitter:creator" content="@pixabanimation">
-  <meta name="twitter:title" content="SVG Animation Techniques">
-  <meta name="twitter:description" content="Master SVG animation techniques. Learn CSS and JavaScript methods for animating SVG graphics — paths, shapes, morphing, and interactive SVG.">
-  <meta name="twitter:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
-  <link rel="canonical" href="https://pixabanimation.github.io/blog/svg-animation-techniques.html"><link rel="stylesheet" href="blog.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">  <script type="application/ld+json">
+ <meta property="og:type" content="article">
+ <meta property="og:url" content="https://pixabanimation.github.io/blog/svg-animation-techniques.html">
+ <meta property="og:site_name" content="PixabAnimation">
+ <meta property="og:locale" content="en_US">
+ <meta property="article:published_time" content="2026-02-19">
+ <meta property="article:modified_time" content="2026-02-19">
+ <meta property="article:author" content="PixabAnimation Team">
+ <meta property="article:section" content="Web Graphics">
+ <meta property="article:tag" content="SVG">
+ <meta property="article:tag" content="Animation">
+ <meta property="article:tag" content="Vector Graphics">
+ <meta property="article:tag" content="CSS Animation">
+ <meta property="article:tag" content="JavaScript">
+ <meta property="article:tag" content="Web Design">
+ <meta name="twitter:site" content="@pixabanimation">
+ <meta name="twitter:creator" content="@pixabanimation">
+ <meta name="twitter:title" content="SVG Animation Techniques">
+ <meta name="twitter:description" content="Master SVG animation techniques. Learn CSS and JavaScript methods for animating SVG graphics — paths, shapes, morphing, and interactive SVG.">
+ <meta name="twitter:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
+ <link rel="canonical" href="https://pixabanimation.github.io/blog/svg-animation-techniques.html"><link rel="stylesheet" href="blog.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"> <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "SVG Animation Techniques",
-  "description": "Master SVG animation techniques. Learn CSS and JavaScript methods for animating SVG graphics — paths, shapes, morphing, and interactive SVG.",
-  "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80",
-  "datePublished": "2026-02-19",
-  "dateModified": "2026-02-19",
-  "author": {
-    "@type": "Organization",
-    "name": "PixabAnimation Team",
-    "url": "https://pixabanimation.github.io"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "PixabAnimation",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://pixabanimation.github.io/assets/pixabanimation-logo.png"
-    }
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://pixabanimation.github.io/blog/svg-animation-techniques.html"
-  },
-  "keywords": "SVG, Animation, Vector Graphics, CSS Animation, JavaScript, Web Design",
-  "articleSection": "Web Graphics",
-  "wordCount": 2200,
-  "timeRequired": "8 min read"
+ "@context": "https://schema.org",
+ "@type": "BlogPosting",
+ "headline": "SVG Animation Techniques",
+ "description": "Master SVG animation techniques. Learn CSS and JavaScript methods for animating SVG graphics — paths, shapes, morphing, and interactive SVG.",
+ "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80",
+ "datePublished": "2026-02-19",
+ "dateModified": "2026-02-19",
+ "author": {
+ "@type": "Organization",
+ "name": "PixabAnimation Team",
+ "url": "https://pixabanimation.github.io"
+ },
+ "publisher": {
+ "@type": "Organization",
+ "name": "PixabAnimation",
+ "logo": {
+ "@type": "ImageObject",
+ "url": "https://pixabanimation.github.io/assets/pixabanimation-logo.png"
+ }
+ },
+ "mainEntityOfPage": {
+ "@type": "WebPage",
+ "@id": "https://pixabanimation.github.io/blog/svg-animation-techniques.html"
+ },
+ "keywords": "SVG, Animation, Vector Graphics, CSS Animation, JavaScript, Web Design",
+ "articleSection": "Web Graphics",
+ "wordCount": 2200,
+ "timeRequired": "8 min read"
 }
-  </script>
-  <script type="application/ld+json">
+ </script>
+ <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://pixabanimation.github.io"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Blog",
-      "item": "https://pixabanimation.github.io/blog/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "SVG Animation Techniques",
-      "item": "https://pixabanimation.github.io/blog/svg-animation-techniques.html"
-    }
-  ]
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+ {
+ "@type": "ListItem",
+ "position": 1,
+ "name": "Home",
+ "item": "https://pixabanimation.github.io"
+ },
+ {
+ "@type": "ListItem",
+ "position": 2,
+ "name": "Blog",
+ "item": "https://pixabanimation.github.io/blog/"
+ },
+ {
+ "@type": "ListItem",
+ "position": 3,
+ "name": "SVG Animation Techniques",
+ "item": "https://pixabanimation.github.io/blog/svg-animation-techniques.html"
+ }
+ ]
 }
-  </script>
-  <link rel="icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="32x32">
-  <link rel="apple-touch-icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="180x180">
-  <meta name="msapplication-TileColor" content="#0066cc">
-  <meta name="theme-color" content="#ffffff">
+ </script>
+ <link rel="icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="32x32">
+ <link rel="apple-touch-icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="180x180">
+ <meta name="msapplication-TileColor" content="#0066cc">
+ <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="blog-navbar" id="blogNavbar">
-    <div class="blog-nav-container">
-      <a href="https://pixabanimation.github.io/" class="blog-nav-brand">
-        <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation">
-        PixabAnimation
-      </a>
-      <button class="blog-nav-toggle" onclick="document.getElementById('blogNavLinks').classList.toggle('open')" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="blog-nav-links" id="blogNavLinks">
-        <li><a href="https://pixabanimation.github.io/">Home</a></li>
-        <li><a href="https://pixabanimation.github.io/#/shop">Shop</a></li>
-        <li><a href="https://pixabanimation.github.io/#/shop?category=videos">Videos</a></li>
-        <li><a href="https://pixabanimation.github.io/#/about">About</a></li>
-        <li><a href="https://pixabanimation.github.io/#/contact">Contact</a></li>
-        <li><a href="index.html">Blog</a></li>
-      </ul>
-      <div class="blog-nav-actions">
-        <a href="https://pixabanimation.github.io/#/shop"><i class="fas fa-store"></i></a>
-        <a href="https://pixabanimation.github.io/#/cart"><i class="fas fa-shopping-bag"></i></a>
-      </div>
-    </div>
-  </nav><div class="blog-wrapper"><article>
+ <!-- Navigation -->
+ <nav class="blog-navbar" id="blogNavbar">
+ <div class="blog-nav-container">
+ <a href="https://pixabanimation.github.io/" class="blog-nav-brand">
+ <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation">
+ PixabAnimation
+ </a>
+ <button class="blog-nav-toggle" onclick="document.getElementById('blogNavLinks').classList.toggle('open')" aria-label="Toggle menu">
+ <span></span><span></span><span></span>
+ </button>
+ <ul class="blog-nav-links" id="blogNavLinks">
+ <li><a href="https://pixabanimation.github.io/">Home</a></li>
+ <li><a href="https://pixabanimation.github.io/#/shop">Shop</a></li>
+ <li><a href="https://pixabanimation.github.io/#/shop?category=videos">Videos</a></li>
+ <li><a href="https://pixabanimation.github.io/#/about">About</a></li>
+ <li><a href="https://pixabanimation.github.io/#/contact">Contact</a></li>
+ <li><a href="index.html">Blog</a></li>
+ </ul>
+ <div class="blog-nav-actions">
+ <a href="https://pixabanimation.github.io/#/shop"><i class="fas fa-store"></i></a>
+ <a href="https://pixabanimation.github.io/#/cart"><i class="fas fa-shopping-bag"></i></a>
+ </div>
+ </div>
+ </nav><div class="blog-wrapper"><article>
 <div style="margin-bottom:24px"><div class="blog-category"><span style="font-size:1.2rem">✦</span> Web Graphics</div><h1>SVG Animation Techniques: Bringing Vector Graphics to Life</h1><div class="blog-meta"><span>📅 February 19, 2026</span><span>•</span><span>👁️ 20.1K+ Views</span><span>•</span><span>📝 PixabAnimation Team</span></div></div>
 <div class="blog-cover"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80" alt="SVG Animation" loading="lazy"></div>
 <div class="blog-content"><p>SVG (Scalable Vector Graphics) animation is a powerful technique for creating resolution-independent, performant animations on the web. From loading spinners and icons to complex data visualizations and interactive illustrations, SVG animation offers unique advantages over other animation formats. This guide explores professional SVG animation techniques.</p>
 <h2>Why Animate SVG?</h2>
 <p>SVG animations remain crisp at any resolution — essential for responsive web design. SVG files are typically smaller than equivalent PNG or video files. SVG elements can be styled and animated with CSS, controlled with JavaScript, and remain interactive. SVG animations support accessibility through ARIA attributes and semantic elements. For motion designers, SVG provides a direct path from vector design tools to animated web graphics.</p>
-<!-- Ad Banner 2 -->
-      <div class="blog-ad-container">
-        <div class="blog-ad-inner">
-          <span class="blog-ad-label">Advertisement</span>
-          <div class="blog-ad-content">
-            <div class="blog-ad-icon"><i class="fas fa-video"></i></div>
-            <div class="blog-ad-text">
-              <h3>4K Video Clips & Templates</h3>
-              <p>Royalty-free motion graphics, lower thirds, and title animations for your next project.</p>
-              <a href="https://pixabanimation.github.io/#/shop?category=videos" class="blog-ad-cta">Explore →</a>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <h2>CSS SVG Animation</h2>
+ <!-- Ad Banner 1 -->
+ <div class="blog-ad-container">
+ <div class="blog-ad-inner">
+ <span class="blog-ad-label">Ad</span>
+ <div class="blog-ad-content">
+ <div class="blog-ad-icon"><i class="fas fa-cube"></i></div>
+ <div class="blog-ad-text">
+ <h3>Premium Motion Graphics Assets</h3>
+ <p>Browse 500+ professional 4K motion backgrounds, animated templates, and stock footage — crafted for creators who demand the best.</p>
+ <a href="https://pixabanimation.github.io/#/shop" class="blog-ad-cta">Browse Collection <i class="fas fa-arrow-right"></i></a>
+ </div>
+ </div>
+ </div>
+ </div>
+
+
+<!-- Ad Banner 2 -->
+ <div class="blog-ad-container">
+ <div class="blog-ad-inner">
+ <span class="blog-ad-label">Ad</span>
+ <div class="blog-ad-content">
+ <div class="blog-ad-icon"><i class="fas fa-video"></i></div>
+ <div class="blog-ad-text">
+ <h3>4K Video Clips & Templates</h3>
+ <p>Royalty-free motion graphics, lower thirds, and title animations for your next project.</p>
+ <a href="https://pixabanimation.github.io/#/shop?category=videos" class="blog-ad-cta">Explore Library <i class="fas fa-arrow-right"></i></a>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <h2>CSS SVG Animation</h2>
 <p>The simplest way to animate SVG is with CSS. Common techniques include stroke-dasharray animation (drawing SVG paths dynamically), transform animations (rotating, scaling, and moving SVG elements), opacity fades and reveals, and fill color transitions. The CSS <code>offset-path</code> property enables objects to follow curved paths defined by SVG path data.</p>
 <h2>JavaScript SVG Animation</h2>
 <p>For complex SVG animations, JavaScript libraries provide powerful capabilities. GSAP excels at SVG animation with MotionPathPlugin for path following, MorphSVGPlugin for shape morphing, and DrawSVGPlugin for stroke animations. Anime.js offers a lightweight approach to SVG animation. Snap.svg provides a jQuery-like API for manipulating SVG elements programmatically.</p>
@@ -136,77 +153,92 @@
 <p>Motion designers can create SVG animations from After Effects using tools like Lottie (exports After Effects animations to lightweight JSON), Haiku Animator (converts After Effects compositions to SVG/WebGL), and SVGator (dedicated SVG animation tool with After Effects-style timeline). These tools bridge the gap between motion design and web development.</p>
 <h2>Optimizing SVG Animations</h2>
 <p>Optimize SVG files by removing unnecessary code, simplifying paths, combining elements, and using CSS for styling. Use <code>will-change</code> for GPU-accelerated SVG properties. Limit animated element count for complex scenes. For performance-critical animations, consider using Canvas or WebGL instead of SVG for large numbers of animated elements.</p></div>
-<div class="back-section"><a href="https://pixabanimation.github.io/#/blog" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a></div>
+<div class="back-section"><a href="https://pixabanimation.github.io/#/blog" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+ <!-- Ad Banner 3 -->
+ <div class="blog-ad-container">
+ <div class="blog-ad-inner">
+ <span class="blog-ad-label">Ad</span>
+ <div class="blog-ad-content">
+ <div class="blog-ad-icon"><i class="fas fa-pen-fancy"></i></div>
+ <div class="blog-ad-text">
+ <h3>After Effects Templates</h3>
+ <p>Professional logo reveals, typography animations, and infographic templates designed to make an impact.</p>
+ <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="blog-ad-cta">View Collection <i class="fas fa-arrow-right"></i></a>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 </article>
 <aside class="sidebar"><div style="font-size:.85rem;font-weight:600;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #0066cc">Recent Posts</div><a href="web-animation-css-javascript.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;padding:8px;border-radius:8px"><span style="font-size:1.2rem">🌐</span><div><div style="font-size:.8rem;color:#1d1d1f">Web Animation Guide</div></div></a><a href="lottie-files-web-animation.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;padding:8px;border-radius:8px"><span style="font-size:1.2rem">🎞️</span><div><div style="font-size:.8rem;color:#1d1d1f">Lottie Animation Guide</div></div></a></aside>
 </div>
-  <!-- Footer -->
-  <footer class="blog-footer">
-    <div class="blog-footer-content">
-      <div class="blog-footer-grid">
-        <div class="blog-footer-brand">
-          <div class="name"><img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="" style="width:24px;height:20px"> PixabAnimation</div>
-          <div class="desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</div>
-          <div class="blog-footer-social">
-            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
-            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-          </div>
-        </div>
-        <div class="blog-footer-col">
-          <h4>Shop</h4>
-          <a href="https://pixabanimation.github.io/#/shop">All Assets</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=videos">Animation & Video</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins">After Effects Plugins</a>
-        </div>
-        <div class="blog-footer-col">
-          <h4>Categories</h4>
-          <a href="https://pixabanimation.github.io/#/shop?category=videos">Motion Graphics</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup">Green Screen</a>
-          <a href="https://pixabanimation.github.io/#/shop">View All</a>
-        </div>
-        <div class="blog-footer-col">
-          <h4>Support</h4>
-          <a href="https://pixabanimation.github.io/#/contact">Contact Us</a>
-          <a href="https://pixabanimation.github.io/#/about">About Us</a>
-          <a href="index.html">Blog</a>
-          <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
-        </div>
-        <div class="blog-footer-col blog-footer-col-newsletter">
-          <h4>Stay in the Loop</h4>
-          <p class="blog-footer-newsletter-text">Get early access to new releases, exclusive discounts, and creative inspiration.</p>
-          <form class="blog-footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
-            <input type="email" placeholder="Enter your email" required>
-            <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
-          </form>
-          <p class="blog-footer-note">No spam. Unsubscribe anytime.</p>
-        </div>
-      </div>
-      <div class="blog-footer-bottom">
-        <div class="blog-footer-bottom-links">
-          <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
-          <span style="color:rgba(255,255,255,.3)">·</span>
-          <a href="https://pixabanimation.github.io/#/refund-policy">Refunds</a>
-          <span style="color:rgba(255,255,255,.3)">·</span>
-          <a href="https://pixabanimation.github.io/#/terms-of-use">Terms</a>
-          <span style="color:rgba(255,255,255,.3)">·</span>
-          <a href="https://pixabanimation.github.io/#/contact">Support</a>
-        </div>
-        <p class="blog-footer-bottom-copy">&copy; 2026 PixabAnimation. All rights reserved.</p>
-        <div class="blog-footer-payment-icons">
-          <i class="fab fa-cc-visa"></i>
-          <i class="fab fa-cc-mastercard"></i>
-          <i class="fab fa-cc-amex"></i>
-          <i class="fab fa-cc-paypal"></i>
-        </div>
-      </div>
-    </div>
-  </footer>
-  <script>
-    window.addEventListener('scroll', () => {
-      document.getElementById('blogNavbar').classList.toggle('scrolled', window.scrollY > 50);
-    });
-  </script>
+ <!-- Footer -->
+ <footer class="blog-footer">
+ <div class="blog-footer-content">
+ <div class="blog-footer-grid">
+ <div class="blog-footer-brand">
+ <div class="name"><img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="" style="width:24px;height:20px"> PixabAnimation</div>
+ <div class="desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</div>
+ <div class="blog-footer-social">
+ <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+ <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+ <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+ <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+ <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+ </div>
+ </div>
+ <div class="blog-footer-col">
+ <h4>Shop</h4>
+ <a href="https://pixabanimation.github.io/#/shop">All Assets</a>
+ <a href="https://pixabanimation.github.io/#/shop?category=videos">Animation & Video</a>
+ <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins">After Effects Plugins</a>
+ </div>
+ <div class="blog-footer-col">
+ <h4>Categories</h4>
+ <a href="https://pixabanimation.github.io/#/shop?category=videos">Motion Graphics</a>
+ <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup">Green Screen</a>
+ <a href="https://pixabanimation.github.io/#/shop">View All</a>
+ </div>
+ <div class="blog-footer-col">
+ <h4>Support</h4>
+ <a href="https://pixabanimation.github.io/#/contact">Contact Us</a>
+ <a href="https://pixabanimation.github.io/#/about">About Us</a>
+ <a href="index.html">Blog</a>
+ <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
+ </div>
+ <div class="blog-footer-col blog-footer-col-newsletter">
+ <h4>Stay in the Loop</h4>
+ <p class="blog-footer-newsletter-text">Get early access to new releases, exclusive discounts, and creative inspiration.</p>
+ <form class="blog-footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
+ <input type="email" placeholder="Enter your email" required>
+ <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
+ </form>
+ <p class="blog-footer-note">No spam. Unsubscribe anytime.</p>
+ </div>
+ </div>
+ <div class="blog-footer-bottom">
+ <div class="blog-footer-bottom-links">
+ <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
+ <span style="color:rgba(255,255,255,.3)">·</span>
+ <a href="https://pixabanimation.github.io/#/refund-policy">Refunds</a>
+ <span style="color:rgba(255,255,255,.3)">·</span>
+ <a href="https://pixabanimation.github.io/#/terms-of-use">Terms</a>
+ <span style="color:rgba(255,255,255,.3)">·</span>
+ <a href="https://pixabanimation.github.io/#/contact">Support</a>
+ </div>
+ <p class="blog-footer-bottom-copy">&copy; 2026 PixabAnimation. All rights reserved.</p>
+ <div class="blog-footer-payment-icons">
+ <i class="fab fa-cc-visa"></i>
+ <i class="fab fa-cc-mastercard"></i>
+ <i class="fab fa-cc-amex"></i>
+ <i class="fab fa-cc-paypal"></i>
+ </div>
+ </div>
+ </div>
+ </footer>
+ <script>
+ window.addEventListener('scroll', () => {
+ document.getElementById('blogNavbar').classList.toggle('scrolled', window.scrollY > 50);
+ });
+ </script>
 </body></html>
