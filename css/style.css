@@ -2324,6 +2324,7 @@ select:focus option:checked {
   letter-spacing: -0.02em;
   display: -webkit-box;
   -webkit-line-clamp: 1;
+  line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -2335,6 +2336,7 @@ select:focus option:checked {
   margin-bottom: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -6563,6 +6565,20 @@ body:has(.admin-page) .footer {
   border-color: #3a3a3a !important;
 }
 
+/* Admin card — solid dark card for listing pages (popup ads, blog ads) */
+.admin-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.admin-card:hover {
+  background: #222222;
+  border-color: #3a3a3a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 .admin-badge {
   padding: 5px 16px;
   background: #2a2a2a;
@@ -7653,9 +7669,6 @@ body:has(.admin-page) .footer {
     padding: 16px;
   }
 }
-Admin Product Form Responsive Styles
-   ============================================ */
-
 /* ============================================
    Admin Form Design System — Premium & Professional
    ============================================ */
@@ -8318,4 +8331,5 @@ Admin Product Form Responsive Styles
   .tx-instructions ol {
     font-size: 0.78rem;
   }
+}
 }

@@ -11,8 +11,8 @@ const AdminPopupAds = {
       container.innerHTML = `
         <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
           <div>
-            <h3 style="font-size:1rem;font-weight:600;margin:0">Popup Advertisements</h3>
-            <p style="font-size:0.8rem;color:rgba(255,255,255,0.75);margin:4px 0 0">Manage popup ads shown site-wide. Visitors see 2 popups per visit, alternating between 2 groups of ads.</p>
+            <h3 style="font-size:1rem;font-weight:600;margin:0; color:rgba(255, 255, 255, 0.75)">Popup Advertisements</h3>
+            <p style="font-size:0.8rem;color:rgba(255, 255, 255, 0.75);margin:4px 0 0">Manage popup ads shown site-wide. Visitors see 2 popups per visit, alternating between 2 groups of ads.</p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="AdminPopupAds.showForm(null)">
             <i class="fas fa-plus"></i> Create Popup Ad
@@ -30,7 +30,7 @@ const AdminPopupAds = {
         ` : `
         <div style="display:flex;flex-direction:column;gap:16px">
           ${ads.map(ad => `
-            <div class="glass" style="padding:20px;border-radius:var(--radius-md);display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;opacity:${ad.is_active ? '1' : '0.5'}">
+            <div class="admin-card" style="padding:20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;opacity:${ad.is_active ? '1' : '0.5'}">
               <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
                   <span style="font-size:1.2rem;color:rgba(255,255,255,0.8);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-bullhorn'}"></i></span>

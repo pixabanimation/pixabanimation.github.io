@@ -2106,7 +2106,7 @@ const AdminPage = {
         ` : `
         <div style="display:flex;flex-direction:column;gap:16px">
           ${ads.map(ad => `
-            <div class="glass" style="padding:20px;border-radius:var(--radius-md);display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;opacity:${ad.is_active ? '1' : '0.5'}">
+            <div class="admin-card" style="padding:20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;opacity:${ad.is_active ? '1' : '0.5'}">
               <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
                   <span style="font-size:1.2rem;color:rgba(255,255,255,0.8);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-cube'}"></i></span>
