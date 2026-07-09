@@ -232,6 +232,8 @@ const BlogPostPage = {
     const blocks = [];
     let currentList = [];
     let currentListType = null;
+    let currentTable = [];
+    let inTable = false;
 
     const flushList = () => {
       if (currentList && currentList.length > 0) {
@@ -242,9 +244,37 @@ const BlogPostPage = {
       }
     };
 
+    const flushTable = () => {
+      if (currentTable.length === 0) return;
+      let tbody = '';
+      for (const row of currentTable) {
+        // Split on | and remove leading/trailing empty strings
+        const parts = row.split('|');
+        parts.shift(); // remove empty from leading |
+        parts.pop();   // remove empty from trailing |
+        // Check if all cells are dashes (separator row)
+        if (parts.length > 0 && parts.every(c => /^\s*-{2,}\s*$/.test(c.trim()))) continue;
+        if (parts.length === 0) continue;
+        tbody += '<tr>' + parts.map(c => '<td>' + this.inlineMarkdown(c.trim()) + '</td>').join('') + '</tr>';
+      if (tbody) {
+        blocks.push('<div class="blog-spec-table" style="overflow-x:auto;margin:24px 0;border-radius:12px;border:1px solid rgba(0,0,0,0.06)"><table style="width:100%;border-collapse:collapse;font-size:0.9rem"><tbody>' + tbody + '</tbody></table></div>');
+      }
+      currentTable = [];
+      inTable = false;
+    };
+
     for (const line of lines) {
       const trimmed = line.trim();
-      if (!trimmed) { flushList(); continue; }
+      if (!trimmed) { flushList(); flushTable(); continue; }
+
+      // Table rows start/end with |
+      if (trimmed.startsWith('|') || trimmed.match(/^\|.*\|$/)) {
+        flushList();
+        inTable = true;
+        currentTable.push(trimmed);
+        continue;
+      }
+      if (inTable) { flushTable(); }
 
       const orderedMatch = trimmed.match(/^(\d+)\.\s+(.+)/);
       const unorderedMatch = trimmed.match(/^[-*]\s+(.+)/);
@@ -260,22 +290,23 @@ const BlogPostPage = {
         currentList.push(this.inlineMarkdown(unorderedMatch[1]));
       } else if (trimmed.startsWith('## ')) {
         flushList();
-        blocks.push(`<h2>${trimmed.replace('## ', '')}</h2>`);
+        blocks.push('<h2 style="margin-top:32px">' + trimmed.replace('## ', '') + '</h2>');
       } else if (trimmed.startsWith('### ')) {
         flushList();
-        blocks.push(`<h3>${trimmed.replace('### ', '')}</h3>`);
+        blocks.push('<h3 style="margin-top:24px">' + trimmed.replace('### ', '') + '</h3>');
       } else if (blockquoteMatch) {
         flushList();
-        blocks.push(`<blockquote>${this.inlineMarkdown(blockquoteMatch[1])}</blockquote>`);
+        blocks.push('<blockquote>' + this.inlineMarkdown(blockquoteMatch[1]) + '</blockquote>');
       } else if (trimmed.startsWith('**') && trimmed.endsWith('**')) {
         flushList();
-        blocks.push(`<p><strong>${this.inlineMarkdown(trimmed.replace(/\*\*/g, ''))}</strong></p>`);
+        blocks.push('<p><strong>' + this.inlineMarkdown(trimmed.replace(/\*\*/g, '')) + '</strong></p>');
       } else {
         flushList();
-        blocks.push(`<p>${this.inlineMarkdown(trimmed)}</p>`);
+        blocks.push('<p>' + this.inlineMarkdown(trimmed) + '</p>');
       }
     }
     flushList();
+    flushTable();
     return blocks.join('\n');
   },
 
