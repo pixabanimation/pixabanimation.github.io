@@ -26,7 +26,7 @@ const AdminPage = {
         <div class="admin-sidebar">
           <div class="admin-sidebar-header">
             <span class="brand-icon">✦</span>
-            <span class="brand-text">SPurno CMS Management</span>
+            <span class="brand-text">SPurno E-commerce</span>
           </div>
           <button class="admin-sidebar-toggle" onclick="AdminPage.toggleSidebar()" aria-label="Toggle menu">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
