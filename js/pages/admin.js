@@ -72,6 +72,9 @@ const AdminPage = {
             <button class="admin-nav-item" data-tab="ads" onclick="AdminPage.switchTab('ads');AdminPage.closeSidebar()">
               <i class="fas fa-bullhorn"></i> Ads
             </button>
+            <button class="admin-nav-item" data-tab="popupads" onclick="AdminPage.switchTab('popupads');AdminPage.closeSidebar()">
+              <i class="fas fa-window-restore"></i> Popup Ads
+            </button>
             <hr class="admin-divider">
             <button class="admin-nav-item" data-tab="settings" onclick="AdminPage.switchTab('settings');AdminPage.closeSidebar()">
               <i class="fas fa-cog"></i> Settings
@@ -152,6 +155,7 @@ const AdminPage = {
       case 'messages': this.loadMessages(); break;
       case 'blog': this.loadBlogPosts(); break;
       case 'ads': this.loadAds(); break;
+      case 'popupads': AdminPopupAds.render(); break;
       case 'settings': AdminSettings.render(); break;
     }
   },

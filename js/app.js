@@ -41,6 +41,9 @@ const App = {
     // Initialize video players
     VideoPlayer.init();
 
+    // Initialize popup ads
+    PopupAds.init();
+
     // Start the nav clock
     this.startNavClock();
 

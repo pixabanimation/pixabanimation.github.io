@@ -121,6 +121,30 @@ async function main() {
     }
   }
 
+  // Migration: Add popup_ads table if it doesn't exist
+  console.log("🔄 Adding popup_ads table...");
+  try {
+    await client.execute(`CREATE TABLE IF NOT EXISTS popup_ads (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      cta_text TEXT DEFAULT 'Learn More',
+      cta_url TEXT DEFAULT 'https://pixabanimation.github.io/#/shop',
+      icon TEXT DEFAULT 'fa-bullhorn',
+      image_url TEXT,
+      bg_color TEXT DEFAULT '#0066cc',
+      is_animated INTEGER DEFAULT 1,
+      is_active INTEGER DEFAULT 1,
+      sort_order INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );`);
+    console.log("  ✅ popup_ads table ready");
+  } catch (err) {
+    console.error("  ⚠️ Could not create popup_ads table:", err.message);
+  }
+
   // Migration: Add blog_ads table if it doesn't exist
   console.log("🔄 Adding blog_ads table...");
   try {

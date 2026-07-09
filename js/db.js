@@ -1016,6 +1016,56 @@ const DB = {
     return this.getBlogPosts(filters);
   },
 
+  // === Popup Ads Management ===
+  async getPopupAds(activeOnly = false) {
+    let sql = 'SELECT * FROM popup_ads';
+    if (activeOnly) sql += ' WHERE is_active = 1';
+    sql += ' ORDER BY sort_order ASC, created_at DESC';
+    return this.query(sql);
+  },
+
+  async getPopupAdById(id) {
+    const ads = await this.query('SELECT * FROM popup_ads WHERE id = ?', [id]);
+    return ads.length > 0 ? ads[0] : null;
+  },
+
+  async createPopupAd(data) {
+    const { name, title, description, cta_text, cta_url, icon, image_url, bg_color, is_animated, is_active, sort_order } = data;
+    const result = await this.execute(
+      `INSERT INTO popup_ads (name, title, description, cta_text, cta_url, icon, image_url, bg_color, is_animated, is_active, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [name, title, description, cta_text || 'Learn More', cta_url || 'https://pixabanimation.github.io/#/shop', icon || 'fa-bullhorn', image_url || null, bg_color || '#0066cc', is_animated !== undefined ? (is_animated ? 1 : 0) : 1, is_active !== undefined ? (is_active ? 1 : 0) : 1, sort_order || 0]
+    );
+    return result.lastInsertRowid;
+  },
+
+  async updatePopupAd(id, data) {
+    const fields = [];
+    const params = [];
+    const allowedFields = ['name', 'title', 'description', 'cta_text', 'cta_url', 'icon', 'image_url', 'bg_color', 'is_animated', 'is_active', 'sort_order'];
+    for (const [key, value] of Object.entries(data)) {
+      if (allowedFields.includes(key)) {
+        fields.push(`${key} = ?`);
+        params.push(value);
+      }
+    }
+    if (fields.length === 0) return;
+    fields.push('updated_at = CURRENT_TIMESTAMP');
+    params.push(id);
+    return this.execute(
+      `UPDATE popup_ads SET ${fields.join(', ')} WHERE id = ?`,
+      params
+    );
+  },
+
+  async deletePopupAd(id) {
+    return this.execute('DELETE FROM popup_ads WHERE id = ?', [id]);
+  },
+
+  async togglePopupAd(id, isActive) {
+    return this.execute('UPDATE popup_ads SET is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [isActive ? 1 : 0, id]);
+  },
+
   // === Blog Ads Management ===
   async getAllAds() {
     return this.query('SELECT * FROM blog_ads ORDER BY sort_order ASC, created_at DESC');

@@ -256,6 +256,7 @@ const BlogPostPage = {
         if (parts.length > 0 && parts.every(c => /^\s*-{2,}\s*$/.test(c.trim()))) continue;
         if (parts.length === 0) continue;
         tbody += '<tr>' + parts.map(c => '<td>' + this.inlineMarkdown(c.trim()) + '</td>').join('') + '</tr>';
+      }
       if (tbody) {
         blocks.push('<div class="blog-spec-table" style="overflow-x:auto;margin:24px 0;border-radius:12px;border:1px solid rgba(0,0,0,0.06)"><table style="width:100%;border-collapse:collapse;font-size:0.9rem"><tbody>' + tbody + '</tbody></table></div>');
       }

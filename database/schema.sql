@@ -224,6 +224,24 @@ CREATE TABLE IF NOT EXISTS blog_ads (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Popup Ads table (admin-managed popup advertisements with visit tracking)
+CREATE TABLE IF NOT EXISTS popup_ads (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  cta_text TEXT DEFAULT 'Learn More',
+  cta_url TEXT DEFAULT 'https://pixabanimation.github.io/#/shop',
+  icon TEXT DEFAULT 'fa-bullhorn',
+  image_url TEXT,
+  bg_color TEXT DEFAULT '#0066cc',
+  is_animated INTEGER DEFAULT 1,
+  is_active INTEGER DEFAULT 1,
+  sort_order INTEGER DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Security questions for password recovery
 CREATE TABLE IF NOT EXISTS admin_security (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
