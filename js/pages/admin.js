@@ -26,7 +26,7 @@ const AdminPage = {
         <div class="admin-sidebar">
           <div class="admin-sidebar-header">
             <span class="brand-icon">✦</span>
-            <span class="brand-text">Admin</span>
+            <span class="brand-text">SPurno CMS Management</span>
           </div>
           <button class="admin-sidebar-toggle" onclick="AdminPage.toggleSidebar()" aria-label="Toggle menu">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -500,31 +500,34 @@ const AdminPage = {
 
     Components.showModal(isEdit ? 'Edit Product' : 'Add Product', `
       <form id="productForm" onsubmit="AdminPage.saveProduct(event, ${productId || 'null'})" class="admin-product-form" style="display:flex;flex-direction:column;gap:14px">
-        <div class="admin-form-grid-2">
+        <!-- Row 1: Basic Info -->
+        <div class="admin-form-grid-3">
           <div class="form-group">
-            <label>Product Name</label>
+            <label>Product Name *</label>
             <input type="text" id="pf_name" value="${isEdit ? product.name : ''}" required>
           </div>
           <div class="form-group">
             <label>Slug</label>
             <input type="text" id="pf_slug" value="${isEdit ? product.slug : ''}" placeholder="auto-generated">
           </div>
+          <div class="form-group">
+            <label>Product Type</label>
+            <select id="pf_media_type" onchange="AdminPage.toggleMediaTypeFields()" style="padding:12px 16px">
+              <option value="physical" ${defaultMediaType === 'physical' ? 'selected' : ''}>📦 Physical</option>
+              <option value="digital" ${defaultMediaType === 'digital' ? 'selected' : ''}>📄 Digital</option>
+              <option value="video" ${defaultMediaType === 'video' ? 'selected' : ''}>🎬 Video</option>
+            </select>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Product Type</label>
-          <select id="pf_media_type" onchange="AdminPage.toggleMediaTypeFields()" style="padding:12px 16px">
-            <option value="physical" ${defaultMediaType === 'physical' ? 'selected' : ''}>📦 Physical Product</option>
-            <option value="digital" ${defaultMediaType === 'digital' ? 'selected' : ''}>📄 Digital Download</option>
-            <option value="video" ${defaultMediaType === 'video' ? 'selected' : ''}>🎬 Video Clip</option>
-          </select>
-        </div>
+        <!-- Row 2: Description (full width) -->
         <div class="form-group">
           <label>Description</label>
           <textarea id="pf_description" rows="3" style="resize:vertical">${isEdit ? (product.description || '') : ''}</textarea>
         </div>
+        <!-- Row 3: Pricing & Stock -->
         <div class="admin-form-grid-3">
           <div class="form-group">
-            <label>Price ($)</label>
+            <label>Price ($) *</label>
             <input type="number" id="pf_price" step="0.01" min="0" value="${isEdit ? product.price : ''}" required>
           </div>
           <div class="form-group">
@@ -535,7 +538,9 @@ const AdminPage = {
             <label>Stock</label>
             <input type="number" id="pf_stock" min="0" value="${isEdit ? product.stock : '0'}">
           </div>
-        </div>          <div class="admin-form-grid-2">
+        </div>
+        <!-- Row 4: Category & Image -->
+        <div class="admin-form-grid-2">
           <div class="form-group">
             <label>Category</label>
             <select id="pf_category">
@@ -548,13 +553,20 @@ const AdminPage = {
             ${Components.mediaField('pf_image', isEdit ? (product.image_url || '') : '', 'https://...')}
           </div>
         </div>
+        <!-- Row 5: Checkbox (inline) -->
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <label class="admin-form-checkbox">
+            <input type="checkbox" id="pf_featured" ${isEdit && product.featured ? 'checked' : ''}>
+            <span>Featured product</span>
+          </label>
+        </div>
 
         <!-- Video-specific fields -->
         <div id="pf_video_fields" class="admin-form-video-section" style="display:${defaultMediaType === 'video' ? 'flex' : 'none'}">
           <div class="admin-form-section-header">
             <i class="fas fa-video"></i> Video Details
           </div>
-          <div class="admin-form-grid-2">
+          <div class="admin-form-grid-3">
             <div class="form-group">
               <label>Video File URL</label>
               <input type="url" id="pf_video_url" value="${isEdit && product.video_url ? product.video_url : ''}" placeholder="https://.../video.mp4">
@@ -563,16 +575,15 @@ const AdminPage = {
               <label>Preview Video URL</label>
               <input type="url" id="pf_preview_url" value="${isEdit && product.preview_url ? product.preview_url : ''}" placeholder="https://.../preview.mp4">
             </div>
-          </div>
-          <div class="form-group">
-            <label>Preview Description</label>
-            <textarea id="pf_preview_desc" rows="2" style="resize:vertical" placeholder="Describe what the preview shows...">${isEdit && product.preview_description ? product.preview_description : ''}</textarea>
-          </div>
-          <div class="admin-form-grid-2">
             <div class="form-group">
               <label>File Size (GB)</label>
               <input type="number" id="pf_file_size" step="0.1" min="0" value="${isEdit && product.file_size ? product.file_size : ''}" placeholder="e.g. 2.4">
-              <div class="admin-form-hint">File size of the downloadable video</div>
+            </div>
+          </div>
+          <div class="admin-form-grid-2">
+            <div class="form-group">
+              <label>Preview Description</label>
+              <textarea id="pf_preview_desc" rows="2" style="resize:vertical" placeholder="Describe what the preview shows...">${isEdit && product.preview_description ? product.preview_description : ''}</textarea>
             </div>
             <div class="form-group">
               <label>Duration (seconds)</label>
@@ -582,17 +593,13 @@ const AdminPage = {
           </div>
         </div>
 
-        <label class="admin-form-checkbox">
-          <input type="checkbox" id="pf_featured" ${isEdit && product.featured ? 'checked' : ''}>
-          <span>Featured product</span>
-        </label>
         <div class="admin-form-actions">
           <button type="submit" class="btn btn-primary btn-block">
             <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Save Changes' : 'Add Product'}
           </button>
         </div>
       </form>
-    `);
+    `, '900px');
 
     // Auto-generate slug from name (only for new products)
     const slugField = document.getElementById('pf_slug');
@@ -795,9 +802,11 @@ const AdminPage = {
           <label>Image URL</label>
           ${Components.mediaField('cf_image', isEdit ? (category.image_url || '') : '', 'https://...')}
         </div>
-        <button type="submit" class="btn btn-primary btn-block">
-          <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Save Changes' : 'Add Category'}
-        </button>
+        <div class="admin-form-actions">
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Save Changes' : 'Add Category'}
+          </button>
+        </div>
       </form>
     `);
 
@@ -1339,16 +1348,16 @@ const AdminPage = {
           <label>Avatar URL</label>
           <input type="url" id="uf_avatar" value="${isEdit && user.avatar_url ? user.avatar_url : ''}" placeholder="https://...avatar.jpg">
         </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-            <input type="checkbox" id="uf_is_admin" ${isEdit && user.is_admin ? 'checked' : ''}>
-            <span style="font-size:0.9rem">Administrator</span>
-          </label>
+        <div class="admin-form-checkbox">
+          <input type="checkbox" id="uf_is_admin" ${isEdit && user.is_admin ? 'checked' : ''}>
+          <span>Administrator</span>
         </div>
         ${isSelf ? '<p style="font-size:0.8rem;color:var(--warning)"><i class="fas fa-info-circle"></i> Editing your own account. Changes apply immediately.</p>' : ''}
-        <button type="submit" class="btn btn-primary btn-block">
-          <i class="fas fa-${isEdit ? 'save' : 'user-plus'}"></i> ${isEdit ? 'Save Changes' : 'Create User'}
-        </button>
+        <div class="admin-form-actions">
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-${isEdit ? 'save' : 'user-plus'}"></i> ${isEdit ? 'Save Changes' : 'Create User'}
+          </button>
+        </div>
       </form>
     `);
   },
@@ -1883,7 +1892,7 @@ const AdminPage = {
     const isEdit = !!post;
 
     Components.showModal(isEdit ? 'Edit Post' : 'New Blog Post', `
-      <form id="blogForm" onsubmit="AdminPage.saveBlogPost(event, ${postId || 'null'})" style="display:flex;flex-direction:column;gap:14px;max-height:70vh;overflow-y:auto">
+      <form id="blogForm" onsubmit="AdminPage.saveBlogPost(event, ${postId || 'null'})" style="display:flex;flex-direction:column;gap:14px">
         <div class="admin-form-grid-2">
           <div class="form-group">
             <label>Title *</label>
@@ -2214,13 +2223,15 @@ const AdminPage = {
             `).join('')}
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <input type="checkbox" id="af_is_active" ${(!isEdit || (isEdit && ad.is_active)) ? 'checked' : ''} style="width:auto">
-          <label for="af_is_active" style="margin:0;font-weight:500">Active (visible on pages)</label>
+        <label class="admin-form-checkbox">
+          <input type="checkbox" id="af_is_active" ${(!isEdit || (isEdit && ad.is_active)) ? 'checked' : ''}>
+          <span>Active (visible on pages)</span>
+        </label>
+        <div class="admin-form-actions">
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Save Changes' : 'Create Advertisement'}
+          </button>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">
-          <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Save Changes' : 'Create Advertisement'}
-        </button>
       </form>
     `, '640px');
   },
