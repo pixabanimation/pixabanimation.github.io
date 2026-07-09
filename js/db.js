@@ -959,6 +959,45 @@ const DB = {
     );
   },
 
+  async getBlogTags(limit = 20) {
+    // Extract tags from JSON arrays stored in blog_posts.tags
+    const rows = await this.query(
+      "SELECT tags FROM blog_posts WHERE published = 1 AND tags IS NOT NULL AND tags != '[]' ORDER BY created_at DESC"
+    );
+    const tagCounts = {};
+    rows.forEach(row => {
+      try {
+        const tags = JSON.parse(row.tags || '[]');
+        tags.forEach(t => {
+          const tag = t.trim();
+          if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        });
+      } catch (e) { /* skip malformed tags */ }
+    });
+    return Object.entries(tagCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, limit)
+      .map(([tag, count]) => ({ tag, count }));
+  },
+
+  async searchBlogSuggestions(query, limit = 6) {
+    if (!query || query.trim().length < 1) return [];
+    return this.query(
+      `SELECT id, title, slug, category, cover_image, excerpt
+       FROM blog_posts
+       WHERE published = 1 AND (title LIKE ? OR excerpt LIKE ?)
+       ORDER BY
+         CASE
+           WHEN title LIKE ? THEN 0
+           WHEN title LIKE ? THEN 1
+           ELSE 2
+         END,
+         created_at DESC
+       LIMIT ?`,
+      [`%${query}%`, `%${query}%`, `${query}%`, `%${query}%`, limit]
+    );
+  },
+
   async getRecentBlogPosts(limit = 5) {
     return this.query(
       "SELECT * FROM blog_posts WHERE published = 1 ORDER BY created_at DESC LIMIT ?",
