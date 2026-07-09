@@ -298,7 +298,7 @@ const AdminPage = {
                           <span style="font-weight:500;font-size:0.9rem">${p.name}</span>
                         </td>
                         <td>${p.total_sold || 0}</td>
-                        <td style="font-weight:600;color:var(--accent-1)">$${parseFloat(p.revenue || 0).toFixed(2)}</td>
+                        <td style="font-weight:600;color:rgba(255,255,255,0.85)">$${parseFloat(p.revenue || 0).toFixed(2)}</td>
                       </tr>
                     `).join('')}
                 </tbody>
@@ -447,7 +447,7 @@ const AdminPage = {
                     </td>
                     <td><span style="font-size:0.85rem">${p.category_name || '—'}</span></td>
                     <td><span style="font-size:0.75rem;padding:2px 8px;border-radius:var(--radius-full);background:${p.media_type === 'video' ? 'rgba(0,102,204,0.15)' : p.media_type === 'digital' ? 'rgba(0,230,118,0.15)' : 'var(--bg-input)'};color:${p.media_type === 'video' ? 'var(--accent-1)' : p.media_type === 'digital' ? 'var(--success)' : 'var(--text-muted)'}">${p.media_type === 'video' ? '🎬 Video' : p.media_type === 'digital' ? '📄 Digital' : '📦 Physical'}</span></td>
-                    <td><span style="font-weight:600;color:var(--accent-1)">$${parseFloat(p.price).toFixed(2)}</span></td>
+                    <td><span style="font-weight:600;color:rgba(255,255,255,0.85)">$${parseFloat(p.price).toFixed(2)}</span></td>
                     <td>
                       <span style="color:${p.stock > 0 ? 'var(--success)' : 'var(--error)'};font-weight:600">
                         ${p.stock > 0 ? p.stock : 'Out'}
@@ -751,7 +751,7 @@ const AdminPage = {
                         ${c.description || '—'}
                       </span>
                     </td>
-                    <td><span style="font-weight:600;color:var(--accent-1)">${c.product_count || 0}</span></td>
+                    <td><span style="font-weight:600;color:rgba(255,255,255,0.85)">${c.product_count || 0}</span></td>
                     <td>
                       <div style="display:flex;gap:6px">
                         <button class="admin-action-btn" onclick="AdminPage.showCategoryForm(${c.id})" title="Edit">
@@ -928,7 +928,7 @@ const AdminPage = {
                     <td><span style="font-size:0.85rem;color:var(--text-muted)">${new Date(o.created_at).toLocaleDateString()}</span></td>
                     <td><span style="font-size:0.85rem">${o.customer_info ? o.customer_info.split(',')[0] : '—'}</span></td>
                     <td>${o.item_count}</td>
-                    <td style="font-weight:600;color:var(--accent-1)">$${parseFloat(o.total).toFixed(2)}</td>
+                    <td style="font-weight:600;color:rgba(255,255,255,0.85)">$${parseFloat(o.total).toFixed(2)}</td>
                     <td><span style="font-size:0.8rem;text-transform:capitalize">${o.payment_method || '—'}</span></td>
                     <td>
                       ${o.transaction_id ? `<span style="font-size:0.75rem;font-family:monospace;color:${o.transaction_approved ? 'var(--success)' : 'var(--warning)'}">${o.transaction_id.substring(0, 12)}...</span>` : '<span style="font-size:0.75rem;color:rgba(255,255,255,0.85)">—</span>'}
@@ -1000,9 +1000,9 @@ const AdminPage = {
                   <td><span style="font-weight:700">#${o.id}</span></td>
                   <td><span style="font-size:0.85rem;color:var(--text-muted)">${new Date(o.created_at).toLocaleDateString()}</span></td>
                   <td><span style="font-size:0.85rem">${o.customer_info ? o.customer_info.split(',')[0] : '—'}</span></td>
-                  <td style="font-weight:600;color:var(--accent-1)">$${parseFloat(o.total).toFixed(2)}</td>
+                  <td style="font-weight:600;color:rgba(255,255,255,0.85)">$${parseFloat(o.total).toFixed(2)}</td>
                   <td><span style="text-transform:capitalize;font-size:0.85rem">${o.payment_provider || o.payment_method || '—'}</span></td>
-                  <td><span style="font-family:monospace;font-size:0.8rem;background:var(--bg-input);padding:2px 8px;border-radius:4px">${o.transaction_id}</span></td>
+                  <td><span style="font-family:monospace;font-size:0.8rem;background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px">${o.transaction_id}</span></td>
                   <td>
                     <div style="display:flex;gap:6px">
                       <button class="btn btn-sm btn-primary" onclick="AdminPage.approveTransaction(${o.id})">
@@ -1054,7 +1054,7 @@ const AdminPage = {
             const state = parts[4] || '';
             const countryName = countryCode ? (Countries.getName ? Countries.getName(countryCode) : countryCode) : '';
             return `
-            <div style="padding:12px;background:var(--bg-input);border-radius:var(--radius-sm)">
+            <div style="padding:12px;background:rgba(255,255,255,0.06);border-radius:var(--radius-sm)">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                 <div>
                   <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px">Customer</div>
@@ -1095,7 +1095,7 @@ const AdminPage = {
               ${order.download_link ? `
               <div style="display:flex;justify-content:space-between">
                 <span style="font-size:0.8rem;color:var(--text-muted)">Download Link</span>
-                <a href="${order.download_link}" target="_blank" style="color:var(--accent-1);font-size:0.85rem">
+                <a href="${order.download_link}" target="_blank" style="color:rgba(255,255,255,0.85);font-size:0.85rem">
                   <i class="fas fa-external-link-alt"></i> Open
                 </a>
               </div>` : ''}
@@ -1121,7 +1121,7 @@ const AdminPage = {
               <span>Tax</span>
               <span>$${parseFloat(order.tax || 0).toFixed(2)}</span>
             </div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:1.1rem;font-weight:700;color:var(--accent-1)">
+            <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:1.1rem;font-weight:700;color:rgba(255,255,255,0.85)">
               <span>Total</span>
               <span>$${parseFloat(order.total).toFixed(2)}</span>
             </div>
@@ -1155,7 +1155,7 @@ const AdminPage = {
             <div style="font-size:0.85rem;font-weight:600;color:var(--success);margin-bottom:4px">
               <i class="fas fa-check-circle"></i> Download Link Sent
             </div>
-            <a href="${order.download_link}" target="_blank" style="color:var(--accent-1);font-size:0.85rem;word-break:break-all">
+            <a href="${order.download_link}" target="_blank" style="color:rgba(255,255,255,0.85);font-size:0.85rem;word-break:break-all">
               ${order.download_link}
             </a>
           </div>` : ''}
@@ -1273,8 +1273,8 @@ const AdminPage = {
                     <td>${u.phone || '—'}</td>
                     <td>
                       ${u.is_admin ? 
-                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(0,102,204,0.15);color:var(--accent-1)">Admin</span>' :
-                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:var(--bg-input);color:var(--text-muted)">User</span>'
+                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(0,102,204,0.15);color:rgba(255,255,255,0.85)">Admin</span>' :
+                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:rgba(255,255,255,0.06);color:var(--text-muted)">User</span>'
                       }
                     </td>
                     <td style="font-size:0.85rem;color:var(--text-muted)">${new Date(u.created_at).toLocaleDateString()}</td>
@@ -1495,7 +1495,7 @@ const AdminPage = {
                         ? '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:rgba(245,158,11,0.15);color:var(--warning)">New</span>'
                         : m.admin_reply 
                           ? '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:rgba(0,230,118,0.15);color:var(--success)">Replied</span>'
-                          : '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:var(--bg-input);color:var(--text-muted)">Read</span>'
+                          : '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:rgba(255,255,255,0.06);color:var(--text-muted)">Read</span>'
                       }
                     </td>
                     <td>
@@ -1558,7 +1558,7 @@ const AdminPage = {
           </div>` : ''}
           <div>
             <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:4px">Message</div>
-            <div style="padding:14px;background:var(--bg-input);border-radius:var(--radius-sm);font-size:0.9rem;line-height:1.7;white-space:pre-wrap">${msg.message}</div>
+            <div style="padding:14px;background:rgba(255,255,255,0.06);border-radius:var(--radius-sm);font-size:0.9rem;line-height:1.7;white-space:pre-wrap">${msg.message}</div>
           </div>
           <div style="font-size:0.75rem;color:var(--text-muted)">
             ${new Date(msg.created_at).toLocaleString()}
@@ -1674,7 +1674,7 @@ const AdminPage = {
                     <td>
                       ${s.active ?
                         '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(0,230,118,0.15);color:var(--success)">Active</span>' :
-                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:var(--bg-input);color:var(--text-muted)">Inactive</span>'
+                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:rgba(255,255,255,0.06);color:var(--text-muted)">Inactive</span>'
                       }
                     </td>
                     <td style="font-size:0.85rem;color:rgba(255,255,255,0.85)">${new Date(s.subscribed_at).toLocaleString()}</td>
@@ -1849,7 +1849,7 @@ const AdminPage = {
                     <td>
                       ${p.published ? 
                         '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(16,185,129,0.15);color:var(--success)">Published</span>' :
-                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:var(--bg-input);color:var(--text-muted)">Draft</span>'
+                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:rgba(255,255,255,0.06);color:var(--text-muted)">Draft</span>'
                       }
                     </td>
                     <td>
@@ -2372,7 +2372,7 @@ const AdminPage = {
                   return `
                     <tr>
                       <td><span style="font-weight:700;font-family:monospace;font-size:0.95rem">${c.code}</span></td>
-                      <td><span style="font-weight:600;color:var(--accent-1)">${c.discount_percent}% OFF</span></td>
+                      <td><span style="font-weight:600;color:rgba(255,255,255,0.85)">${c.discount_percent}% OFF</span></td>
                       <td>$${parseFloat(c.min_purchase || 0).toFixed(2)}</td>
                       <td>${c.current_uses || 0} / ${c.max_uses || '∞'}</td>
                       <td style="font-size:0.85rem;color:var(--text-muted)">${c.expires_at ? new Date(c.expires_at).toLocaleDateString() : 'Never'}</td>

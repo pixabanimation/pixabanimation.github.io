@@ -6317,6 +6317,26 @@ select:focus option:checked {
    ============================================ */
 
 /* --- Admin Background Grid Pattern (Cyberpunk city grid) --- */
+/* Admin modal form scroll support */
+.admin-page .modal-content:has(textarea[rows]) {
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* Admin modal header stays fixed */
+.admin-page .modal-content:has(textarea[rows]) .modal-header {
+  position: sticky;
+  top: 0;
+  background: inherit;
+  z-index: 1;
+  padding-bottom: 12px;
+}
+
+/* Hide footer when admin is active */
+body:has(.admin-page) .footer {
+  display: none !important;
+}
+
 .admin-page {
   display: flex;
   min-height: calc(100vh - var(--nav-height));
