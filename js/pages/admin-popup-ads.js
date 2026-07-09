@@ -116,25 +116,27 @@ const AdminPopupAds = {
         <div class="admin-form-grid-2">
           <div class="form-group">
             <label>Background Color</label>
-            <div style="display:flex;gap:8px;align-items:center">
-              <input type="color" id="paf_bg_picker" value="${isEdit ? (ad.bg_color || '#0066cc') : '#0066cc'}" style="width:44px;height:44px;padding:2px;flex:none" onchange="document.getElementById('paf_bg').value=this.value">
-              <input type="text" id="paf_bg" value="${isEdit ? (ad.bg_color || '#0066cc') : '#0066cc'}" style="flex:1" onchange="document.getElementById('paf_bg_picker').value=this.value">
+            <div class="admin-form-color-row">
+              <input type="color" id="paf_bg_picker" value="${isEdit ? (ad.bg_color || '#0066cc') : '#0066cc'}" onchange="document.getElementById('paf_bg').value=this.value">
+              <input type="text" id="paf_bg" value="${isEdit ? (ad.bg_color || '#0066cc') : '#0066cc'}" onchange="document.getElementById('paf_bg_picker').value=this.value">
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:12px;padding-bottom:4px">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <div style="display:flex;flex-direction:column;gap:10px;padding:8px 0">
+            <label class="admin-form-checkbox">
               <input type="checkbox" id="paf_animated" ${isEdit && ad.is_animated ? 'checked' : ''}>
-              <span style="font-size:0.9rem">Animated (countdown timer)</span>
+              <span>Animated (countdown timer)</span>
             </label>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <label class="admin-form-checkbox">
               <input type="checkbox" id="paf_active" ${!isEdit || ad.is_active ? 'checked' : ''}>
-              <span style="font-size:0.9rem">Active</span>
+              <span>Active</span>
             </label>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">
-          <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Update Popup Ad' : 'Create Popup Ad'}
-        </button>
+        <div class="admin-form-actions">
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Update Popup Ad' : 'Create Popup Ad'}
+          </button>
+        </div>
       </form>
     `, '480px');
   },

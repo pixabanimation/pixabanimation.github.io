@@ -2167,65 +2167,67 @@ select:focus option:checked {
 }
 
 /* ============================================
-   Popup Ad System Styles
+   Popup Ad System — 900x300 Professional Banner
    ============================================ */
 
 .popup-ad-overlay {
   position: fixed;
-  inset: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 9999;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   pointer-events: none;
-  padding: 24px;
+  padding: 0;
 }
 
 .popup-ad-overlay.popup-ad-active {
   pointer-events: all;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  animation: popupOverlayIn 0.35s ease-out;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.08) 50%, transparent 100%);
+  animation: popupOverlayIn 0.4s ease-out;
 }
 
 @keyframes popupOverlayIn {
-  from { opacity: 0; background: transparent; backdrop-filter: blur(0px); }
-  to { opacity: 1; background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(6px); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .popup-ad-overlay.popup-ad-exit {
-  animation: popupOverlayOut 0.4s ease-in forwards;
+  animation: popupOverlayOut 0.35s ease-in forwards;
 }
 
 @keyframes popupOverlayOut {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(0.95); }
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(20px); }
 }
 
 .popup-ad-inner {
   position: relative;
-  max-width: 480px;
-  width: 100%;
-  border-radius: 20px;
+  width: 900px;
+  max-width: min(94vw, 900px);
+  height: 300px;
+  max-height: 25vh;
+  border-radius: 16px 16px 0 0;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: popupCardIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.25);
+  animation: popupSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes popupCardIn {
-  from { opacity: 0; transform: translateY(40px) scale(0.9); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+@keyframes popupSlideUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .popup-ad-bg-pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.08;
-  background-image: 
-    radial-gradient(circle at 20% 30%, white 1px, transparent 1px),
-    radial-gradient(circle at 80% 70%, white 1px, transparent 1px);
-  background-size: 40px 40px, 30px 30px;
+  opacity: 0.06;
+  background-image:
+    radial-gradient(circle at 15% 40%, white 1px, transparent 1px),
+    radial-gradient(circle at 85% 60%, white 1px, transparent 1px);
+  background-size: 50px 50px, 35px 35px;
   pointer-events: none;
 }
 
@@ -2233,130 +2235,139 @@ select:focus option:checked {
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 2;
-  font-size: 0.85rem;
+  z-index: 3;
+  font-size: 0.8rem;
   transition: all 0.2s ease;
 }
 
 .popup-ad-close:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: rotate(90deg) scale(1.1);
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
 }
 
 .popup-ad-body {
   position: relative;
   z-index: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 40px 32px 32px;
-  text-align: center;
+  gap: 24px;
+  height: 100%;
+  padding: 24px 48px 24px 32px;
+  text-align: left;
 }
 
 .popup-ad-image {
-  width: 100%;
-  max-height: 180px;
+  width: 160px;
+  min-width: 120px;
+  height: 200px;
   object-fit: cover;
   border-radius: 12px;
-  margin-bottom: 16px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .popup-ad-icon-circle {
-  width: 72px;
-  height: 72px;
+  width: 100px;
+  height: 100px;
+  min-width: 100px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 2.6rem;
   color: white;
-  margin-bottom: 16px;
+  flex-shrink: 0;
   backdrop-filter: blur(4px);
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  animation: popupIconPulse 2s ease-in-out infinite;
-}
-
-@keyframes popupIconPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.3); }
-  50% { transform: scale(1.05); box-shadow: 0 0 20px 4px rgba(255,255,255,0.15); }
+  -webkit-backdrop-filter: blur(4px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.06);
 }
 
 .popup-ad-content {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 }
 
 .popup-ad-badge {
   display: inline-block;
   padding: 4px 14px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.18);
   border-radius: 9999px;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   color: white;
-  margin-bottom: 12px;
-  backdrop-filter: blur(4px);
+  margin-bottom: 8px;
 }
 
 .popup-ad-title {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: white;
-  line-height: 1.2;
-  margin-bottom: 8px;
+  line-height: 1.25;
+  margin-bottom: 4px;
   letter-spacing: -0.02em;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .popup-ad-desc {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.85);
-  line-height: 1.6;
-  margin-bottom: 20px;
-  max-width: 380px;
-  margin-left: auto;
-  margin-right: auto;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.5;
+  margin-bottom: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .popup-ad-cta {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 28px;
-  background: white;
-  color: var(--ds-primary);
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1d1d1f;
   border-radius: 9999px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .popup-ad-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
 .popup-ad-cta:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
 
 .popup-ad-cta i {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   transition: transform 0.2s ease;
 }
 
@@ -2369,33 +2380,229 @@ select:focus option:checked {
   bottom: 0;
   left: 0;
   height: 3px;
-  background: rgba(255, 255, 255, 0.4);
+  background: linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.1));
   width: 100%;
   z-index: 2;
 }
 
-@media (max-width: 480px) {
-  .popup-ad-overlay {
-    padding: 16px;
-    align-items: flex-end;
-  }
-  .popup-ad-inner {
-    max-width: 100%;
-    border-radius: 16px 16px 0 0;
-  }
+/* Responsive: tablets */
+/* Responsive: tablet landscape */
+@media (max-width: 1024px) {
   .popup-ad-body {
-    padding: 32px 20px 24px;
+    padding: 22px 44px 22px 28px;
+    gap: 20px;
   }
-  .popup-ad-title {
-    font-size: 1.2rem;
-  }
-  .popup-ad-desc {
-    font-size: 0.85rem;
+  .popup-ad-image {
+    width: 140px;
+    min-width: 110px;
+    height: 180px;
   }
   .popup-ad-icon-circle {
-    width: 56px;
-    height: 56px;
-    font-size: 1.5rem;
+    width: 90px;
+    height: 90px;
+    min-width: 90px;
+    font-size: 2.2rem;
+  }
+}
+
+/* Responsive: tablet portrait */
+@media (max-width: 768px) {
+  .popup-ad-inner {
+    width: 100%;
+    max-width: 100vw;
+    height: 240px;
+    border-radius: 14px 14px 0 0;
+  }
+  .popup-ad-body {
+    padding: 18px 44px 18px 22px;
+    gap: 16px;
+  }
+  .popup-ad-image {
+    width: 120px;
+    min-width: 100px;
+    height: 160px;
+  }
+  .popup-ad-icon-circle {
+    width: 76px;
+    height: 76px;
+    min-width: 76px;
+    font-size: 1.8rem;
+  }
+  .popup-ad-title {
+    font-size: 1.15rem;
+  }
+  .popup-ad-desc {
+    font-size: 0.82rem;
+    -webkit-line-clamp: 2;
+  }
+  .popup-ad-cta {
+    padding: 9px 20px;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+  .popup-ad-close {
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    font-size: 0.75rem;
+  }
+  .popup-ad-badge {
+    font-size: 0.6rem;
+    padding: 3px 12px;
+  }
+}
+
+/* Responsive: mobile large */
+@media (max-width: 480px) {
+  .popup-ad-inner {
+    height: auto;
+    min-height: 150px;
+    max-height: 45vh;
+    border-radius: 12px 12px 0 0;
+  }
+  .popup-ad-body {
+    padding: 14px 38px 14px 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .popup-ad-image {
+    width: 70px;
+    height: 80px;
+    min-width: 70px;
+  }
+  .popup-ad-icon-circle {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    font-size: 1.3rem;
+  }
+  .popup-ad-title {
+    font-size: 0.95rem;
+    -webkit-line-clamp: 2;
+    margin-bottom: 2px;
+  }
+  .popup-ad-desc {
+    font-size: 0.75rem;
+    -webkit-line-clamp: 2;
+    line-height: 1.4;
+  }
+  .popup-ad-cta {
+    padding: 7px 14px;
+    font-size: 0.72rem;
+    width: 100%;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  .popup-ad-content {
+    flex: 1 1 100%;
+    order: -1;
+  }
+  .popup-ad-badge {
+    font-size: 0.58rem;
+    padding: 2px 10px;
+    margin-bottom: 4px;
+  }
+  .popup-ad-close {
+    top: 8px;
+    right: 8px;
+    width: 26px;
+    height: 26px;
+    font-size: 0.65rem;
+  }
+}
+
+/* Responsive: small mobile */
+@media (max-width: 360px) {
+  .popup-ad-inner {
+    max-height: 50vh;
+    min-height: 130px;
+    border-radius: 10px 10px 0 0;
+  }
+  .popup-ad-body {
+    padding: 12px 34px 12px 12px;
+    gap: 8px;
+  }
+  .popup-ad-image {
+    display: none;
+  }
+  .popup-ad-icon-circle {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    font-size: 1.1rem;
+  }
+  .popup-ad-title {
+    font-size: 0.85rem;
+  }
+  .popup-ad-desc {
+    font-size: 0.7rem;
+    -webkit-line-clamp: 1;
+  }
+  .popup-ad-cta {
+    padding: 6px 12px;
+    font-size: 0.68rem;
+  }
+  .popup-ad-close {
+    top: 6px;
+    right: 6px;
+    width: 24px;
+    height: 24px;
+    font-size: 0.6rem;
+  }
+}
+
+/* Responsive: landscape orientation on mobile */
+@media (max-width: 800px) and (orientation: landscape) {
+  .popup-ad-inner {
+    height: 180px;
+    max-height: 35vh;
+  }
+  .popup-ad-body {
+    padding: 12px 40px 12px 18px;
+    gap: 14px;
+  }
+  .popup-ad-image {
+    width: 100px;
+    height: 120px;
+    min-width: 80px;
+  }
+  .popup-ad-icon-circle {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    font-size: 1.4rem;
+  }
+  .popup-ad-title {
+    font-size: 0.95rem;
+    -webkit-line-clamp: 1;
+  }
+  .popup-ad-desc {
+    font-size: 0.72rem;
+    -webkit-line-clamp: 1;
+  }
+  .popup-ad-cta {
+    padding: 6px 14px;
+    font-size: 0.72rem;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .popup-ad-inner {
+    animation: none;
+  }
+  .popup-ad-overlay.popup-ad-active {
+    animation: none;
+  }
+  .popup-ad-overlay.popup-ad-exit {
+    animation: none;
+  }
+  .popup-ad-close:hover {
+    transform: none;
+  }
+  .popup-ad-cta:hover {
+    transform: none;
   }
 }
 
@@ -7188,24 +7395,316 @@ select:focus option:checked {
    Admin Product Form Responsive Styles
    ============================================ */
 
-/* Form grid helpers for admin product form */
+/* ============================================
+   Admin Form Design System — Premium & Professional
+   ============================================ */
+
+/* --- Form Grid Helpers --- */
 .admin-form-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 
 .admin-form-grid-3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 
-/* Increase modal width for product form */
-.modal-content:has(form.admin-product-form) {
-  max-width: 640px;
-  max-height: 90vh;
+/* --- Admin Form Card (groups related fields) --- */
+.admin-form-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.admin-form-card:hover {
+  border-color: rgba(0,0,0,0.1);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+/* --- Section header inside admin forms --- */
+.admin-form-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.admin-form-section-header i {
+  color: var(--accent-1);
+  font-size: 0.95rem;
+  width: 24px;
+  text-align: center;
+}
+
+/* --- Premium Form Group styling --- */
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-form-group label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(0,0,0,0.65);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-form-group label .required {
+  color: var(--error);
+  font-size: 0.85rem;
+}
+
+.admin-form-group label i {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  width: 16px;
+  text-align: center;
+}
+
+/* --- Premium form inputs inside modals --- */
+.modal-content input[type="text"],
+.modal-content input[type="url"],
+.modal-content input[type="email"],
+.modal-content input[type="number"],
+.modal-content input[type="tel"],
+.modal-content input[type="password"],
+.modal-content textarea,
+.modal-content select {
+  background: #ffffff;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: #1d1d1f;
+  transition: all 0.25s ease;
+  width: 100%;
+  outline: none;
+  font-family: var(--font-primary);
+}
+
+.modal-content input[type="text"]:hover,
+.modal-content input[type="url"]:hover,
+.modal-content input[type="email"]:hover,
+.modal-content input[type="number"]:hover,
+.modal-content input[type="tel"]:hover,
+.modal-content input[type="password"]:hover,
+.modal-content textarea:hover,
+.modal-content select:hover {
+  border-color: rgba(0,0,0,0.15);
+}
+
+.modal-content input[type="text"]:focus,
+.modal-content input[type="url"]:focus,
+.modal-content input[type="email"]:focus,
+.modal-content input[type="number"]:focus,
+.modal-content input[type="tel"]:focus,
+.modal-content input[type="password"]:focus,
+.modal-content textarea:focus,
+.modal-content select:focus {
+  border-color: var(--ds-primary);
+  box-shadow: 0 0 0 3px rgba(0,102,204,0.12), 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.modal-content textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.6;
+}
+
+.modal-content select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237a7a7a' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+/* --- Custom Checkbox styling --- */
+.admin-form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 6px 0;
+}
+
+.admin-form-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(0,0,0,0.15);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.admin-form-checkbox input[type="checkbox"]:checked {
+  background: var(--ds-primary);
+  border-color: var(--ds-primary);
+}
+
+.admin-form-checkbox input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.admin-form-checkbox input[type="checkbox"]:focus {
+  border-color: var(--ds-primary);
+  box-shadow: 0 0 0 3px rgba(0,102,204,0.12);
+}
+
+.admin-form-checkbox span {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* --- Color picker row (popup ad form) --- */
+.admin-form-color-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-form-color-row input[type="color"] {
+  width: 44px;
+  height: 44px;
+  padding: 3px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  cursor: pointer;
+  background: #fff;
+}
+
+.admin-form-color-row input[type="color"]:hover {
+  border-color: rgba(0,0,0,0.15);
+}
+
+.admin-form-color-row input[type="text"] {
+  flex: 1;
+}
+
+/* --- Hint text --- */
+.admin-form-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* --- Video fields section (highlighted) --- */
+.admin-form-video-section {
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(0,102,204,0.04), rgba(0,102,204,0.02));
+  border: 1px solid rgba(0,102,204,0.1);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.25s ease;
+}
+
+.admin-form-video-section:hover {
+  border-color: rgba(0,102,204,0.2);
+  box-shadow: 0 2px 16px rgba(0,102,204,0.06);
+}
+
+/* --- Modal form adjustments --- */
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Wider modals for forms */
+.admin-page .modal-content:has(form) {
+  max-width: 600px;
+  max-height: 88vh;
   overflow-y: auto;
+  padding: 28px;
+}
+
+.admin-page .modal-content:has(textarea) {
+  max-width: 640px;
+}
+
+/* Modal header within form modals */
+.admin-page .admin-page .modal-content:has(form) .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.admin-page .admin-page .admin-page .modal-content:has(form) .modal-header h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1d1d1f;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-page .admin-page .admin-page .admin-page .modal-content:has(form) .modal-header h2 i {
+  color: var(--accent-1);
+  font-size: 1rem;
+}
+
+/* --- Form submit button area --- */
+.admin-form-actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  margin-top: 4px;
+}
+
+.admin-form-actions .btn {
+  flex: 1;
+}
+
+/* ============================================
+   Admin Form Responsive Breakpoints
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .admin-page .modal-content:has(form) {
+    max-width: 580px;
+    padding: 24px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -7213,19 +7712,65 @@ select:focus option:checked {
   .admin-form-grid-3 {
     grid-template-columns: 1fr;
   }
-  .modal-content:has(form.admin-product-form) {
+  .admin-page .modal-content:has(form) {
     max-width: 100%;
     margin: 0 8px;
     padding: 24px 20px;
+    border-radius: var(--radius-md);
+  }
+  .admin-form-card {
+    padding: 16px;
   }
   .admin-content { padding: 16px; }
   .admin-table td { white-space: normal; min-width: 80px; }
+  .admin-form-section-header {
+    font-size: 0.85rem;
+  }
+  .modal-content input[type="text"],
+  .modal-content input[type="url"],
+  .modal-content input[type="email"],
+  .modal-content input[type="number"],
+  .modal-content input[type="tel"],
+  .modal-content input[type="password"],
+  .modal-content textarea,
+  .modal-content select {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .modal-content:has(form.admin-product-form) {
+  .admin-page .modal-content:has(form) {
     padding: 20px 16px;
-    border-radius: var(--radius-md);
+    border-radius: 10px;
+    max-height: 85vh;
+  }
+  .admin-form-card {
+    padding: 14px;
+    border-radius: 10px;
+  }
+  .admin-form-section-header {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 360px) {
+  .admin-page .modal-content:has(form) {
+    padding: 16px 12px;
+    margin: 0 4px;
+  }
+  .modal-content input[type="text"],
+  .modal-content input[type="url"],
+  .modal-content input[type="email"],
+  .modal-content input[type="number"],
+  .modal-content input[type="tel"],
+  .modal-content input[type="password"],
+  .modal-content textarea,
+  .modal-content select {
+    padding: 9px 12px;
+    font-size: 0.82rem;
   }
 }
 

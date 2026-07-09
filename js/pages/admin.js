@@ -550,8 +550,10 @@ const AdminPage = {
         </div>
 
         <!-- Video-specific fields -->
-        <div id="pf_video_fields" style="display:${defaultMediaType === 'video' ? 'flex' : 'none'};flex-direction:column;gap:12px;padding:16px;background:var(--bg-input);border-radius:var(--radius-sm);border:1px solid var(--border-light)">
-          <div style="font-weight:600;font-size:0.9rem;color:var(--accent-1);margin-bottom:4px"><i class="fas fa-video"></i> Video Details</div>
+        <div id="pf_video_fields" class="admin-form-video-section" style="display:${defaultMediaType === 'video' ? 'flex' : 'none'}">
+          <div class="admin-form-section-header">
+            <i class="fas fa-video"></i> Video Details
+          </div>
           <div class="admin-form-grid-2">
             <div class="form-group">
               <label>Video File URL</label>
@@ -570,21 +572,25 @@ const AdminPage = {
             <div class="form-group">
               <label>File Size (GB)</label>
               <input type="number" id="pf_file_size" step="0.1" min="0" value="${isEdit && product.file_size ? product.file_size : ''}" placeholder="e.g. 2.4">
+              <div class="admin-form-hint">File size of the downloadable video</div>
             </div>
             <div class="form-group">
               <label>Duration (seconds)</label>
               <input type="number" id="pf_duration" step="1" min="0" value="${isEdit && product.duration ? product.duration : ''}" placeholder="e.g. 720">
+              <div class="admin-form-hint">Total runtime in seconds</div>
             </div>
           </div>
         </div>
 
-        <div style="display:flex;align-items:center;gap:8px">
-          <input type="checkbox" id="pf_featured" ${isEdit && product.featured ? 'checked' : ''} style="width:auto">
-          <label for="pf_featured" style="margin:0">Featured product</label>
+        <label class="admin-form-checkbox">
+          <input type="checkbox" id="pf_featured" ${isEdit && product.featured ? 'checked' : ''}>
+          <span>Featured product</span>
+        </label>
+        <div class="admin-form-actions">
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Save Changes' : 'Add Product'}
+          </button>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">
-          <i class="fas fa-${isEdit ? 'save' : 'plus'}"></i> ${isEdit ? 'Save Changes' : 'Add Product'}
-        </button>
       </form>
     `);
 
@@ -1930,19 +1936,21 @@ const AdminPage = {
             <input type="text" id="bf_meta_description" value="${isEdit ? (post.meta_description || '') : ''}" placeholder="Defaults to excerpt">
           </div>
         </div>
-        <div style="display:flex;gap:16px;align-items:center">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;padding:4px 0">
+          <label class="admin-form-checkbox">
             <input type="checkbox" id="bf_published" ${isEdit && post.published ? 'checked' : ''}>
-            <span style="font-size:0.9rem">Published</span>
+            <span>Published</span>
           </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <label class="admin-form-checkbox">
             <input type="checkbox" id="bf_featured" ${isEdit && post.featured ? 'checked' : ''}>
-            <span style="font-size:0.9rem">Featured</span>
+            <span>Featured</span>
           </label>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">
-          <i class="fas fa-${isEdit ? 'save' : 'pen-fancy'}"></i> ${isEdit ? 'Update Post' : 'Publish Post'}
-        </button>
+        <div class="admin-form-actions">
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-${isEdit ? 'save' : 'pen-fancy'}"></i> ${isEdit ? 'Update Post' : 'Publish Post'}
+          </button>
+        </div>
       </form>
     `, '640px');
 

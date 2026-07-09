@@ -140,44 +140,23 @@ const PopupAds = {
     const icon = ad.icon || 'fa-bullhorn';
     const imageUrl = ad.image_url;
 
-    // Render the popup
-    const popupContent = imageUrl ? `
+    // 900x300 horizontal banner layout at the bottom
+    const popupContent = `
       <div class="popup-ad-inner" style="background:${bgColor}">
         <div class="popup-ad-bg-pattern"></div>
         <button class="popup-ad-close" onclick="PopupAds.closePopup(${index})" aria-label="Close">
           <i class="fas fa-times"></i>
         </button>
         <div class="popup-ad-body">
-          <img src="${imageUrl}" alt="" class="popup-ad-image">
+          ${imageUrl ? `<img src="${imageUrl}" alt="" class="popup-ad-image" onerror="this.style.display='none'">` : `<div class="popup-ad-icon-circle"><i class="fas ${icon}"></i></div>`}
           <div class="popup-ad-content">
-            <div class="popup-ad-badge">Special Offer</div>
+            <div class="popup-ad-badge">${ad.is_animated ? '⚡ Limited Offer' : '🎯 Promotion'}</div>
             <h3 class="popup-ad-title">${this.escapeHtml(ad.title)}</h3>
             <p class="popup-ad-desc">${this.escapeHtml(ad.description)}</p>
-            <a href="${this.escapeHtml(ad.cta_url)}" class="popup-ad-cta" target="_blank" onclick="PopupAds.closePopup(${index})">
-              ${this.escapeHtml(ad.cta_text || 'Learn More')} <i class="fas fa-arrow-right"></i>
-            </a>
           </div>
-        </div>
-        <div class="popup-ad-progress" id="popupAdProgress${index}"></div>
-      </div>
-    ` : `
-      <div class="popup-ad-inner" style="background:${bgColor}">
-        <div class="popup-ad-bg-pattern"></div>
-        <button class="popup-ad-close" onclick="PopupAds.closePopup(${index})" aria-label="Close">
-          <i class="fas fa-times"></i>
-        </button>
-        <div class="popup-ad-body">
-          <div class="popup-ad-icon-circle">
-            <i class="fas ${icon}"></i>
-          </div>
-          <div class="popup-ad-content">
-            <div class="popup-ad-badge">Special Offer</div>
-            <h3 class="popup-ad-title">${this.escapeHtml(ad.title)}</h3>
-            <p class="popup-ad-desc">${this.escapeHtml(ad.description)}</p>
-            <a href="${this.escapeHtml(ad.cta_url)}" class="popup-ad-cta" target="_blank" onclick="PopupAds.closePopup(${index})">
-              ${this.escapeHtml(ad.cta_text || 'Learn More')} <i class="fas fa-arrow-right"></i>
-            </a>
-          </div>
+          <a href="${this.escapeHtml(ad.cta_url)}" class="popup-ad-cta" target="_blank" onclick="PopupAds.closePopup(${index})" rel="noopener">
+            ${this.escapeHtml(ad.cta_text || 'Learn More')} <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
         <div class="popup-ad-progress" id="popupAdProgress${index}"></div>
       </div>
