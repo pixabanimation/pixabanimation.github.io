@@ -7170,6 +7170,17 @@ body:has(.admin-page) .footer {
   }
   .admin-sidebar-toggle {
     display: flex;
+    position: fixed;
+    top: 56px;
+    left: 12px;
+    z-index: 5001;
+    width: 40px;
+    height: 40px;
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
   .admin-page {
     flex-direction: column;
