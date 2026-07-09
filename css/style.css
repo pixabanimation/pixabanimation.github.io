@@ -6323,7 +6323,8 @@ select:focus option:checked {
   padding-top: 0;
   background: #111111;
   position: relative;
-}
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --text-secondary: rgba(255, 255, 255, 0.75);
 
 /* --- Sidebar — Dark glass with neon accents --- */
 .admin-sidebar {

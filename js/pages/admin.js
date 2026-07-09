@@ -434,7 +434,7 @@ const AdminPage = {
                 '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No products found</td></tr>' :
                 products.map(p => `
                   <tr>
-                    <td style="color:var(--text-muted);font-size:0.85rem">#${p.id}</td>
+                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
                     <td>
                       <div style="display:flex;align-items:center;gap:12px">
                         <img src="${p.image_url || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=80&q=60'}" 
@@ -455,7 +455,7 @@ const AdminPage = {
                     </td>
                     <td>
                       <span style="color:#ffc107">${'★'.repeat(Math.round(p.rating || 0))}${'☆'.repeat(5 - Math.round(p.rating || 0))}</span>
-                      <span style="font-size:0.8rem;color:var(--text-muted)">(${p.reviews_count || 0})</span>
+                      <span style="font-size:0.8rem;color:rgba(255,255,255,0.85)">(${p.reviews_count || 0})</span>
                     </td>
                     <td>
                       <button class="admin-toggle ${p.featured ? 'active' : ''}" 
@@ -739,13 +739,13 @@ const AdminPage = {
                 '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No categories found</td></tr>' :
                 categories.map(c => `
                   <tr>
-                    <td style="color:var(--text-muted);font-size:0.85rem">#${c.id}</td>
+                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
                     <td>
                       <img src="${c.image_url || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=80&q=60'}" 
                            alt="${c.name}" style="width:44px;height:44px;border-radius:8px;object-fit:cover">
                     </td>
                     <td><span style="font-weight:600">${c.name}</span></td>
-                    <td><span style="font-size:0.8rem;color:var(--text-muted);font-family:monospace">${c.slug}</span></td>
+                    <td><span style="font-size:0.8rem;color:rgba(255,255,255,0.85);font-family:monospace">${c.slug}</span></td>
                     <td>
                       <span style="font-size:0.85rem;color:var(--text-secondary);display:block;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(c.description || '').replace(/"/g, '&quot;')}">
                         ${c.description || '—'}
@@ -931,7 +931,7 @@ const AdminPage = {
                     <td style="font-weight:600;color:var(--accent-1)">$${parseFloat(o.total).toFixed(2)}</td>
                     <td><span style="font-size:0.8rem;text-transform:capitalize">${o.payment_method || '—'}</span></td>
                     <td>
-                      ${o.transaction_id ? `<span style="font-size:0.75rem;font-family:monospace;color:${o.transaction_approved ? 'var(--success)' : 'var(--warning)'}">${o.transaction_id.substring(0, 12)}...</span>` : '<span style="font-size:0.75rem;color:var(--text-muted)">—</span>'}
+                      ${o.transaction_id ? `<span style="font-size:0.75rem;font-family:monospace;color:${o.transaction_approved ? 'var(--success)' : 'var(--warning)'}">${o.transaction_id.substring(0, 12)}...</span>` : '<span style="font-size:0.75rem;color:rgba(255,255,255,0.85)">—</span>'}
                     </td>
                     <td>${this.statusBadge(o.status)}</td>
                     <td>
@@ -1260,7 +1260,7 @@ const AdminPage = {
                 '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No users found</td></tr>' :
                 users.map(u => `
                   <tr>
-                    <td style="color:var(--text-muted);font-size:0.85rem">#${u.id}</td>
+                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
                     <td>
                       ${u.avatar_url 
                         ? `<img src="${u.avatar_url}" alt="${u.name}" style="width:36px;height:36px;border-radius:50%;object-fit:cover">`
@@ -1269,7 +1269,7 @@ const AdminPage = {
                     </td>
                     <td><span style="font-weight:600">${u.name}</span></td>
                     <td>${u.email}</td>
-                    <td><span style="font-size:0.8rem;color:var(--text-muted)">${u.additional_email || '—'}</span></td>
+                    <td><span style="font-size:0.8rem;color:rgba(255,255,255,0.85)">${u.additional_email || '—'}</span></td>
                     <td>${u.phone || '—'}</td>
                     <td>
                       ${u.is_admin ? 
@@ -1479,10 +1479,10 @@ const AdminPage = {
                 '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">No messages yet</td></tr>' :
                 messages.map(m => `
                   <tr style="${!m.is_read && !m.admin_reply ? 'background:rgba(0,102,204,0.03)' : ''}${m.admin_reply ? 'opacity:0.7' : ''}">
-                    <td style="color:var(--text-muted);font-size:0.85rem">#${m.id}</td>
+                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
                     <td>
                       <div style="font-weight:600;font-size:0.85rem">${m.name}</div>
-                      <div style="font-size:0.75rem;color:var(--text-muted)">${m.email}</div>
+                      <div style="font-size:0.75rem;color:rgba(255,255,255,0.85)">${m.email}</div>
                     </td>
                     <td><span style="font-size:0.85rem;font-weight:500">${m.subject || '—'}</span></td>
                     <td>
@@ -1668,7 +1668,7 @@ const AdminPage = {
                 '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">No subscribers yet</td></tr>' :
                 subscribers.map(s => `
                   <tr>
-                    <td style="color:var(--text-muted);font-size:0.85rem">#${s.id}</td>
+                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
                     <td><span style="font-weight:600">${s.email}</span></td>
                     <td>${s.name || '—'}</td>
                     <td>
@@ -1677,7 +1677,7 @@ const AdminPage = {
                         '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:var(--bg-input);color:var(--text-muted)">Inactive</span>'
                       }
                     </td>
-                    <td style="font-size:0.85rem;color:var(--text-muted)">${new Date(s.subscribed_at).toLocaleString()}</td>
+                    <td style="font-size:0.85rem;color:rgba(255,255,255,0.85)">${new Date(s.subscribed_at).toLocaleString()}</td>
                     <td>
                       <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteSubscriber(${s.id}, '${s.email.replace(/'/g, "\\'")}')" title="Delete Subscriber">
                         <i class="fas fa-trash"></i>
@@ -1750,7 +1750,7 @@ const AdminPage = {
                 '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No reviews yet</td></tr>' :
                 reviews.map(r => `
                   <tr>
-                    <td style="color:var(--text-muted);font-size:0.85rem">#${r.id}</td>
+                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
                     <td>
                       <div style="display:flex;align-items:center;gap:8px">
                         ${r.product_image ? `<img src="${r.product_image}" alt="${r.product_name || ''}" style="width:32px;height:32px;border-radius:6px;object-fit:cover">` : ''}
@@ -1841,7 +1841,7 @@ const AdminPage = {
                 '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No blog posts yet</td></tr>' :
                 posts.map(p => `
                   <tr>
-                    <td style="color:var(--text-muted);font-size:0.85rem">#${p.id}</td>
+                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
                     <td><span style="font-weight:600;font-size:0.9rem">${p.title}</span></td>
                     <td><span style="font-size:0.8rem">${p.category || '—'}</span></td>
                     <td><span style="font-size:0.85rem">${p.author || 'PixabAnimation'}</span></td>
@@ -1909,7 +1909,7 @@ const AdminPage = {
         </div>
         <div class="form-group">
           <label>Content * (Markdown supported: **bold**, *italic*, [links](url), !![image](url), ## headings)</label>
-          <textarea id="bf_content" rows="12" style="resize:vertical;font-family:monospace;font-size:0.85rem">${isEdit ? (post.content || '') : ''}</textarea>
+          <textarea id="bf_content" rows="20" style="resize:vertical;font-family:monospace;font-size:0.85rem">${isEdit ? (post.content || '') : ''}</textarea>
         </div>
         <div class="admin-form-grid-3">
           <div class="form-group">
@@ -1961,7 +1961,7 @@ const AdminPage = {
           </button>
         </div>
       </form>
-    `, '640px');
+    `, '1100px');
 
     // Auto-generate slug from title
     const slugField = document.getElementById('bf_slug');
@@ -2233,7 +2233,7 @@ const AdminPage = {
           </button>
         </div>
       </form>
-    `, '640px');
+    `, '1100px');
   },
 
   async saveAd(event, adId) {
