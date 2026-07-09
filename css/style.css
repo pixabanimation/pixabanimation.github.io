@@ -7565,12 +7565,15 @@ body:has(.admin-page) .footer {
   border-radius: 14px;
   overflow: hidden;
   background: #1a1a1a;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
   transition: all 0.3s ease;
 }
 
 .settings-card:hover {
   border-color: #3a3a3a;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 .settings-card-header {
