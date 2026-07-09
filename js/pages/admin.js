@@ -499,7 +499,7 @@ const AdminPage = {
     const defaultMediaType = product ? (product.media_type || 'physical') : 'physical';
 
     Components.showModal(isEdit ? 'Edit Product' : 'Add Product', `
-      <form id="productForm" onsubmit="AdminPage.saveProduct(event, ${productId || 'null'})" class="admin-product-form" style="display:flex;flex-direction:column;gap:14px">
+      <form id="productForm" onsubmit="AdminPage.saveProduct(event, ${productId || 'null'})" class="admin-product-form" style="display:flex;flex-direction:column;gap:14px;max-height:70vh;overflow-y:auto">
         <!-- Row 1: Basic Info -->
         <div class="admin-form-grid-3">
           <div class="form-group">
@@ -1892,7 +1892,7 @@ const AdminPage = {
     const isEdit = !!post;
 
     Components.showModal(isEdit ? 'Edit Post' : 'New Blog Post', `
-      <form id="blogForm" onsubmit="AdminPage.saveBlogPost(event, ${postId || 'null'})" style="display:flex;flex-direction:column;gap:14px">
+      <form id="blogForm" onsubmit="AdminPage.saveBlogPost(event, ${postId || 'null'})" style="display:flex;flex-direction:column;gap:14px;max-height:70vh;overflow-y:auto">
         <div class="admin-form-grid-2">
           <div class="form-group">
             <label>Title *</label>
