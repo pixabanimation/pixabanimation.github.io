@@ -2,12 +2,8 @@
 
 -- Categories - keep only animation/video relevant ones
 INSERT OR IGNORE INTO categories (id, name, slug, description, image_url) VALUES
-(3, 'Home & Living', 'home-living', 'Beautiful home decor and furniture', 'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=400&q=80'),
-(4, 'Sports & Outdoors', 'sports-outdoors', 'Equipment for active lifestyle', 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80'),
-(5, 'Books & Media', 'books-media', 'Books, eBooks and media', 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&q=80'),
-(6, 'Beauty & Health', 'beauty-health', 'Skincare, makeup and wellness', 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&q=80'),
-(7, 'Animation & Video', 'videos', 'Premium animation clips, motion graphics, and video assets', 'https://images.unsplash.com/photo-1536240478700-b869070f9279?w=400&q=80'),
-(8, 'After Effects Plugin', 'after-effects-plugin', 'Powerful plugins and extensions to supercharge your After Effects workflow', 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&q=80');
+(3, 'Animation & Video', 'videos', 'Premium animation clips, motion graphics, and video assets', 'https://images.unsplash.com/photo-1536240478700-b869070f9279?w=400&q=80'),
+(4, 'After Effects Plugin', 'after-effects-plugin', 'Powerful plugins and extensions to supercharge your After Effects workflow', 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&q=80');
 
 -- Products - Only animation/video products + a few non-video
 INSERT OR IGNORE INTO products (id, name, slug, description, price, compare_price, image_url, images, category_id, stock, rating, reviews_count, featured, media_type, video_url, preview_url, preview_description, file_size, duration) VALUES
@@ -39,12 +35,6 @@ INSERT OR IGNORE INTO products (id, name, slug, description, price, compare_pric
 
 (25, 'Animated Infographic Bundle', 'animated-infographics', '30 data visualization animation templates including animated bar charts, line graphs, pie charts, progress bars, counters, and comparison sliders. Perfect for business presentations, YouTube analytics videos, and data-driven content.', 29.99, 44.99, 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80', '["https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80","https://images.unsplash.com/photo-1563986768609-322da13575f2?w=600&q=80"]', 7, 999, 4.5, 51, 1, 'video', 'https://example.com/videos/infographic-bundle.mp4', 'https://example.com/previews/infographic-preview.mp4', 'Watch a demo of all 30 infographic templates with data animation in action.', 1.9, 360),
 
--- Keep a few physical products for variety
-(4, 'Minimalist Desk Lamp', 'desk-lamp', 'Elegant LED desk lamp with adjustable color temperature, wireless charging base, and touch controls. Perfect for modern home offices and creative workspaces.', 89.99, 119.99, 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80', '["https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80","https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=600&q=80"]', 3, 80, 4.5, 42, 0, 'physical', NULL, NULL, NULL, NULL, NULL),
-
-(9, 'Ergonomic Office Chair', 'office-chair', 'Premium ergonomic mesh chair with lumbar support, adjustable armrests, and breathable headrest. Designed for long hours of comfortable creative work.', 599.99, 749.99, 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=600&q=80', '["https://images.unsplash.com/photo-1592078615290-033ee584e267?w=600&q=80","https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=600&q=80"]', 3, 15, 4.7, 73, 0, 'physical', NULL, NULL, NULL, NULL, NULL),
-
-(11, 'Creative Business Book', 'creative-business-book', 'The ultimate guide to building a creative career. Learn the strategies, mindsets, and workflows used by top animators, designers, and content creators to turn passion into profit.', 24.99, 29.99, 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=80', '["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&q=80","https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=80"]', 5, 200, 4.8, 312, 0, 'physical', NULL, NULL, NULL, NULL, NULL),
 
 -- After Effects Plugin Products
 (26, 'Motion Blur Pro — Realistic Blur Plugin', 'motion-blur-pro', 'Take your motion graphics to the next level with Motion Blur Pro. This powerful After Effects plugin delivers cinema-grade motion blur with pixel-accurate rendering, multi-frame sampling, and intelligent motion vector analysis. Perfect for adding smooth, natural-looking blur to animations, text reveals, and complex compositions.', 49.99, 69.99, 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80', '["https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80","https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=600&q=80"]', 8, 999, 4.8, 76, 1, 'digital', NULL, NULL, NULL, 0.5, NULL),
@@ -91,12 +81,7 @@ INSERT OR IGNORE INTO coupons (id, code, discount_percent, min_purchase, expires
 -- Sample newsletter subscribers
 INSERT OR IGNORE INTO newsletter_subscribers (id, email, name, active) VALUES
 (1, 'sarah.johnson@email.com', 'Sarah Johnson', 1),
-(2, 'mike.chen@email.com', 'Mike Chen', 1),
-(3, 'emma.davis@email.com', 'Emma Davis', 1),
-(4, 'alex.turner@email.com', 'Alex Turner', 0),
-(5, 'lisa.wong@email.com', 'Lisa Wong', 1),
-(6, 'jordan.parker@email.com', 'Jordan Parker', 1),
-(7, 'unsubscribed.user@email.com', NULL, 0);
+(2, 'unsubscribed.user@email.com', NULL, 0);
 
 -- Blog Ads (3 default placements matching all 40 blog pages)
 INSERT OR IGNORE INTO blog_ads (id, name, ad_type, icon, title, description, cta_text, cta_url, target_pages, is_active, sort_order) VALUES

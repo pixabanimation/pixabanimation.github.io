@@ -85,7 +85,12 @@ const BlogPage = {
             <div class="blog-grid" id="blogGrid">
               ${posts.map((p, i) => this.blogCard(p, i)).join('')}
             </div>
-            
+
+            <!-- Ad Slots (loaded dynamically from blog-ads.js) -->
+            <div id="ad-slot-1" style="margin-top:40px"></div>
+            <div id="ad-slot-2" style="margin-top:24px"></div>
+            <div id="ad-slot-3" style="margin-top:24px"></div>
+
             ${posts.length >= this.pageSize ? `
             <div style="text-align:center;margin-top:40px">
               <button class="blog-load-more" onclick="BlogPage.loadMore()">
@@ -95,6 +100,11 @@ const BlogPage = {
           </div>
         </div>
       `;
+
+      // Load dynamic ads after the content is rendered
+      if (typeof BlogAds !== 'undefined' && BlogAds.loadFromDatabase) {
+        try { BlogAds.loadFromDatabase(); } catch(e) { console.warn('BlogAds: failed to load', e); }
+      }
     } catch (error) {
       console.error('Blog error:', error);
       container.innerHTML = `<div style="max-width:1100px;margin:0 auto;padding:40px 24px 80px">${Components.emptyState('😔', 'Failed to load blog', error.message)}</div>`;

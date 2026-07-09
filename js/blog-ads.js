@@ -29,9 +29,19 @@ const BlogAds = {
         DB.getActiveAdsForPage(currentPage, 'ad3')
       ]);
 
-      if (ad1.length > 0) this.renderAd('ad-slot-1', ad1[0]);
-      if (ad2.length > 0) this.renderAd('ad-slot-2', ad2[0]);
-      if (ad3.length > 0) this.renderAd('ad-slot-3', ad3[0]);
+      // Render each ad to both the sidebar slot and the in-article slot
+      if (ad1.length > 0) {
+        this.renderAd('ad-slot-1', ad1[0]);        // sidebar
+        this.renderAd('ad-slot-1-article', ad1[0]); // article
+      }
+      if (ad2.length > 0) {
+        this.renderAd('ad-slot-2', ad2[0]);        // sidebar
+        this.renderAd('ad-slot-2-article', ad2[0]); // article
+      }
+      if (ad3.length > 0) {
+        this.renderAd('ad-slot-3', ad3[0]);        // sidebar
+        this.renderAd('ad-slot-3-article', ad3[0]); // article
+      }
     } catch (error) {
       console.warn('BlogAds: Failed to load from database, using fallback ads.', error);
     }
@@ -80,7 +90,9 @@ const BlogAds = {
         }
       });
       if (ad) {
-        this.renderAd(`ad-slot-${type.replace('ad', '')}`, ad);
+        const num = type.replace('ad', '');
+        this.renderAd(`ad-slot-${num}`, ad);            // sidebar
+        this.renderAd(`ad-slot-${num}-article`, ad);    // article
       }
     });
   },

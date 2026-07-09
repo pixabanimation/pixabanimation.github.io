@@ -55,7 +55,7 @@ const BlogPostPage = {
 
       content.innerHTML = `
         <div class="blog-post-wrapper" style="max-width:1200px;margin:0 auto;padding:40px 24px">
-          <div style="display:grid;grid-template-columns:1fr 300px;gap:48px;align-items:start">
+          <div class="blog-post-layout" style="display:grid;grid-template-columns:1fr 300px;gap:48px;align-items:start">
             
             <!-- Main Article -->
             <article class="blog-article-main">
@@ -84,10 +84,16 @@ const BlogPostPage = {
                 <span style="font-size:4rem">✦</span>
               </div>`}
 
+              <!-- Ad Slot 1 (article) - between cover and content -->
+              <div id="ad-slot-1-article"></div>
+
               <!-- Content -->
               <div class="blog-article-content" style="font-size:1.05rem;line-height:1.8;color:rgba(0,0,0,0.7)">
                 ${this.renderContent(post.content)}
               </div>
+
+              <!-- Ad Slot 2 (article) - between content and tags -->
+              <div id="ad-slot-2-article" style="margin-top:40px"></div>
 
               <!-- Tags -->
               ${tags.length > 0 ? `
@@ -121,6 +127,9 @@ const BlogPostPage = {
                 </div>
               </div>
 
+              <!-- Ad Slot 3 (article) - between author bio and useful links -->
+              <div id="ad-slot-3-article" style="margin-top:32px"></div>
+
               <!-- Useful Links -->
               <div style="margin-top:32px;padding:24px;background:#fafafa;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
                 <div style="font-size:0.85rem;font-weight:600;color:#1d1d1f;margin-bottom:16px">Useful Links</div>
@@ -149,7 +158,7 @@ const BlogPostPage = {
             </article>
 
             <!-- Sidebar -->
-            <aside style="position:sticky;top:80px">
+            <aside class="blog-post-sidebar" style="position:sticky;top:80px">
               <!-- Recent Posts -->
               <div style="margin-bottom:28px">
                 <div style="font-size:0.85rem;font-weight:600;color:#1d1d1f;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--ds-primary)">Recent Posts</div>
@@ -189,6 +198,11 @@ const BlogPostPage = {
                   </div>
                 </div>
               </div>
+
+              <!-- Ad Slots (loaded dynamically from blog-ads.js) -->
+              <div id="ad-slot-1" style="margin-top:24px"></div>
+              <div id="ad-slot-2" style="margin-top:24px"></div>
+              <div id="ad-slot-3" style="margin-top:24px"></div>
             </aside>
           </div>
 
@@ -200,6 +214,11 @@ const BlogPostPage = {
           </div>
         </div>
       `;
+
+      // Load dynamic ads after the full content is rendered
+      if (typeof BlogAds !== 'undefined') {
+        try { BlogAds.loadFromDatabase(); } catch(e) { console.warn('BlogAds: failed to load', e); }
+      }
     } catch (error) {
       console.error('Blog post error:', error);
       content.innerHTML = Components.emptyState('😔', 'Failed to load article', error.message, 'Back to Blog', '#/blog');
