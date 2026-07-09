@@ -2088,7 +2088,7 @@ const AdminPage = {
         <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
           <div>
             <h3 style="font-size:1rem;font-weight:600;margin:0">Blog Advertisements</h3>
-            <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0">Manage ads displayed across all 40 blog pages. ${ads.filter(a => a.is_active).length} active of ${ads.length} total.</p>
+            <p style="font-size:0.8rem;color:rgba(255,255,255,0.75);margin:4px 0 0">Manage ads displayed across all 40 blog pages. ${ads.filter(a => a.is_active).length} active of ${ads.length} total.</p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="AdminPage.showAdForm(null, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})">
             <i class="fas fa-plus"></i> Create Ad
@@ -2096,9 +2096,9 @@ const AdminPage = {
         </div>
         ${ads.length === 0 ? `
         <div style="text-align:center;padding:60px;border:2px dashed var(--border-light);border-radius:var(--radius-lg)">
-          <i class="fas fa-bullhorn" style="font-size:3rem;color:var(--text-muted);margin-bottom:16px;display:block"></i>
+          <i class="fas fa-bullhorn" style="font-size:3rem;color:rgba(255,255,255,0.3);margin-bottom:16px;display:block"></i>
           <h3 style="margin-bottom:8px">No ads yet</h3>
-          <p style="color:var(--text-muted);margin-bottom:20px">Create your first blog advertisement to display across your blog pages.</p>
+          <p style="color:rgba(255,255,255,0.7);margin-bottom:20px">Create your first blog advertisement to display across your blog pages.</p>
           <button class="btn btn-primary" onclick="AdminPage.showAdForm(null, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})">
             <i class="fas fa-plus"></i> Create Your First Ad
           </button>
@@ -2109,16 +2109,16 @@ const AdminPage = {
             <div class="glass" style="padding:20px;border-radius:var(--radius-md);display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;opacity:${ad.is_active ? '1' : '0.5'}">
               <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-                  <span style="font-size:1.2rem;color:var(--accent-1);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-cube'}"></i></span>
+                  <span style="font-size:1.2rem;color:rgba(255,255,255,0.8);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-cube'}"></i></span>
                   <div>
                     <span style="font-weight:600;font-size:0.95rem">${ad.name}</span>
-                    <span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(0,102,204,0.1);color:var(--accent-1);margin-left:8px;text-transform:uppercase;letter-spacing:0.5px">${ad.ad_type}</span>
-                    ${ad.is_active ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(16,185,129,0.15);color:var(--success);margin-left:4px">Active</span>' : '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:var(--bg-input);color:var(--text-muted);margin-left:4px">Inactive</span>'}
+                    <span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(0,102,204,0.1);color:rgba(255,255,255,0.8);margin-left:8px;text-transform:uppercase;letter-spacing:0.5px">${ad.ad_type}</span>
+                    ${ad.is_active ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(16,185,129,0.15);color:var(--success);margin-left:4px">Active</span>' : '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);margin-left:4px">Inactive</span>'}
                   </div>
                 </div>
                 <div style="font-size:0.85rem;font-weight:600;color:#1d1d1f;margin-bottom:2px">${ad.title}</div>
                 <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;line-height:1.4">${ad.description}</div>
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.75rem;color:var(--text-muted)">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.75rem;color:rgba(255,255,255,0.7)">
                   <span><i class="fas fa-bullseye"></i> ${ad.cta_text} → ${ad.cta_url.substring(0, 40)}${ad.cta_url.length > 40 ? '...' : ''}</span>
                   <span><i class="fas fa-file"></i> Pages: ${ad.target_pages === 'all' ? 'All (40)' : JSON.parse(ad.target_pages || '[]').length + ' selected'}</span>
                   <span><i class="fas fa-sort"></i> Order: ${ad.sort_order || 0}</span>
