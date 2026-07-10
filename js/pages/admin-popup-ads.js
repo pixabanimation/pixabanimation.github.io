@@ -11,8 +11,8 @@ const AdminPopupAds = {
       container.innerHTML = `
         <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
           <div>
-            <h3 style="font-size:1rem;font-weight:600;margin:0; color:rgba(255, 255, 255, 0.75)">Popup Advertisements</h3>
-            <p style="font-size:0.8rem;color:rgba(255, 255, 255, 0.75);margin:4px 0 0">Manage popup ads shown site-wide. Visitors see 2 popups per visit, alternating between 2 groups of ads.</p>
+            <h3 style="font-size:1rem;font-weight:600;margin:0; color:rgba(0,0,0,0.55)">Popup Advertisements</h3>
+            <p style="font-size:0.8rem;color:rgba(0,0,0,0.55);margin:4px 0 0">Manage popup ads shown site-wide. Visitors see 2 popups per visit, alternating between 2 groups of ads.</p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="AdminPopupAds.showForm(null)">
             <i class="fas fa-plus"></i> Create Popup Ad
@@ -20,9 +20,9 @@ const AdminPopupAds = {
         </div>
         ${ads.length === 0 ? `
         <div style="text-align:center;padding:60px;border:2px dashed var(--border-light);border-radius:var(--radius-lg)">
-          <i class="fas fa-window-restore" style="font-size:3rem;color:rgba(255,255,255,0.3);margin-bottom:16px;display:block"></i>
+          <i class="fas fa-window-restore" style="font-size:3rem;color:rgba(0,0,0,0.3);margin-bottom:16px;display:block"></i>
           <h3 style="margin-bottom:8px">No popup ads yet</h3>
-          <p style="color:rgba(255,255,255,0.7);margin-bottom:20px">Create popup ads that appear to visitors with alternating groups.</p>
+          <p style="color:rgba(0,0,0,0.5);margin-bottom:20px">Create popup ads that appear to visitors with alternating groups.</p>
           <button class="btn btn-primary" onclick="AdminPopupAds.showForm(null)">
             <i class="fas fa-plus"></i> Create Your First Popup Ad
           </button>
@@ -33,16 +33,16 @@ const AdminPopupAds = {
             <div class="admin-card" style="padding:20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;opacity:${ad.is_active ? '1' : '0.5'}">
               <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-                  <span style="font-size:1.2rem;color:rgba(255,255,255,0.8);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-bullhorn'}"></i></span>
+                  <span style="font-size:1.2rem;color:rgba(0,0,0,0.6);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-bullhorn'}"></i></span>
                   <div>
                     <span style="font-weight:600;font-size:0.95rem">${ad.name}</span>
                     ${ad.is_animated ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(255,215,64,0.15);color:var(--warning);margin-left:8px">Animated</span>' : ''}
-                    ${ad.is_active ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(16,185,129,0.15);color:var(--success);margin-left:4px">Active</span>' : '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);margin-left:4px">Inactive</span>'}
+                    ${ad.is_active ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(16,185,129,0.15);color:var(--success);margin-left:4px">Active</span>' : '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(255,255,255,0.05);color:rgba(0,0,0,0.45);margin-left:4px">Inactive</span>'}
                   </div>
                 </div>
-                <div style="font-size:0.85rem;font-weight:600;color:rgba(255,255,255,0.95);margin-bottom:2px">${ad.title}</div>
-                <div style="font-size:0.8rem;color:rgba(255,255,255,0.85);margin-bottom:6px;line-height:1.4">${ad.description}</div>
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.75rem;color:rgba(255,255,255,0.7)">
+                <div style="font-size:0.85rem;font-weight:600;color:rgba(0,0,0,0.85);margin-bottom:2px">${ad.title}</div>
+                <div style="font-size:0.8rem;color:rgba(0,0,0,0.85);margin-bottom:6px;line-height:1.4">${ad.description}</div>
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.75rem;color:rgba(0,0,0,0.5)">
                   <span><i class="fas fa-${ad.is_animated ? 'bolt' : 'pause'}"></i> ${ad.is_animated ? 'Auto-advance (10s)' : 'Manual (15s)'}</span>
                   <span><i class="fas fa-palette"></i> <span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${ad.bg_color || '#0066cc'};vertical-align:middle;margin-right:2px"></span> ${ad.bg_color || '#0066cc'}</span>
                   ${ad.cta_url ? `<span><i class="fas fa-link"></i> ${ad.cta_url.substring(0, 30)}${ad.cta_url.length > 30 ? '...' : ''}</span>` : ''}

@@ -298,7 +298,7 @@ const AdminPage = {
                           <span style="font-weight:500;font-size:0.9rem">${p.name}</span>
                         </td>
                         <td>${p.total_sold || 0}</td>
-                        <td style="font-weight:600;color:rgba(255,255,255,0.85)">$${parseFloat(p.revenue || 0).toFixed(2)}</td>
+                        <td style="font-weight:600;color:rgba(0,0,0,0.85)">$${parseFloat(p.revenue || 0).toFixed(2)}</td>
                       </tr>
                     `).join('')}
                 </tbody>
@@ -434,7 +434,7 @@ const AdminPage = {
                 '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No products found</td></tr>' :
                 products.map(p => `
                   <tr>
-                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
                     <td>
                       <div style="display:flex;align-items:center;gap:12px">
                         <img src="${p.image_url || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=80&q=60'}" 
@@ -447,7 +447,7 @@ const AdminPage = {
                     </td>
                     <td><span style="font-size:0.85rem">${p.category_name || '—'}</span></td>
                     <td><span style="font-size:0.75rem;padding:2px 8px;border-radius:var(--radius-full);background:${p.media_type === 'video' ? 'rgba(0,102,204,0.15)' : p.media_type === 'digital' ? 'rgba(0,230,118,0.15)' : 'var(--bg-input)'};color:${p.media_type === 'video' ? 'var(--accent-1)' : p.media_type === 'digital' ? 'var(--success)' : 'var(--text-muted)'}">${p.media_type === 'video' ? '🎬 Video' : p.media_type === 'digital' ? '📄 Digital' : '📦 Physical'}</span></td>
-                    <td><span style="font-weight:600;color:rgba(255,255,255,0.85)">$${parseFloat(p.price).toFixed(2)}</span></td>
+                    <td><span style="font-weight:600;color:rgba(0,0,0,0.85)">$${parseFloat(p.price).toFixed(2)}</span></td>
                     <td>
                       <span style="color:${p.stock > 0 ? 'var(--success)' : 'var(--error)'};font-weight:600">
                         ${p.stock > 0 ? p.stock : 'Out'}
@@ -455,7 +455,7 @@ const AdminPage = {
                     </td>
                     <td>
                       <span style="color:#ffc107">${'★'.repeat(Math.round(p.rating || 0))}${'☆'.repeat(5 - Math.round(p.rating || 0))}</span>
-                      <span style="font-size:0.8rem;color:rgba(255,255,255,0.85)">(${p.reviews_count || 0})</span>
+                      <span style="font-size:0.8rem;color:rgba(0,0,0,0.85)">(${p.reviews_count || 0})</span>
                     </td>
                     <td>
                       <button class="admin-toggle ${p.featured ? 'active' : ''}" 
@@ -739,19 +739,19 @@ const AdminPage = {
                 '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No categories found</td></tr>' :
                 categories.map(c => `
                   <tr>
-                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
                     <td>
                       <img src="${c.image_url || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=80&q=60'}" 
                            alt="${c.name}" style="width:44px;height:44px;border-radius:8px;object-fit:cover">
                     </td>
                     <td><span style="font-weight:600">${c.name}</span></td>
-                    <td><span style="font-size:0.8rem;color:rgba(255,255,255,0.85);font-family:monospace">${c.slug}</span></td>
+                    <td><span style="font-size:0.8rem;color:rgba(0,0,0,0.85);font-family:monospace">${c.slug}</span></td>
                     <td>
                       <span style="font-size:0.85rem;color:var(--text-secondary);display:block;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(c.description || '').replace(/"/g, '&quot;')}">
                         ${c.description || '—'}
                       </span>
                     </td>
-                    <td><span style="font-weight:600;color:rgba(255,255,255,0.85)">${c.product_count || 0}</span></td>
+                    <td><span style="font-weight:600;color:rgba(0,0,0,0.85)">${c.product_count || 0}</span></td>
                     <td>
                       <div style="display:flex;gap:6px">
                         <button class="admin-action-btn" onclick="AdminPage.showCategoryForm(${c.id})" title="Edit">
@@ -928,10 +928,10 @@ const AdminPage = {
                     <td><span style="font-size:0.85rem;color:var(--text-muted)">${new Date(o.created_at).toLocaleDateString()}</span></td>
                     <td><span style="font-size:0.85rem">${o.customer_info ? o.customer_info.split(',')[0] : '—'}</span></td>
                     <td>${o.item_count}</td>
-                    <td style="font-weight:600;color:rgba(255,255,255,0.85)">$${parseFloat(o.total).toFixed(2)}</td>
+                    <td style="font-weight:600;color:rgba(0,0,0,0.85)">$${parseFloat(o.total).toFixed(2)}</td>
                     <td><span style="font-size:0.8rem;text-transform:capitalize">${o.payment_method || '—'}</span></td>
                     <td>
-                      ${o.transaction_id ? `<span style="font-size:0.75rem;font-family:monospace;color:${o.transaction_approved ? 'var(--success)' : 'var(--warning)'}">${o.transaction_id.substring(0, 12)}...</span>` : '<span style="font-size:0.75rem;color:rgba(255,255,255,0.85)">—</span>'}
+                      ${o.transaction_id ? `<span style="font-size:0.75rem;font-family:monospace;color:${o.transaction_approved ? 'var(--success)' : 'var(--warning)'}">${o.transaction_id.substring(0, 12)}...</span>` : '<span style="font-size:0.75rem;color:rgba(0,0,0,0.85)">—</span>'}
                     </td>
                     <td>${this.statusBadge(o.status)}</td>
                     <td>
@@ -1000,7 +1000,7 @@ const AdminPage = {
                   <td><span style="font-weight:700">#${o.id}</span></td>
                   <td><span style="font-size:0.85rem;color:var(--text-muted)">${new Date(o.created_at).toLocaleDateString()}</span></td>
                   <td><span style="font-size:0.85rem">${o.customer_info ? o.customer_info.split(',')[0] : '—'}</span></td>
-                  <td style="font-weight:600;color:rgba(255,255,255,0.85)">$${parseFloat(o.total).toFixed(2)}</td>
+                  <td style="font-weight:600;color:rgba(0,0,0,0.85)">$${parseFloat(o.total).toFixed(2)}</td>
                   <td><span style="text-transform:capitalize;font-size:0.85rem">${o.payment_provider || o.payment_method || '—'}</span></td>
                   <td><span style="font-family:monospace;font-size:0.8rem;background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px">${o.transaction_id}</span></td>
                   <td>
@@ -1095,7 +1095,7 @@ const AdminPage = {
               ${order.download_link ? `
               <div style="display:flex;justify-content:space-between">
                 <span style="font-size:0.8rem;color:var(--text-muted)">Download Link</span>
-                <a href="${order.download_link}" target="_blank" style="color:rgba(255,255,255,0.85);font-size:0.85rem">
+                <a href="${order.download_link}" target="_blank" style="color:rgba(0,0,0,0.85);font-size:0.85rem">
                   <i class="fas fa-external-link-alt"></i> Open
                 </a>
               </div>` : ''}
@@ -1121,7 +1121,7 @@ const AdminPage = {
               <span>Tax</span>
               <span>$${parseFloat(order.tax || 0).toFixed(2)}</span>
             </div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:1.1rem;font-weight:700;color:rgba(255,255,255,0.85)">
+            <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:1.1rem;font-weight:700;color:rgba(0,0,0,0.85)">
               <span>Total</span>
               <span>$${parseFloat(order.total).toFixed(2)}</span>
             </div>
@@ -1155,7 +1155,7 @@ const AdminPage = {
             <div style="font-size:0.85rem;font-weight:600;color:var(--success);margin-bottom:4px">
               <i class="fas fa-check-circle"></i> Download Link Sent
             </div>
-            <a href="${order.download_link}" target="_blank" style="color:rgba(255,255,255,0.85);font-size:0.85rem;word-break:break-all">
+            <a href="${order.download_link}" target="_blank" style="color:rgba(0,0,0,0.85);font-size:0.85rem;word-break:break-all">
               ${order.download_link}
             </a>
           </div>` : ''}
@@ -1260,7 +1260,7 @@ const AdminPage = {
                 '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No users found</td></tr>' :
                 users.map(u => `
                   <tr>
-                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
                     <td>
                       ${u.avatar_url 
                         ? `<img src="${u.avatar_url}" alt="${u.name}" style="width:36px;height:36px;border-radius:50%;object-fit:cover">`
@@ -1269,11 +1269,11 @@ const AdminPage = {
                     </td>
                     <td><span style="font-weight:600">${u.name}</span></td>
                     <td>${u.email}</td>
-                    <td><span style="font-size:0.8rem;color:rgba(255,255,255,0.85)">${u.additional_email || '—'}</span></td>
+                    <td><span style="font-size:0.8rem;color:rgba(0,0,0,0.85)">${u.additional_email || '—'}</span></td>
                     <td>${u.phone || '—'}</td>
                     <td>
                       ${u.is_admin ? 
-                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(0,102,204,0.15);color:rgba(255,255,255,0.85)">Admin</span>' :
+                        '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:rgba(0,102,204,0.15);color:rgba(0,0,0,0.85)">Admin</span>' :
                         '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:rgba(255,255,255,0.06);color:var(--text-muted)">User</span>'
                       }
                     </td>
@@ -1479,10 +1479,10 @@ const AdminPage = {
                 '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">No messages yet</td></tr>' :
                 messages.map(m => `
                   <tr style="${!m.is_read && !m.admin_reply ? 'background:rgba(0,102,204,0.03)' : ''}${m.admin_reply ? 'opacity:0.7' : ''}">
-                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
                     <td>
                       <div style="font-weight:600;font-size:0.85rem">${m.name}</div>
-                      <div style="font-size:0.75rem;color:rgba(255,255,255,0.85)">${m.email}</div>
+                      <div style="font-size:0.75rem;color:rgba(0,0,0,0.85)">${m.email}</div>
                     </td>
                     <td><span style="font-size:0.85rem;font-weight:500">${m.subject || '—'}</span></td>
                     <td>
@@ -1668,7 +1668,7 @@ const AdminPage = {
                 '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">No subscribers yet</td></tr>' :
                 subscribers.map(s => `
                   <tr>
-                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
                     <td><span style="font-weight:600">${s.email}</span></td>
                     <td>${s.name || '—'}</td>
                     <td>
@@ -1677,7 +1677,7 @@ const AdminPage = {
                         '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.75rem;background:rgba(255,255,255,0.06);color:var(--text-muted)">Inactive</span>'
                       }
                     </td>
-                    <td style="font-size:0.85rem;color:rgba(255,255,255,0.85)">${new Date(s.subscribed_at).toLocaleString()}</td>
+                    <td style="font-size:0.85rem;color:rgba(0,0,0,0.85)">${new Date(s.subscribed_at).toLocaleString()}</td>
                     <td>
                       <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteSubscriber(${s.id}, '${s.email.replace(/'/g, "\\'")}')" title="Delete Subscriber">
                         <i class="fas fa-trash"></i>
@@ -1750,7 +1750,7 @@ const AdminPage = {
                 '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No reviews yet</td></tr>' :
                 reviews.map(r => `
                   <tr>
-                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
                     <td>
                       <div style="display:flex;align-items:center;gap:8px">
                         ${r.product_image ? `<img src="${r.product_image}" alt="${r.product_name || ''}" style="width:32px;height:32px;border-radius:6px;object-fit:cover">` : ''}
@@ -1841,7 +1841,7 @@ const AdminPage = {
                 '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No blog posts yet</td></tr>' :
                 posts.map(p => `
                   <tr>
-                    <td style="color:rgba(255,255,255,0.9);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
                     <td><span style="font-weight:600;font-size:0.9rem">${p.title}</span></td>
                     <td><span style="font-size:0.8rem">${p.category || '—'}</span></td>
                     <td><span style="font-size:0.85rem">${p.author || 'PixabAnimation'}</span></td>
@@ -2088,7 +2088,7 @@ const AdminPage = {
         <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
           <div>
             <h3 style="font-size:1rem;font-weight:600;margin:0">Blog Advertisements</h3>
-            <p style="font-size:0.8rem;color:rgba(255,255,255,0.75);margin:4px 0 0">Manage ads displayed across all 40 blog pages. ${ads.filter(a => a.is_active).length} active of ${ads.length} total.</p>
+            <p style="font-size:0.8rem;color:rgba(0,0,0,0.55);margin:4px 0 0">Manage ads displayed across all 40 blog pages. ${ads.filter(a => a.is_active).length} active of ${ads.length} total.</p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="AdminPage.showAdForm(null, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})">
             <i class="fas fa-plus"></i> Create Ad
@@ -2096,9 +2096,9 @@ const AdminPage = {
         </div>
         ${ads.length === 0 ? `
         <div style="text-align:center;padding:60px;border:2px dashed var(--border-light);border-radius:var(--radius-lg)">
-          <i class="fas fa-bullhorn" style="font-size:3rem;color:rgba(255,255,255,0.3);margin-bottom:16px;display:block"></i>
+          <i class="fas fa-bullhorn" style="font-size:3rem;color:rgba(0,0,0,0.3);margin-bottom:16px;display:block"></i>
           <h3 style="margin-bottom:8px">No ads yet</h3>
-          <p style="color:rgba(255,255,255,0.7);margin-bottom:20px">Create your first blog advertisement to display across your blog pages.</p>
+          <p style="color:rgba(0,0,0,0.5);margin-bottom:20px">Create your first blog advertisement to display across your blog pages.</p>
           <button class="btn btn-primary" onclick="AdminPage.showAdForm(null, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})">
             <i class="fas fa-plus"></i> Create Your First Ad
           </button>
@@ -2109,16 +2109,16 @@ const AdminPage = {
             <div class="admin-card" style="padding:20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;opacity:${ad.is_active ? '1' : '0.5'}">
               <div>
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-                  <span style="font-size:1.2rem;color:rgba(255,255,255,0.8);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-cube'}"></i></span>
+                  <span style="font-size:1.2rem;color:rgba(0,0,0,0.6);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-cube'}"></i></span>
                   <div>
                     <span style="font-weight:600;font-size:0.95rem">${ad.name}</span>
-                    <span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(0,102,204,0.1);color:rgba(255,255,255,0.8);margin-left:8px;text-transform:uppercase;letter-spacing:0.5px">${ad.ad_type}</span>
-                    ${ad.is_active ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(16,185,129,0.15);color:var(--success);margin-left:4px">Active</span>' : '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);margin-left:4px">Inactive</span>'}
+                    <span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(0,102,204,0.1);color:rgba(0,0,0,0.6);margin-left:8px;text-transform:uppercase;letter-spacing:0.5px">${ad.ad_type}</span>
+                    ${ad.is_active ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(16,185,129,0.15);color:var(--success);margin-left:4px">Active</span>' : '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(255,255,255,0.05);color:rgba(0,0,0,0.45);margin-left:4px">Inactive</span>'}
                   </div>
                 </div>
                 <div style="font-size:0.85rem;font-weight:600;color:#1d1d1f;margin-bottom:2px">${ad.title}</div>
                 <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;line-height:1.4">${ad.description}</div>
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.75rem;color:rgba(255,255,255,0.7)">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.75rem;color:rgba(0,0,0,0.5)">
                   <span><i class="fas fa-bullseye"></i> ${ad.cta_text} → ${ad.cta_url.substring(0, 40)}${ad.cta_url.length > 40 ? '...' : ''}</span>
                   <span><i class="fas fa-file"></i> Pages: ${ad.target_pages === 'all' ? 'All (40)' : JSON.parse(ad.target_pages || '[]').length + ' selected'}</span>
                   <span><i class="fas fa-sort"></i> Order: ${ad.sort_order || 0}</span>
@@ -2372,7 +2372,7 @@ const AdminPage = {
                   return `
                     <tr>
                       <td><span style="font-weight:700;font-family:monospace;font-size:0.95rem">${c.code}</span></td>
-                      <td><span style="font-weight:600;color:rgba(255,255,255,0.85)">${c.discount_percent}% OFF</span></td>
+                      <td><span style="font-weight:600;color:rgba(0,0,0,0.85)">${c.discount_percent}% OFF</span></td>
                       <td>$${parseFloat(c.min_purchase || 0).toFixed(2)}</td>
                       <td>${c.current_uses || 0} / ${c.max_uses || '∞'}</td>
                       <td style="font-size:0.85rem;color:var(--text-muted)">${c.expires_at ? new Date(c.expires_at).toLocaleDateString() : 'Never'}</td>

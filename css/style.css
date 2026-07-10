@@ -8333,4 +8333,442 @@ body:has(.admin-page) .footer {
     font-size: 0.78rem;
   }
 }
+
+/* ============================================
+   ADMIN PANEL — Two-Tone: White Background + Black Text
+   Overrides ALL admin components to pure white bg
+   and black text (#1d1d1f). Easy to find and edit below.
+   ============================================ */
+.admin-page {
+  background: #ffffff;
 }
+.admin-main {
+  background: #ffffff;
+}
+.admin-content {
+  background: #ffffff;
+}
+
+/* --- Sidebar --- */
+.admin-sidebar {
+  background: #ffffff !important;
+  border-right: 1px solid rgba(0,0,0,0.06) !important;
+  box-shadow: 1px 0 8px rgba(0,0,0,0.04) !important;
+}
+.admin-sidebar-header .brand-text {
+  color: #1d1d1f !important;
+}
+.admin-sidebar-header .brand-icon {
+  color: #0066cc !important;
+  text-shadow: none !important;
+}
+.admin-nav-item {
+  color: rgba(0,0,0,0.6) !important;
+}
+.admin-nav-item:hover {
+  background: #f5f5f7 !important;
+  color: #1d1d1f !important;
+}
+.admin-nav-item:hover i {
+  color: #1d1d1f !important;
+}
+.admin-nav-item.active {
+  background: rgba(0,102,204,0.08) !important;
+  color: #0066cc !important;
+}
+.admin-nav-item.active::before {
+  background: #0066cc !important;
+}
+.admin-nav-item.active i {
+  color: #0066cc !important;
+}
+.admin-nav-item i {
+  color: rgba(0,0,0,0.3) !important;
+}
+.admin-divider {
+  border-top: 1px solid rgba(0,0,0,0.06) !important;
+}
+
+/* --- Sidebar Toggle (mobile) --- */
+.admin-sidebar-toggle {
+  background: #f5f5f7 !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  color: rgba(0,0,0,0.48) !important;
+}
+.admin-sidebar-toggle:hover {
+  background: #ffffff !important;
+  color: #1d1d1f !important;
+  text-shadow: none !important;
+}
+.admin-sidebar-toggle.active {
+  background: #ffffff !important;
+  color: #1d1d1f !important;
+  text-shadow: none !important;
+}
+
+/* --- Sidebar scrollbar --- */
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15) !important;
+}
+
+/* --- Header --- */
+.admin-header {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+}
+.admin-header h2 {
+  color: #1d1d1f !important;
+}
+.admin-header h2::before {
+  background: #0066cc !important;
+}
+
+/* --- Badge --- */
+.admin-badge {
+  background: #f5f5f7 !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  color: rgba(0,0,0,0.48) !important;
+}
+
+/* --- Glass cards (dashboard, charts) --- */
+.admin-page .glass {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+}
+.admin-page .glass:hover {
+  background: #fafafa !important;
+  border-color: rgba(0,0,0,0.12) !important;
+}
+
+/* --- Admin Card (listing cards) --- */
+.admin-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+}
+.admin-card:hover {
+  background: #fafafa !important;
+  border-color: rgba(0,0,0,0.12) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+}
+
+/* --- Stat Cards --- */
+.admin-stat-card {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+}
+.admin-stat-card::before {
+  background: linear-gradient(135deg, rgba(0,102,204,0.1), transparent 40%, rgba(0,102,204,0.05)) !important;
+}
+.admin-stat-card:hover {
+  border-color: rgba(0,102,204,0.2) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
+}
+.admin-stat-card:hover::before {
+  background: linear-gradient(135deg, rgba(0,102,204,0.15), transparent 40%, rgba(0,102,204,0.08)) !important;
+}
+.admin-stat-card::after {
+  border-top: 2px solid #0066cc !important;
+  border-right: 2px solid #0066cc !important;
+}
+.admin-stat-value {
+  color: #1d1d1f !important;
+}
+.admin-stat-label {
+  color: rgba(0,0,0,0.48) !important;
+}
+.admin-stat-change {
+  color: rgba(0,0,0,0.48) !important;
+  background: #f5f5f7 !important;
+}
+.admin-stat-change.positive {
+  color: #10b981 !important;
+  background: rgba(16,185,129,0.08) !important;
+}
+.admin-stat-change.negative {
+  color: #ef4444 !important;
+  background: rgba(239,68,68,0.08) !important;
+}
+
+/* --- Stat Icons --- */
+.admin-stat-icon.revenue {
+  background: rgba(0,102,204,0.1) !important;
+  color: #0066cc !important;
+}
+.admin-stat-icon.orders {
+  background: rgba(16,185,129,0.1) !important;
+  color: #10b981 !important;
+}
+.admin-stat-icon.products {
+  background: rgba(0,102,204,0.1) !important;
+  color: #0066cc !important;
+}
+.admin-stat-icon.users {
+  background: rgba(245,158,11,0.1) !important;
+  color: #f59e0b !important;
+}
+
+/* --- Chart Cards --- */
+.admin-chart-card {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+}
+.admin-chart-card:hover {
+  border-color: rgba(0,0,0,0.12) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+}
+.admin-chart-header {
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+}
+.admin-chart-header h3 {
+  color: #1d1d1f !important;
+}
+.admin-chart-link {
+  color: #0066cc !important;
+}
+.admin-chart-link:hover {
+  text-decoration: underline !important;
+  text-shadow: none !important;
+}
+.admin-chart-body {
+  padding: 20px;
+}
+
+/* --- Bar Chart --- */
+.admin-bar-fill {
+  background: linear-gradient(to top, #0066cc, rgba(0,102,204,0.3)) !important;
+}
+.admin-bar-value {
+  color: rgba(0,0,0,0.48) !important;
+}
+.admin-bar-label {
+  color: rgba(0,0,0,0.48) !important;
+}
+
+/* --- Legend --- */
+.admin-legend-item {
+  color: rgba(0,0,0,0.64) !important;
+}
+.admin-legend-count {
+  color: rgba(0,0,0,0.48) !important;
+}
+
+/* --- Tables --- */
+.admin-table-container {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+}
+.admin-table th {
+  color: rgba(0,0,0,0.6) !important;
+  background: #f5f5f7 !important;
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+}
+.admin-table td {
+  color: rgba(0,0,0,0.64) !important;
+  border-bottom: 1px solid rgba(0,0,0,0.04) !important;
+}
+.admin-table tr:last-child td {
+  border-bottom: none !important;
+}
+.admin-table tr:nth-child(even) td {
+  background: #fafafa !important;
+}
+.admin-table tr:nth-child(even):hover td {
+  background: #f0f0f0 !important;
+}
+.admin-table tr:hover td {
+  background: rgba(0,0,0,0.02) !important;
+}
+
+/* --- Search --- */
+.admin-search {
+  background: rgba(0,0,0,0.04) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+}
+.admin-search:focus-within {
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0,102,204,0.1) !important;
+}
+.admin-search i {
+  color: rgba(0,0,0,0.3) !important;
+}
+.admin-search input::placeholder {
+  color: rgba(0,0,0,0.3) !important;
+}
+
+/* --- Action Buttons --- */
+.admin-action-btn {
+  background: #f5f5f7 !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  color: rgba(0,0,0,0.48) !important;
+}
+.admin-action-btn:hover {
+  background: #ffffff !important;
+  color: #1d1d1f !important;
+}
+.admin-action-btn.delete:hover {
+  background: rgba(239,68,68,0.08) !important;
+  color: #ef4444 !important;
+}
+
+/* --- Toggle --- */
+.admin-toggle {
+  background: rgba(0,0,0,0.1) !important;
+  border: 1px solid rgba(0,0,0,0.15) !important;
+}
+.admin-toggle.active {
+  background: #0066cc !important;
+  border-color: #0066cc !important;
+}
+.admin-toggle-knob {
+  background: #ffffff !important;
+}
+.admin-toggle.active .admin-toggle-knob {
+  background: #ffffff !important;
+}
+
+/* --- Status Select --- */
+.admin-status-select {
+  background: rgba(0,0,0,0.04) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  color: rgba(0,0,0,0.64) !important;
+}
+.admin-status-select:hover {
+  border-color: rgba(0,0,0,0.15) !important;
+}
+.admin-status-select:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0,102,204,0.1) !important;
+}
+
+/* --- Filter Select --- */
+.filter-select {
+  background: rgba(0,0,0,0.04) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  color: rgba(0,0,0,0.64) !important;
+}
+
+/* --- Settings Panel --- */
+.settings-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+.settings-card:hover {
+  border-color: rgba(0,0,0,0.12) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+}
+.settings-card-header {
+  color: #1d1d1f !important;
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+}
+.settings-card-header i {
+  text-shadow: none !important;
+}
+
+/* --- Input with Icon --- */
+.input-with-icon {
+  background: rgba(0,0,0,0.04) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+}
+.input-with-icon:focus-within {
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0,102,204,0.1) !important;
+}
+.input-with-icon i {
+  color: rgba(0,0,0,0.3) !important;
+}
+.input-with-icon input {
+  color: #1d1d1f !important;
+}
+.input-with-icon input::placeholder {
+  color: rgba(0,0,0,0.3) !important;
+}
+
+/* --- Form Section --- */
+.admin-form-section-header {
+  color: #1d1d1f !important;
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+}
+.admin-form-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+}
+.admin-form-card:hover {
+  border-color: rgba(0,0,0,0.12) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+}
+
+/* --- Video Section --- */
+.admin-form-video-section {
+  background: linear-gradient(135deg, rgba(0,102,204,0.04), transparent) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+}
+.admin-form-video-section:hover {
+  border-color: rgba(0,0,0,0.12) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+}
+
+/* --- Modal Form Headers --- */
+.admin-page .modal-content:has(textarea[rows]) .modal-header {
+  background: #ffffff !important;
+}
+.admin-page .modal-content:has(form) .modal-header h2 {
+  color: #1d1d1f !important;
+}
+.admin-page .modal-content:has(form) .modal-header {
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+}
+.admin-form-checkbox input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 3px rgba(0,102,204,0.15) !important;
+}
+
+/* --- Primary Button in Admin --- */
+.admin-page .btn-primary {
+  box-shadow: 0 4px 12px rgba(0,102,204,0.25) !important;
+}
+.admin-page .btn-primary:hover {
+  box-shadow: 0 8px 24px rgba(0,102,204,0.35) !important;
+}
+
+/* --- Secondary Button --- */
+.btn-secondary {
+  background: #f5f5f7 !important;
+  color: #1d1d1f !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+}
+.btn-secondary:hover {
+  background: #ffffff !important;
+}
+
+/* --- Mobile sidebar (fix for white bg) --- */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    background: #ffffff !important;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.08) !important;
+  }
+  .admin-sidebar-toggle {
+    background: #ffffff !important;
+    border: 1px solid rgba(0,0,0,0.06) !important;
+    color: rgba(0,0,0,0.48) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+  }
+}
+
+/* --- Empty state icon margins --- */
+.admin-page i, .admin-page .fas {
+  margin-right: 0;
+}
+
