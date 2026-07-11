@@ -1169,6 +1169,74 @@ const DB = {
 
   async deleteQuotation(id) {
     return this.execute('DELETE FROM quotations WHERE id = ?', [id]);
+  },
+
+  // === Invoices Management ===
+  async getAllInvoices() {
+    return this.query('SELECT * FROM invoices ORDER BY created_at DESC');
+  },
+
+  async getInvoiceById(id) {
+    const invoices = await this.query('SELECT * FROM invoices WHERE id = ?', [id]);
+    return invoices.length > 0 ? invoices[0] : null;
+  },
+
+  async createInvoice(data) {
+    const {
+      invoice_number, date, due_date,
+      from_name, from_email, from_phone, from_address,
+      to_name, to_email, to_phone, to_company, to_address,
+      items, subtotal, tax_rate, tax_amount, discount, discount_amount,
+      total, notes, terms, status
+    } = data;
+    const user = App.getUser();
+    const createdBy = user ? user.id : null;
+    const result = await this.execute(
+      `INSERT INTO invoices (
+        invoice_number, date, due_date,
+        from_name, from_email, from_phone, from_address,
+        to_name, to_email, to_phone, to_company, to_address,
+        items, subtotal, tax_rate, tax_amount, discount, discount_amount,
+        total, notes, terms, status, created_by
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        invoice_number, date, due_date || null,
+        from_name, from_email || null, from_phone || null, from_address || null,
+        to_name, to_email || null, to_phone || null, to_company || null, to_address || null,
+        items, subtotal, tax_rate || 0, tax_amount || 0, discount || 0, discount_amount || 0,
+        total, notes || null, terms || null, status || 'draft', createdBy
+      ]
+    );
+    return result.lastInsertRowid;
+  },
+
+  async updateInvoice(id, data) {
+    const fields = [];
+    const params = [];
+    const allowedFields = [
+      'invoice_number', 'date', 'due_date',
+      'from_name', 'from_email', 'from_phone', 'from_address',
+      'to_name', 'to_email', 'to_phone', 'to_company', 'to_address',
+      'items', 'subtotal', 'tax_rate', 'tax_amount', 'discount', 'discount_amount',
+      'total', 'notes', 'terms', 'status'
+    ];
+    for (const [key, value] of Object.entries(data)) {
+      if (allowedFields.includes(key)) {
+        fields.push(`${key} = ?`);
+        params.push(value);
+      }
+    }
+    if (fields.length === 0) return;
+    fields.push('updated_at = CURRENT_TIMESTAMP');
+    params.push(id);
+    return this.execute(
+      `UPDATE invoices SET ${fields.join(', ')} WHERE id = ?`,
+      params
+    );
+  },
+
+  async deleteInvoice(id) {
+    return this.execute('DELETE FROM invoices WHERE id = ?', [id]);
   }
 };
 

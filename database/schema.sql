@@ -267,6 +267,37 @@ CREATE TABLE IF NOT EXISTS quotations (
   FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
+-- Invoices table (admin billing)
+CREATE TABLE IF NOT EXISTS invoices (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  invoice_number TEXT NOT NULL UNIQUE,
+  date TEXT NOT NULL,
+  due_date TEXT,
+  from_name TEXT NOT NULL,
+  from_email TEXT,
+  from_phone TEXT,
+  from_address TEXT,
+  to_name TEXT NOT NULL,
+  to_email TEXT,
+  to_phone TEXT,
+  to_company TEXT,
+  to_address TEXT,
+  items TEXT NOT NULL DEFAULT '[]',
+  subtotal REAL NOT NULL DEFAULT 0,
+  tax_rate REAL DEFAULT 0,
+  tax_amount REAL DEFAULT 0,
+  discount REAL DEFAULT 0,
+  discount_amount REAL DEFAULT 0,
+  total REAL NOT NULL DEFAULT 0,
+  notes TEXT,
+  terms TEXT,
+  status TEXT DEFAULT 'draft' CHECK(status IN ('draft','sent','paid','overdue','cancelled')),
+  created_by INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
 -- Security questions for password recovery
 CREATE TABLE IF NOT EXISTS admin_security (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
