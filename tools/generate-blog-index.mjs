@@ -490,6 +490,12 @@ ${tags.map(t => `            <a href="index.html" class="pl-sb-tag" onclick="ret
             <button type="submit" style="padding:8px 14px;border-radius:9999px;background:#06c;color:#fff;border:none;font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Join</button>
           </form>
         </div>
+        <div class="pl-sb-widget">
+          <div class="pl-sb-widget-title">Ad</div>
+          <div id="ad-slot-1"></div>
+          <div id="ad-slot-2" style="margin-top:16px"></div>
+          <div id="ad-slot-3" style="margin-top:16px"></div>
+        </div>
       </aside>
     </div>
   </div>
@@ -621,6 +627,22 @@ ${tags.map(t => `            <a href="index.html" class="pl-sb-tag" onclick="ret
       })
     });
   </script>
+
+  <!-- Popup Ad Container -->
+  <div class="popup-ad-overlay" id="popupAdContainer"></div>
+
+  <!-- Ad Scripts -->
+  <script src="../js/credentials.js"></script>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@libsql/client@0.14.0/web";
+    window.__tursoClient = createClient({
+      url: "libsql://ecommercelog-spurno.aws-us-east-1.turso.io",
+      authToken: "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODI4Mzg4MjUsImlkIjoiMDE5ZjE5NzItZmQwMS03ZDBkLWFkNWMtNWQ5YTkzZWI0NzBlIiwia2lkIjoiY3dfWmw5T3NsV2FnNFFkUjVHZUN0Nll2b19MTkdlUmY1STY1bEZVMXRCOCIsInJpZCI6ImVjYzBjNjcxLWUyMmMtNDA0Yy1hZjNmLWYzZDNlNjE4OTk5ZiJ9.4otvGu6MrGbhOb7JppDQwSXHXXsWDKf5miDw43Oba8M33U5wRNtK8DC8Zv2D-M-21nE6fo2cdazBjAgB4mgDAQ"
+    });
+  </script>
+  <script src="../js/db.js"></script>
+  <script src="../js/blog-ads.js"></script>
+  <script src="../js/popup-ads.js"></script>
 </body>
 </html>`;
 }
