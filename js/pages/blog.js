@@ -33,8 +33,46 @@ const BlogPage = {
                      aria-label="Search blog articles" aria-autocomplete="list">
               <div class="gn-search-suggestions" id="gnSearchSuggestions"></div>
             </div>
+
+            <!-- CTA Buttons -->
+            <div class="gn-hero-actions">
+              <button class="gn-hero-btn gn-hero-btn--primary" onclick="document.getElementById('gnMain')?.scrollIntoView({behavior:'smooth',block:'start'})">
+                <i class="fas fa-newspaper"></i> Browse Articles
+              </button>
+              <button class="gn-hero-btn gn-hero-btn--secondary" onclick="document.getElementById('gnNewsletterEmail')?.focus()">
+                <i class="fas fa-envelope"></i> Subscribe
+              </button>
+            </div>
+
             <div class="gn-hero-categories" id="gnHeroCategories">
               <button class="gn-category-chip active" data-category="">All</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Featured Slider -->
+        <section class="gn-featured-slider" id="gnFeaturedSlider">
+          <div class="gn-featured-slider-inner">
+            <div class="gn-featured-slider-header">
+              <div class="gn-featured-slider-label">
+                <i class="fas fa-star"></i> Featured Articles
+              </div>
+              <div class="gn-featured-slider-nav">
+                <button class="gn-slider-arrow gn-slider-arrow--prev" id="gnSliderPrev" aria-label="Previous slide">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="gn-slider-dots" id="gnSliderDots"></div>
+                <button class="gn-slider-arrow gn-slider-arrow--next" id="gnSliderNext" aria-label="Next slide">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+            <div class="gn-slider-stage" id="gnSliderStage">
+              <div class="gn-slider-track" id="gnSliderTrack">
+                <div class="gn-slider-loader">
+                  <div class="loader-spinner" style="width:32px;height:32px;border-width:3px"></div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -115,9 +153,14 @@ const BlogPage = {
     // Search autocomplete for hero search
     this.setupSearchAutocomplete();
 
-    // Load everything
+    // Load hero categories first, then featured slider (needs categories for badges)
+    await this.loadHeroCategories();
+    // Load featured slider with auto-rotation
+    await this.loadFeaturedSlider();
+    this.initFeaturedSlider();
+
+    // Load everything else in parallel
     await Promise.all([
-      this.loadHeroCategories(),
       this.loadTrendingPosts(),
       this.loadCategoryList(),
       this.loadTagCloud(),
@@ -317,6 +360,208 @@ const BlogPage = {
     } catch (e) {
       console.warn('Failed to load hero categories:', e);
     }
+  },
+
+  // === Featured Slider ===
+  async loadFeaturedSlider() {
+    const track = document.getElementById('gnSliderTrack');
+    if (!track) return;
+
+    try {
+      let featured = [];
+      try {
+        featured = await DB.getFeaturedBlogPosts(5);
+      } catch (e) {
+        featured = [];
+      }
+      if (!featured || featured.length === 0) {
+        featured = BlogData.getFeatured(5);
+      }
+
+      if (featured.length === 0) {
+        const slider = document.getElementById('gnFeaturedSlider');
+        if (slider) slider.style.display = 'none';
+        return;
+      }
+
+      track.innerHTML = featured.map((p, i) => `
+        <a href="#/blog/${p.slug}" class="gn-slider-card ${i === 0 ? 'gn-slider-card--active' : ''}" data-index="${i}" style="--slide-i:${i}">
+          <div class="gn-slider-card-image">
+            <img src="${p.cover_image || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80'}" alt="${this.escapeHtml(p.title)}" loading="${i < 2 ? 'eager' : 'lazy'}">
+            <div class="gn-slider-card-overlay">
+              <span class="gn-slider-card-category">${p.category || 'General'}</span>
+              <h3 class="gn-slider-card-title">${this.escapeHtml(p.title)}</h3>
+              <p class="gn-slider-card-excerpt">${this.escapeHtml(p.excerpt || '').substring(0, 120)}${(p.excerpt || '').length > 120 ? '…' : ''}</p>
+              <div class="gn-slider-card-meta">
+                <span><i class="far fa-calendar"></i> ${new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span><i class="far fa-clock"></i> ${p.reading_time || 5} min read</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      `).join('');
+
+      // Generate dots
+      const dotsContainer = document.getElementById('gnSliderDots');
+      if (dotsContainer) {
+        dotsContainer.innerHTML = featured.map((_, i) => `
+          <button class="gn-slider-dot ${i === 0 ? 'active' : ''}" data-slide="${i}" aria-label="Slide ${i + 1}"></button>
+        `).join('');
+      }
+    } catch (e) {
+      const slider = document.getElementById('gnFeaturedSlider');
+      if (slider) slider.style.display = 'none';
+    }
+  },
+
+  initFeaturedSlider() {
+    const track = document.getElementById('gnSliderTrack');
+    const dotsContainer = document.getElementById('gnSliderDots');
+    const prevBtn = document.getElementById('gnSliderPrev');
+    const nextBtn = document.getElementById('gnSliderNext');
+    if (!track || track.children.length === 0) return;
+
+    const cards = track.querySelectorAll('.gn-slider-card');
+    if (cards.length <= 1) {
+      const nav = document.querySelector('.gn-featured-slider-nav');
+      if (nav) nav.style.display = 'none';
+      return;
+    }
+
+    let currentIndex = 0;
+    let autoPlayTimer = null;
+    let isTransitioning = false;
+    const slideCount = cards.length;
+    const sliderEl = document.getElementById('gnFeaturedSlider');
+
+    function goToSlide(index) {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      // Wrap around
+      if (index < 0) index = slideCount - 1;
+      if (index >= slideCount) index = 0;
+      currentIndex = index;
+
+      // Update track position
+      const cardWidth = cards[0].offsetWidth + 20; // card width + gap
+      const trackWidth = track.offsetWidth;
+      const offset = (trackWidth / 2) - (cardWidth / 2) - (index * cardWidth);
+      track.style.transform = `translateX(${offset}px)`;
+      track.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+
+      // Update active card
+      cards.forEach((card, i) => {
+        card.classList.toggle('gn-slider-card--active', i === index);
+      });
+
+      // Update dots
+      if (dotsContainer) {
+        dotsContainer.querySelectorAll('.gn-slider-dot').forEach((dot, i) => {
+          dot.classList.toggle('active', i === index);
+        });
+      }
+
+      setTimeout(() => { isTransitioning = false; }, 600);
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayTimer = setInterval(() => {
+        goToSlide(currentIndex + 1);
+      }, 4500);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+      }
+    }
+
+    // Arrow buttons
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopAutoPlay();
+        goToSlide(currentIndex - 1);
+        startAutoPlay();
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopAutoPlay();
+        goToSlide(currentIndex + 1);
+        startAutoPlay();
+      });
+    }
+
+    // Dot clicks
+    if (dotsContainer) {
+      dotsContainer.addEventListener('click', (e) => {
+        const dot = e.target.closest('.gn-slider-dot');
+        if (!dot) return;
+        stopAutoPlay();
+        goToSlide(parseInt(dot.dataset.slide));
+        startAutoPlay();
+      });
+    }
+
+    // Pause on hover
+    if (sliderEl) {
+      sliderEl.addEventListener('mouseenter', stopAutoPlay);
+      sliderEl.addEventListener('mouseleave', startAutoPlay);
+    }
+
+    // Pause on visibility change
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopAutoPlay();
+      } else {
+        startAutoPlay();
+      }
+    });
+
+    // Initial position
+    setTimeout(() => {
+      goToSlide(0);
+      startAutoPlay();
+    }, 100);
+
+    // Recalculate on resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const cardWidth = cards[0].offsetWidth + 20;
+        const trackWidth = track.offsetWidth;
+        const offset = (trackWidth / 2) - (cardWidth / 2) - (currentIndex * cardWidth);
+        track.style.transition = 'none';
+        track.style.transform = `translateX(${offset}px)`;
+        requestAnimationFrame(() => {
+          track.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        });
+      }, 200);
+    });
+
+    // Keyboard navigation - only when slider is visible
+    const handleKeyDown = (e) => {
+      const slider = document.getElementById('gnFeaturedSlider');
+      if (!slider || slider.style.display === 'none') return;
+      const rect = slider.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+      if (!isVisible) return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevBtn?.click();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextBtn?.click();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    this._sliderKeydownHandler = handleKeyDown;
   },
 
   // === Sidebar: Trending Posts ===
