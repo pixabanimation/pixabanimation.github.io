@@ -88,13 +88,6 @@ function buildSitemap(articles, staticPages) {
       changefreq: 'weekly',
       priority: '1.0'
     },
-    // Blog index
-    {
-      loc: `${BASE_URL}/blog/`,
-      lastmod: TODAY,
-      changefreq: 'weekly',
-      priority: '0.9'
-    },
     // Static pages (shop, about, contact, policies)
     ...staticPages,
     // Blog articles
@@ -112,16 +105,8 @@ function buildSitemap(articles, staticPages) {
   xml += `    <priority>${urls[0].priority}</priority>\n`;
   xml += `  </url>\n`;
 
-  // Blog index — pretty-printed
-  xml += `  <url>\n`;
-  xml += `    <loc>${urls[1].loc}</loc>\n`;
-  xml += `    <lastmod>${urls[1].lastmod}</lastmod>\n`;
-  xml += `    <changefreq>${urls[1].changefreq}</changefreq>\n`;
-  xml += `    <priority>${urls[1].priority}</priority>\n`;
-  xml += `  </url>\n`;
-
   // Static pages + blog articles — compact format
-  for (const item of urls.slice(2)) {
+  for (const item of urls.slice(1)) {
     xml += `  <url><loc>${item.loc}</loc><lastmod>${item.lastmod}</lastmod><changefreq>${item.changefreq}</changefreq><priority>${item.priority}</priority></url>\n`;
   }
 
@@ -152,7 +137,7 @@ try {
 
   console.log('\n✅ Sitemap generated successfully!');
   console.log(`   File: sitemap.xml`);
-  console.log(`   URLs: ${articles.length + staticPages.length + 2} total (2 root + ${staticPages.length} static + ${articles.length} blog)`);
+  console.log(`   URLs: ${articles.length + staticPages.length + 1} total (1 root + ${staticPages.length} static + ${articles.length} blog)`);
   console.log(`   Tags: ${opens} <url> / ${closes} </url> — ${opens === closes ? '✅ Balanced' : '❌ MISMATCH'}`);
   console.log(`   Hash URLs: ${/#\//.test(sitemap) ? '❌ PRESENT' : '✅ None'}`);
 } catch (err) {

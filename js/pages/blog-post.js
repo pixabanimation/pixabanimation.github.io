@@ -22,23 +22,53 @@ const BlogPostPage = {
     `;
 
     try {
-      const post = await DB.getBlogPost(slug);
+      let post = null;
+      try { post = await DB.getBlogPost(slug); } catch (e) { post = null; }
+      if (!post) {
+        post = BlogData.getPost(slug);
+      }
       if (!post) {
         content.innerHTML = Components.emptyState('🔍', 'Post not found', 'This article doesn\'t exist or has been removed.', 'Back to Blog', '#/blog');
         return;
       }
 
+      let staticContent = null;
+      if (!post.content) {
+        // Try fetching rich content from the static HTML file
+        staticContent = await this.fetchStaticBlogContent(slug);
+      }
+
+      // If we have static content, merge cover image and tags
+      if (staticContent && staticContent.html) {
+        if (!post.cover_image && staticContent.coverImage) {
+          post.cover_image = staticContent.coverImage;
+        }
+        if (staticContent.tags.length > 0) {
+          post.tags = JSON.stringify([...new Set([...(typeof post.tags === 'string' ? JSON.parse(post.tags || '[]') : (post.tags || [])), ...staticContent.tags])]);
+        }
+      }
+
       const tags = typeof post.tags === 'string' ? JSON.parse(post.tags || '[]') : (post.tags || []);
       this.updateMeta(post);
 
-      // Get data for sidebar
-      const [recentPosts, allPosts] = await Promise.all([
-        DB.getRecentBlogPosts(4),
-        DB.getBlogPosts({ published: true })
-      ]);
-      
-      // Get categories with counts
-      const categories = await DB.getBlogCategories();
+      // Get data for sidebar (try DB, fall back to BlogData)
+      let recentPosts = [];
+      let allPosts = [];
+      try {
+        [recentPosts, allPosts] = await Promise.all([
+          DB.getRecentBlogPosts(4),
+          DB.getBlogPosts({ published: true })
+        ]);
+      } catch (e) {
+        recentPosts = [];
+        allPosts = [];
+      }
+      if (!recentPosts || recentPosts.length === 0) {
+        recentPosts = BlogData.getRecent(4);
+      }
+      if (!allPosts || allPosts.length === 0) {
+        allPosts = BlogData.getPublished();
+      }
 
       // Collect all unique tags from all posts
       const allTags = [...new Set(allPosts.flatMap(p => {
@@ -47,6 +77,16 @@ const BlogPostPage = {
       }))].slice(0, 8);
 
       const relatedPosts = allPosts.filter(p => p.id !== post.id && p.category === post.category).slice(0, 3);
+
+      // Resolve article content: prefer fetched static HTML, fall back to rendered markdown or banner
+      let articleHtml;
+      if (staticContent && staticContent.html) {
+        articleHtml = staticContent.html;
+      } else if (!post.content) {
+        articleHtml = this.renderStaticFallback(slug);
+      } else {
+        articleHtml = this.renderContent(post.content);
+      }
 
       // Format date
       const pubDate = new Date(post.created_at).toLocaleDateString('en-US', { 
@@ -89,7 +129,7 @@ const BlogPostPage = {
 
               <!-- Content -->
               <div class="blog-article-content" style="font-size:1.05rem;line-height:1.8;color:rgba(0,0,0,0.7)">
-                ${this.renderContent(post.content)}
+                ${articleHtml}
               </div>
 
               <!-- Ad Slot 2 (article) - between content and tags -->
@@ -223,6 +263,79 @@ const BlogPostPage = {
       console.error('Blog post error:', error);
       content.innerHTML = Components.emptyState('😔', 'Failed to load article', error.message, 'Back to Blog', '#/blog');
     }
+  },
+
+  // Fetch and extract rich content from static blog HTML file
+  async fetchStaticBlogContent(slug) {
+    try {
+      const response = await fetch(`blog/${slug}.html`);
+      if (!response.ok) return { html: null, coverImage: null, tags: [] };
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Extract main article content
+      const contentEl = doc.querySelector('.blog-content');
+      // Also try .gn-content-area if using the Google News design
+      const blogContent = contentEl || doc.querySelector('.gn-post-content') || doc.querySelector('article');
+      if (!blogContent) return { html: null, coverImage: null, tags: [] };
+
+      // Remove ad containers from the extracted content since the SPA
+      // handles its own ad placements
+      const adContainers = blogContent.querySelectorAll('.blog-ad-container');
+      adContainers.forEach(ad => ad.remove());
+
+      // Extract cover image from static HTML as fallback
+      const coverEl = doc.querySelector('.blog-cover img');
+      const coverImage = coverEl ? coverEl.getAttribute('src') : null;
+
+      // Extract tags from static HTML
+      const tagEls = doc.querySelectorAll('.tags-section .tag');
+      const tags = Array.from(tagEls).map(el => el.textContent.trim());
+
+      return {
+        html: blogContent.innerHTML,
+        coverImage: coverImage ? this.resolveRelativeUrl(coverImage, slug) : null,
+        tags
+      };
+    } catch (e) {
+      console.warn('Failed to fetch static blog content:', e);
+      return { html: null, coverImage: null, tags: [] };
+    }
+  },
+
+  // Resolve relative image URLs (e.g., ../assets/... -> /assets/...)
+  resolveRelativeUrl(url, slug) {
+    if (!url) return null;
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    // Relative URLs in blog posts reference ../assets/... which resolves to /assets/...
+    if (url.startsWith('../')) {
+      return url.replace('../', 'https://pixabanimation.github.io/');
+    }
+    if (url.startsWith('./')) {
+      return url.replace('./', `https://pixabanimation.github.io/blog/`);
+    }
+    if (url.startsWith('/')) {
+      return `https://pixabanimation.github.io${url}`;
+    }
+    return `https://pixabanimation.github.io/blog/${url}`;
+  },
+
+  // Show fallback banner linking to static HTML when content is unavailable
+  renderStaticFallback(slug) {
+    return `<div style="text-align:center;padding:40px 20px;background:linear-gradient(135deg,#f5f7fa,#e9edf5);border-radius:16px;margin:24px 0">
+      <div style="font-size:3rem;margin-bottom:16px">📖</div>
+      <h3 style="font-size:1.3rem;font-weight:700;color:#1d1d1f;margin-bottom:12px">Full Article Available</h3>
+      <p style="font-size:0.95rem;color:rgba(0,0,0,0.6);line-height:1.6;max-width:400px;margin:0 auto 20px">
+        This article is best viewed on our dedicated blog page with full styling, images, and interactive elements.
+      </p>
+      <a href="${slug ? `https://pixabanimation.github.io/blog/${slug}.html` : 'https://pixabanimation.github.io/blog/'}"
+         style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--ds-primary,#0066cc);color:#fff;border-radius:9999px;font-size:0.9rem;font-weight:500;text-decoration:none;transition:all 0.2s"
+         onmouseover="this.style.background='var(--ds-primary-focus,#0052a3)'"
+         onmouseout="this.style.background='var(--ds-primary,#0066cc)'">
+        <i class="fas fa-external-link-alt"></i> Read Full Article
+      </a>
+    </div>`;
   },
 
   renderContent(content) {

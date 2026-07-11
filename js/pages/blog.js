@@ -220,8 +220,16 @@ const BlogPage = {
 
     try {
       let results = [];
+      // Try DB first, fall back to static BlogData
       if (typeof DB !== 'undefined' && DB.searchBlogSuggestions) {
-        results = await DB.searchBlogSuggestions(query);
+        try {
+          results = await DB.searchBlogSuggestions(query);
+        } catch (e) {
+          results = [];
+        }
+      }
+      if (!results || results.length === 0) {
+        results = BlogData.searchSuggestions(query);
       }
 
       if (requestId !== this.searchRequestId) return;
@@ -279,7 +287,16 @@ const BlogPage = {
   // === Hero Categories ===
   async loadHeroCategories() {
     try {
-      const categories = await DB.getBlogCategories();
+      let categories = [];
+      try {
+        categories = await DB.getBlogCategories();
+      } catch (e) {
+        categories = [];
+      }
+      if (!categories || categories.length === 0) {
+        categories = BlogData.getCategories();
+      }
+
       const container = document.getElementById('gnHeroCategories');
       if (!container) return;
 
@@ -307,7 +324,16 @@ const BlogPage = {
     const list = document.getElementById('gnTrendingList');
     if (!list) return;
     try {
-      const posts = await DB.getRecentBlogPosts(5);
+      let posts = [];
+      try {
+        posts = await DB.getRecentBlogPosts(5);
+      } catch (e) {
+        posts = [];
+      }
+      if (!posts || posts.length === 0) {
+        posts = BlogData.getRecent(5);
+      }
+
       if (posts.length === 0) {
         list.innerHTML = '<div class="gn-trending-empty">No posts yet.</div>';
         return;
@@ -331,7 +357,16 @@ const BlogPage = {
     const list = document.getElementById('gnCategoryList');
     if (!list) return;
     try {
-      const categories = await DB.getBlogCategories();
+      let categories = [];
+      try {
+        categories = await DB.getBlogCategories();
+      } catch (e) {
+        categories = [];
+      }
+      if (!categories || categories.length === 0) {
+        categories = BlogData.getCategories();
+      }
+
       if (categories.length === 0) {
         list.innerHTML = '<div class="gn-category-empty">No categories yet.</div>';
         return;
@@ -367,7 +402,16 @@ const BlogPage = {
     const cloud = document.getElementById('gnTagCloud');
     if (!cloud) return;
     try {
-      const tags = await DB.getBlogTags(20);
+      let tags = [];
+      try {
+        tags = await DB.getBlogTags(20);
+      } catch (e) {
+        tags = [];
+      }
+      if (!tags || tags.length === 0) {
+        tags = BlogData.getTags(20);
+      }
+
       if (tags.length === 0) {
         cloud.innerHTML = '<div class="gn-tag-empty">No tags yet.</div>';
         return;
@@ -416,11 +460,30 @@ const BlogPage = {
       if (this.currentCategory) filters.category = this.currentCategory;
       if (this.currentSearch) filters.search = this.currentSearch;
 
-      const [posts, categories, featured] = await Promise.all([
-        DB.getBlogPosts(filters),
-        DB.getBlogCategories(),
-        this.currentPage === 1 ? DB.getFeaturedBlogPosts(2) : Promise.resolve([])
-      ]);
+      // Try DB first, fall back to static BlogData
+      let posts = [];
+      let categories = [];
+      let featured = [];
+      try {
+        [posts, categories, featured] = await Promise.all([
+          DB.getBlogPosts(filters),
+          DB.getBlogCategories(),
+          this.currentPage === 1 ? DB.getFeaturedBlogPosts(2) : Promise.resolve([])
+        ]);
+      } catch (e) {
+        posts = [];
+        categories = [];
+        featured = [];
+      }
+
+      // If DB returned no posts, use static data
+      if (!posts || posts.length === 0) {
+        posts = BlogData.getPosts(filters);
+        categories = BlogData.getCategories();
+        if (this.currentPage === 1) {
+          featured = BlogData.getFeatured(2);
+        }
+      }
 
       if (posts.length === 0 && this.currentPage === 1) {
         main.innerHTML = `
