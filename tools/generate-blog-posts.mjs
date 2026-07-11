@@ -67,7 +67,126 @@ function makeId(str) {
 
 function renderContent(content) {
   if (!content) return '<p>Content coming soon.</p>';
-  return content;
+
+  // Build a colorful spec table CSS block (injected once)
+  const specCss = `<style>
+.spec-table-wrap{overflow-x:auto;margin:28px 0;border-radius:16px;box-shadow:0 2px 20px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.06)}
+.spec-table{width:100%;border-collapse:collapse;font-family:Inter,-apple-system,sans-serif;font-size:.9rem}
+.spec-table thead th{background:linear-gradient(135deg,#1d1d1f,#2d2d2f);color:#fff;padding:14px 20px;text-align:left;font-weight:700;font-size:.85rem;letter-spacing:.03em;text-transform:uppercase}
+.spec-table tbody tr:first-child td{padding-top:16px}
+.spec-table tbody tr:last-child td{padding-bottom:16px}
+.spec-table tbody tr td{padding:8px 20px;border-bottom:1px solid rgba(0,0,0,.04);vertical-align:top;line-height:1.5}
+.spec-table tbody tr:last-child td{border-bottom:none}
+.spec-table tbody tr td:first-child{font-weight:600;color:#1d1d1f;white-space:nowrap;width:30%;min-width:140px}
+.spec-table tbody tr td:last-child{color:rgba(0,0,0,.65)}
+.spec-table tbody tr:nth-child(even){background:rgba(0,102,204,.02)}
+.spec-table tbody tr:hover{background:rgba(0,102,204,.04)}
+.spec-section-row td{background:linear-gradient(135deg,#0066cc,#0071e3)!important;color:#fff!important;font-weight:700!important;font-size:.8rem!important;letter-spacing:.04em;text-transform:uppercase;padding:10px 20px!important;border-bottom:2px solid rgba(255,255,255,.1)!important}
+.spec-section-row td:first-child,.spec-section-row td:last-child{color:#fff!important}
+.spec-table tbody tr.spec-section-row:hover{background:linear-gradient(135deg,#0066cc,#0071e3)!important}
+@media(max-width:600px){.spec-table tbody tr td:first-child{white-space:normal;width:40%}}
+</style>`;
+
+  // Split content into lines
+  const lines = content.split('\n');
+  const result = [];
+  let inTable = false;
+  let tableRows = [];
+  let tableCssAdded = false;
+
+  function flushTable() {
+    if (tableRows.length === 0) return;
+    if (!tableCssAdded) {
+      result.push(specCss);
+      tableCssAdded = true;
+    }
+    result.push('<div class="spec-table-wrap"><table class="spec-table">');
+    let currentSection = '';
+    for (let r = 0; r < tableRows.length; r++) {
+      const row = tableRows[r];
+      // Skip separator rows (like | :--- | :--- | :--- |)
+      if (/^\|\s*:?-+:?\s*\|(\s*:?-+:?\s*\|)*\s*$/.test(row)) continue;
+
+      // Parse cells
+      const cells = row.split('|').map(c => c.trim()).filter(c => c !== '');
+      if (cells.length === 0) continue;
+
+      // Check if this is a section header row (all cells after first are empty, contains bold)
+      const nonEmptyCells = cells.filter(c => c !== '' && c !== '|');
+      const isSectionHeader = cells.length >= 2 &&
+        /\*\*.+\*\*/.test(cells[0]) &&
+        cells.slice(1).every(c => c === '' || c === '|' || /^\s*$/.test(c));
+
+      // Also handle rows where first cell has bold and remaining are empty-trimmed
+      const isSectionRow = isSectionHeader || (
+        cells.length >= 1 &&
+        /\*\*.+\*\*/.test(cells[0]) &&
+        cells.slice(1).every(c => !c || c === '')
+      );
+
+      if (isSectionRow) {
+        const sectionName = cells[0].replace(/^\*\*|\*\*$/g, '').trim();
+        result.push(`<tr class="spec-section-row"><td colspan="10">${esc(sectionName)}</td></tr>`);
+        currentSection = sectionName;
+      } else if (cells.length >= 2) {
+        const key = cells[0].replace(/^\*\*|\*\*$/g, '').trim();
+        // Join remaining cells as the value
+        const value = cells.slice(1).filter(c => c !== '').join(', ');
+        if (key) {
+          // Normal key-value row
+          result.push(`<tr><td>${esc(key)}</td><td>${esc(value)}</td></tr>`);
+        } else if (value) {
+          // Continuation row (empty first cell) — indent the value as a sub-item
+          result.push(`          <tr><td colspan="2" style="padding-left:36px;color:rgba(0,0,0,.5);font-size:.85rem">${esc(value)}</td></tr>`);
+        }
+      } else if (cells.length === 1) {
+        // Single cell row - could be a note or continuation
+        const val = cells[0].replace(/^\*\*|\*\*$/g, '').trim();
+        if (val) {
+          result.push(`<tr><td colspan="10">${esc(val)}</td></tr>`);
+        }
+      }
+    }
+    result.push('</table></div>');
+    tableRows = [];
+  }
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    // Detect markdown table rows (lines with | separator)
+    if (trimmed.startsWith('|') && trimmed.endsWith('|') && trimmed.includes('|', 1)) {
+      inTable = true;
+      tableRows.push(trimmed);
+    } else {
+      if (inTable) {
+        flushTable();
+        inTable = false;
+      }
+
+      // Convert basic markdown inline formatting
+      let processed = line;
+      // Convert **bold** to <strong>
+      processed = processed.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      // Convert *italic* to <em>
+      processed = processed.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      // Convert markdown headings (## heading)
+      processed = processed.replace(/^##\s+(.+)$/, '<h2>$1</h2>');
+      processed = processed.replace(/^###\s+(.+)$/, '<h3>$1</h3>');
+      // Convert markdown images: ![alt](url) or !! [alt](url)
+      processed = processed.replace(/(!|!!)\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$3" alt="$2" style="max-width:100%;height:auto;border-radius:12px;margin:16px 0" loading="lazy">');
+      // Convert markdown links: [text](url)
+      processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      // Wrap paragraphs (non-empty, non-heading, non-image, non-HTML lines)
+      if (processed.trim() && !processed.startsWith('<h') && !processed.startsWith('<img') && !processed.startsWith('<') && !processed.startsWith('</')) {
+        processed = '<p>' + processed + '</p>';
+      }
+
+      result.push(processed);
+    }
+  }
+  flushTable(); // Flush any remaining table
+
+  return result.join('\n');
 }
 
 function recentPostsHtml(posts, currentSlug) {
