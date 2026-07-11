@@ -44,7 +44,7 @@ const STATIC_PAGES = [
 
 function getBlogArticles() {
   const files = readdirSync(blogDir)
-    .filter(f => f.endsWith('.html') && f !== 'index.html')
+    .filter(f => f.endsWith('.html'))
     .sort();
   
   return files.map(file => {
@@ -52,11 +52,17 @@ function getBlogArticles() {
     const stats = statSync(filePath);
     const lastMod = stats.mtime.toISOString().split('T')[0];
     
+    // The listing page (index.html) gets the root blog URL
+    const isIndex = file === 'index.html';
+    const loc = isIndex
+      ? `${BASE_URL}/blog/`
+      : `${BASE_URL}/blog/${xmlEscape(file)}`;
+    
     return {
-      loc: `${BASE_URL}/blog/${xmlEscape(file)}`,
+      loc,
       lastmod: lastMod,
-      changefreq: 'monthly',
-      priority: '0.8'
+      changefreq: 'weekly',
+      priority: isIndex ? '0.9' : '0.8'
     };
   });
 }

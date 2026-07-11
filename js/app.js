@@ -26,8 +26,9 @@ const App = {
     Router.register('/terms-of-use', () => TermsOfUsePage.render());
     Router.register('/admin', () => AdminPage.render());
     Router.register('/forgot-password', (p) => ForgotPasswordPage.render(p));
-    Router.register('/blog', (p) => BlogPage.render(p));
-    Router.register('/blog/:slug', (p) => BlogPostPage.render(p));
+    // Blog routes redirect to static HTML files for SEO
+    Router.register('/blog', () => { window.location.replace('/blog/'); });
+    Router.register('/blog/:slug', (p) => { window.location.replace('/blog/' + p.params.slug + '.html'); });
 
     // Setup UI
     this.setupNavigation();
