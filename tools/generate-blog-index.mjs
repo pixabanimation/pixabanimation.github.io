@@ -52,7 +52,7 @@ const CAT_COLORS = {
 };
 
 // ─── Build Premium HTML ──────────────────────────────────────────────────────
-function buildHtml(BLOG_DATA, featured, sortedAll, recentPosts, categories, tags) {
+function buildHtml(BLOG_DATA, featured, sortedAll, recentPosts, categories, tags, blogAds, popupAds) {
   return `<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -492,9 +492,9 @@ ${tags.map(t => `            <a href="index.html" class="pl-sb-tag" onclick="ret
         </div>
         <div class="pl-sb-widget">
           <div class="pl-sb-widget-title">Ad</div>
-          <div id="ad-slot-1"></div>
-          <div id="ad-slot-2" style="margin-top:16px"></div>
-          <div id="ad-slot-3" style="margin-top:16px"></div>
+          <div id="ad-slot-1"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-cube"></i></div><div class="blog-ad-text"><h3>Premium Motion Graphics Assets</h3><p>Browse 4000+ professional 4K motion backgrounds, animated templates, and stock footage — crafted for creators who demand the best.</p><a href="https://pixabanimation.github.io/#/shop" class="blog-ad-cta">Browse Collection <i class="fas fa-arrow-right"></i></a></div></div></div></div>
+          <div id="ad-slot-2"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-film"></i></div><div class="blog-ad-text"><h3>4K Video Clips &amp; Templates</h3><p>Royalty-free motion graphics, lower thirds, and title animations for your next project.</p><a href="https://pixabanimation.github.io/#/shop?category=videos" class="blog-ad-cta">Explore Library <i class="fas fa-arrow-right"></i></a></div></div></div></div>
+          <div id="ad-slot-3"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-layer-group"></i></div><div class="blog-ad-text"><h3>After Effects Templates</h3><p>Professional logo reveals, typography animations, and infographic templates designed to make an impact.</p><a href="https://stock.adobe.com/contributor/211977281/SPurnoAnimation" class="blog-ad-cta">View Collection <i class="fas fa-arrow-right"></i></a></div></div></div></div>
         </div>
       </aside>
     </div>
@@ -631,16 +631,7 @@ ${tags.map(t => `            <a href="index.html" class="pl-sb-tag" onclick="ret
   <!-- Popup Ad Container -->
   <div class="popup-ad-overlay" id="popupAdContainer"></div>
 
-  <!-- Ad Scripts -->
-  <script src="../js/credentials.js"></script>
-  <script type="module">
-    import { createClient } from "https://esm.sh/@libsql/client@0.14.0/web";
-    window.__tursoClient = createClient({
-      url: "libsql://ecommercelog-spurno.aws-us-east-1.turso.io",
-      authToken: "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODI4Mzg4MjUsImlkIjoiMDE5ZjE5NzItZmQwMS03ZDBkLWFkNWMtNWQ5YTkzZWI0NzBlIiwia2lkIjoiY3dfWmw5T3NsV2FnNFFkUjVHZUN0Nll2b19MTkdlUmY1STY1bEZVMXRCOCIsInJpZCI6ImVjYzBjNjcxLWUyMmMtNDA0Yy1hZjNmLWYzZDNlNjE4OTk5ZiJ9.4otvGu6MrGbhOb7JppDQwSXHXXsWDKf5miDw43Oba8M33U5wRNtK8DC8Zv2D-M-21nE6fo2cdazBjAgB4mgDAQ"
-    });
-  </script>
-  <script src="../js/db.js"></script>
+  <!-- Blog Ad Scripts (static, works without DB) -->
   <script src="../js/blog-ads.js"></script>
   <script src="../js/popup-ads.js"></script>
 </body>
@@ -656,7 +647,19 @@ async function main() {
   const rows = result.rows;
   console.log(`Found ${rows.length} published posts.\n`);
 
-  // Map DB rows to BLOG_DATA format
+
+
+  // Fetch active ads for pre-rendering
+  let blogAds = [], popupAds = [];
+  try {
+    const adRes = await client.execute('SELECT * FROM blog_ads WHERE is_active = 1 ORDER BY sort_order ASC, created_at DESC');
+    blogAds = adRes.rows;
+    const popRes = await client.execute('SELECT * FROM popup_ads WHERE is_active = 1 ORDER BY sort_order ASC, created_at DESC');
+    popupAds = popRes.rows;
+    if (blogAds.length > 0) console.log('  📢 Ads:', blogAds.length);
+    if (popupAds.length > 0) console.log('  🪟 Popups:', popupAds.length);
+  } catch(e) { console.warn('  ⚠️ Ads fetch:', e.message); }
+    // Map DB rows to BLOG_DATA format
   const BLOG_DATA = rows.map(row => {
     let tags = [];
     if (row.tags) {
@@ -696,7 +699,7 @@ async function main() {
   const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 24).map(([k, v]) => ({ tag: k, count: v }));
 
   // Generate HTML
-  const html = buildHtml(BLOG_DATA, featured, sortedAll, recentPosts, categories, tags);
+  const html = buildHtml(BLOG_DATA, featured, sortedAll, recentPosts, categories, tags, blogAds, popupAds);
   writeFileSync(outputPath, html, 'utf-8');
   console.log(`✅ Generated blog/index.html (${(html.length / 1024).toFixed(1)} KB, ${BLOG_DATA.length} articles)`);
 }

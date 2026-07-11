@@ -8,15 +8,36 @@ const PopupAds = {
   shownAds: [],
   isShowing: false,
 
+  // Built-in fallback popup ads (used when DB is unavailable)
+  defaultPopupAds: [
+    {
+      id: 'fallback-1',
+      title: 'Premium Animation Assets',
+      description: 'Discover professional motion graphics, stock footage, and After Effects templates for your next creative project.',
+      cta_text: 'Browse Shop',
+      cta_url: 'https://pixabanimation.github.io/#/shop',
+      icon: 'fa-cube',
+      bg_color: '#0066cc',
+      is_animated: true
+    },
+    {
+      id: 'fallback-2',
+      title: 'Unlock Creative Potential',
+      description: 'Join thousands of creators using PixabAnimation assets. Early access, exclusive discounts, and inspiration await.',
+      cta_text: 'Learn More',
+      cta_url: 'https://pixabanimation.github.io/#/about',
+      icon: 'fa-star',
+      bg_color: '#5856d6',
+      is_animated: true
+    }
+  ],
+
   async init() {
     if (this.initialized) return;
     this.initialized = true;
 
     // Don't show popups on admin pages
     if (window.location.hash && window.location.hash.startsWith('#/admin')) return;
-
-    // Check if DB is available
-    if (typeof DB === 'undefined' || !DB.init) return;
 
     // Wait a bit for the page to fully load before showing popups
     setTimeout(() => this.showPopups(), 2000);
@@ -34,17 +55,27 @@ const PopupAds = {
 
   async loadAds() {
     try {
-      const allAds = await DB.getPopupAds(true);
-      // Shuffle 4 times (randomize order)
-      let shuffled = this.shuffleArray(allAds);
-      shuffled = this.shuffleArray(shuffled);
-      shuffled = this.shuffleArray(shuffled);
-      shuffled = this.shuffleArray(shuffled);
-      this.ads = shuffled;
+      // Try loading from DB if available
+      if (typeof DB !== 'undefined' && DB.init && DB.client) {
+        const allAds = await DB.getPopupAds(true);
+        if (allAds && allAds.length >= 2) {
+          // Shuffle 4 times (randomize order)
+          let shuffled = this.shuffleArray(allAds);
+          shuffled = this.shuffleArray(shuffled);
+          shuffled = this.shuffleArray(shuffled);
+          shuffled = this.shuffleArray(shuffled);
+          this.ads = shuffled;
+          return this.ads;
+        }
+      }
+      // Fall back to default ads
+      console.log('PopupAds: Using built-in fallback ads');
+      this.ads = this.shuffleArray(this.defaultPopupAds);
       return this.ads;
     } catch (error) {
-      console.warn('PopupAds: Failed to load ads', error);
-      return [];
+      console.warn('PopupAds: Failed to load ads, using defaults', error);
+      this.ads = this.shuffleArray(this.defaultPopupAds);
+      return this.ads;
     }
   },
 
@@ -52,7 +83,7 @@ const PopupAds = {
     // Use localStorage to track visit groups
     const key = 'pixab_popup_visit';
     let visitData = localStorage.getItem(key);
-    
+
     if (!visitData) {
       // First visit ever -> show group A (first 2 ads)
       const data = { group: 'A', count: 1 };
@@ -63,7 +94,7 @@ const PopupAds = {
     try {
       const data = JSON.parse(visitData);
       const newCount = data.count + 1;
-      
+
       if (data.group === 'A') {
         // Next visit -> show group B (other 2 ads)
         const newData = { group: 'B', count: newCount };
@@ -98,7 +129,7 @@ const PopupAds = {
     // Assign ads to groups without duplicates
     const shuffled = [...ads];
     const groupA = shuffled.slice(0, Math.min(2, shuffled.length));
-    
+
     // Build groupB from remaining ads, avoiding duplicates with groupA
     const remaining = shuffled.filter(ad => !groupA.find(a => a.id === ad.id));
     let groupB = [];
@@ -152,9 +183,9 @@ const PopupAds = {
           <div class="popup-ad-content">
             <div class="popup-ad-badge">${ad.is_animated ? '⚡ Limited Offer' : '🎯 Promotion'}</div>
             <h3 class="popup-ad-title">${this.escapeHtml(ad.title)}</h3>
-            <p class="popup-ad-desc">${this.escapeHtml(ad.description)}</p>
+            <p class="popup-ad-desc">${this.escapeHtml(ad.description || '')}</p>
           </div>
-          <a href="${this.escapeHtml(ad.cta_url)}" class="popup-ad-cta" target="_blank" onclick="PopupAds.closePopup(${index})" rel="noopener">
+          <a href="${this.escapeHtml(ad.cta_url)}" class="popup-ad-cta" onclick="PopupAds.closePopup(${index})" rel="noopener">
             ${this.escapeHtml(ad.cta_text || 'Learn More')} <i class="fas fa-arrow-right"></i>
           </a>
         </div>
@@ -164,10 +195,10 @@ const PopupAds = {
 
     container.innerHTML = popupContent;
     container.classList.remove('popup-ad-exit');
-    
+
     // Force reflow for animation
     void container.offsetWidth;
-    
+
     container.classList.add('popup-ad-active');
 
     // Animate countdown timer
@@ -189,10 +220,10 @@ const PopupAds = {
 
     progressBar.style.transition = 'none';
     progressBar.style.width = '100%';
-    
+
     // Force reflow
     void progressBar.offsetWidth;
-    
+
     progressBar.style.transition = `width ${duration}s linear`;
     progressBar.style.width = '0%';
   },
@@ -208,11 +239,11 @@ const PopupAds = {
     }
 
     container.classList.add('popup-ad-exit');
-    
+
     setTimeout(() => {
       container.classList.remove('popup-ad-active');
       container.innerHTML = '';
-      
+
       // Show next popup
       const nextIndex = index + 1;
       if (nextIndex < this.shownAds.length) {
@@ -238,3 +269,4 @@ if (document.readyState === 'loading') {
 } else {
   PopupAds.init();
 }
+
