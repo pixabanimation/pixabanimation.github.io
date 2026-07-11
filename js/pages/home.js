@@ -230,7 +230,7 @@ const HomePage = {
             ${(categoryProducts['adobe-after-effect-plugins'] || []).slice(0, 8).map((p, i) => Components.productCard(p, i)).join('')}
           </div>
           <div style="text-align:center;margin-top:44px">
-            <a href="#/shop?category=after-effects-plugin" class="ds-pill-cta" style="padding:12px 28px;font-size:15px">
+            <a href="#/shop?category=after-effects-plugins" class="ds-pill-cta" style="padding:12px 28px;font-size:15px">
               View All Plugins
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
