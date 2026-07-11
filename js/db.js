@@ -1124,6 +1124,51 @@ const DB = {
 
   async toggleAd(id, isActive) {
     return this.execute('UPDATE blog_ads SET is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [isActive ? 1 : 0, id]);
+  },
+
+  // === Quotations Management ===
+  async getAllQuotations() {
+    return this.query('SELECT * FROM quotations ORDER BY created_at DESC');
+  },
+
+  async getQuotationById(id) {
+    const quotes = await this.query('SELECT * FROM quotations WHERE id = ?', [id]);
+    return quotes.length > 0 ? quotes[0] : null;
+  },
+
+  async createQuotation(data) {
+    const { quote_number, date, valid_until, client_name, client_email, client_phone, client_company, client_address, services, subtotal, tax_rate, tax_amount, total, terms, notes, status } = data;
+    const user = App.getUser();
+    const createdBy = user ? user.id : null;
+    const result = await this.execute(
+      `INSERT INTO quotations (quote_number, date, valid_until, client_name, client_email, client_phone, client_company, client_address, services, subtotal, tax_rate, tax_amount, total, terms, notes, status, created_by)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [quote_number, date, valid_until || null, client_name, client_email || null, client_phone || null, client_company || null, client_address || null, services, subtotal, tax_rate || 0, tax_amount || 0, total, terms || null, notes || null, status || 'draft', createdBy]
+    );
+    return result.lastInsertRowid;
+  },
+
+  async updateQuotation(id, data) {
+    const fields = [];
+    const params = [];
+    const allowedFields = ['quote_number', 'date', 'valid_until', 'client_name', 'client_email', 'client_phone', 'client_company', 'client_address', 'services', 'subtotal', 'tax_rate', 'tax_amount', 'total', 'terms', 'notes', 'status'];
+    for (const [key, value] of Object.entries(data)) {
+      if (allowedFields.includes(key)) {
+        fields.push(`${key} = ?`);
+        params.push(value);
+      }
+    }
+    if (fields.length === 0) return;
+    fields.push("updated_at = CURRENT_TIMESTAMP");
+    params.push(id);
+    return this.execute(
+      `UPDATE quotations SET ${fields.join(', ')} WHERE id = ?`,
+      params
+    );
+  },
+
+  async deleteQuotation(id) {
+    return this.execute('DELETE FROM quotations WHERE id = ?', [id]);
   }
 };
 

@@ -75,6 +75,12 @@ const AdminPage = {
             <button class="admin-nav-item" data-tab="popupads" onclick="AdminPage.switchTab('popupads');AdminPage.closeSidebar()">
               <i class="fas fa-window-restore"></i> Popup Ads
             </button>
+            <button class="admin-nav-item" data-tab="invoice" onclick="AdminPage.switchTab('invoice');AdminPage.closeSidebar()">
+              <i class="fas fa-file-invoice-dollar"></i> Invoice
+            </button>
+            <button class="admin-nav-item" data-tab="quotation" onclick="AdminPage.switchTab('quotation');AdminPage.closeSidebar()">
+              <i class="fas fa-file-contract"></i> Quotation
+            </button>
             <hr class="admin-divider">
             <button class="admin-nav-item" data-tab="settings" onclick="AdminPage.switchTab('settings');AdminPage.closeSidebar()">
               <i class="fas fa-cog"></i> Settings
@@ -156,6 +162,8 @@ const AdminPage = {
       case 'blog': this.loadBlogPosts(); break;
       case 'ads': this.loadAds(); break;
       case 'popupads': AdminPopupAds.render(); break;
+      case 'invoice': AdminInvoice.render(); break;
+      case 'quotation': AdminQuotation.render(); break;
       case 'settings': AdminSettings.render(); break;
     }
   },

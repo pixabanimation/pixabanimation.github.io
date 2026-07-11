@@ -242,6 +242,31 @@ CREATE TABLE IF NOT EXISTS popup_ads (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Quotations table (animation billing)
+CREATE TABLE IF NOT EXISTS quotations (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  quote_number TEXT NOT NULL UNIQUE,
+  date TEXT NOT NULL,
+  valid_until TEXT,
+  client_name TEXT NOT NULL,
+  client_email TEXT,
+  client_phone TEXT,
+  client_company TEXT,
+  client_address TEXT,
+  services TEXT NOT NULL DEFAULT '[]',
+  subtotal REAL NOT NULL DEFAULT 0,
+  tax_rate REAL DEFAULT 0,
+  tax_amount REAL DEFAULT 0,
+  total REAL NOT NULL DEFAULT 0,
+  terms TEXT,
+  notes TEXT,
+  status TEXT DEFAULT 'draft' CHECK(status IN ('draft','sent','accepted','rejected','cancelled')),
+  created_by INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
 -- Security questions for password recovery
 CREATE TABLE IF NOT EXISTS admin_security (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

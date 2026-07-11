@@ -204,6 +204,37 @@ async function main() {
     console.error("  ⚠️ Images JSON fix error:", err.message);
   }
 
+  // Migration: Add quotations table
+  console.log("🔄 Adding quotations table...");
+  try {
+    await client.execute(`CREATE TABLE IF NOT EXISTS quotations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      quote_number TEXT NOT NULL UNIQUE,
+      date TEXT NOT NULL,
+      valid_until TEXT,
+      client_name TEXT NOT NULL,
+      client_email TEXT,
+      client_phone TEXT,
+      client_company TEXT,
+      client_address TEXT,
+      services TEXT NOT NULL DEFAULT '[]',
+      subtotal REAL NOT NULL DEFAULT 0,
+      tax_rate REAL DEFAULT 0,
+      tax_amount REAL DEFAULT 0,
+      total REAL NOT NULL DEFAULT 0,
+      terms TEXT,
+      notes TEXT,
+      status TEXT DEFAULT 'draft' CHECK(status IN ('draft','sent','accepted','rejected','cancelled')),
+      created_by INTEGER,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+    );`);
+    console.log("  ✅ quotations table ready");
+  } catch (err) {
+    console.error("  ⚠️ Could not create quotations table:", err.message);
+  }
+
   // Migration: Fix broken product thumbnail URLs
   console.log("🔄 Fixing broken product thumbnail URLs...");
   const imageFixes = [

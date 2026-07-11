@@ -8268,6 +8268,30 @@ body:has(.admin-page) .footer {
   line-height: 1.4;
 }
 
+/* Admin Invoice & Quotation Generator */
+.admin-invoice-page,.admin-quotation-page{padding:0}
+.admin-invoice-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:1100px){.admin-invoice-layout{grid-template-columns:1fr}}
+.admin-invoice-form{display:flex;flex-direction:column;gap:4px}
+.admin-invoice-form-section{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:16px 18px;margin-bottom:12px}
+.admin-invoice-form-section h4{font-size:.85rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--accent-1);padding-bottom:8px;border-bottom:1px solid var(--border-light)}
+.admin-invoice-form-section h4 i{font-size:.9rem}
+.admin-invoice-form-section .form-group{margin-bottom:0}
+.admin-invoice-form-section .form-group label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted)}
+.admin-invoice-form-section .form-group input[readonly]{background:rgba(0,0,0,.02);cursor:default;border-style:dashed}
+.admin-invoice-item-row,.admin-quote-service-row{display:grid;grid-template-columns:1fr 80px 100px 80px 30px;gap:8px;align-items:end;margin-bottom:8px}
+.admin-invoice-item-row .form-group,.admin-quote-service-row .form-group{margin-bottom:0}
+.admin-invoice-item-row .form-group label,.admin-quote-service-row .form-group label{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--text-muted)}
+.admin-invoice-item-row input,.admin-quote-service-row input{padding:8px 10px;font-size:.82rem}
+.admin-invoice-preview-wrapper{position:sticky;top:calc(var(--nav-height) + 20px);display:flex;flex-direction:column;gap:8px}
+@media(max-width:1100px){.admin-invoice-preview-wrapper{position:static}}
+.admin-invoice-preview-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-md) var(--radius-md) 0 0}
+.admin-invoice-preview-header h4{font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:8px}
+.admin-invoice-preview-container{background:#e8e8e8;border:1px solid var(--border-light);border-radius:0 0 var(--radius-md) var(--radius-md);padding:16px;overflow-x:auto;min-height:400px}
+.admin-invoice-preview{width:1100px;min-height:550px;margin:0 auto;border-radius:4px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.12);background:#fff}
+.admin-invoice-preview.landscape{aspect-ratio:2/1}
+
+
 /* --- Video fields section (highlighted) --- */
 .admin-form-video-section {
   padding: 20px;
