@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "build-blog": "node tools/generate-blog-posts.mjs && node tools/generate-blog-index.mjs && node tools/generate-sitemap.mjs",
+    "build-blog-index": "node tools/generate-blog-index.mjs",
+    "build-blog-posts": "node tools/generate-blog-posts.mjs"
+  },
   "dependencies": {
     "@libsql/client": "^0.17.4",
     "html2canvas": "^1.4.1",

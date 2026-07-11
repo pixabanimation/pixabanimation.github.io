@@ -412,7 +412,7 @@ ${sidebarTagsHtml(recentPosts.map(p => typeof p.tags === 'string' ? JSON.parse(p
 async function main() {
   console.log('Fetching blog posts from database...');
   const result = await client.execute(
-    'SELECT id, title, slug, excerpt, content, category, author, reading_time, featured, tags, cover_image, meta_title, meta_description, created_at FROM blog_posts WHERE id >= 41 ORDER BY id ASC'
+    'SELECT id, title, slug, excerpt, content, category, author, reading_time, featured, tags, cover_image, meta_title, meta_description, created_at FROM blog_posts WHERE published = 1 ORDER BY created_at ASC'
   );
   const posts = result.rows;
   console.log(`Found ${posts.length} posts to generate.\n`);

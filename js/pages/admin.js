@@ -1825,9 +1825,14 @@ const AdminPage = {
       container.innerHTML = `
         <div class="admin-toolbar">
           <h3 style="font-size:1rem;font-weight:600">Blog Posts</h3>
-          <button class="btn btn-primary btn-sm" onclick="AdminPage.showBlogForm(null)">
-            <i class="fas fa-plus"></i> New Post
-          </button>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="AdminPage.showBlogForm(null)">
+              <i class="fas fa-plus"></i> New Post
+            </button>
+            <button class="btn btn-sm" style="background:linear-gradient(135deg,#34c759,#28a745);color:#fff;border:none;padding:8px 14px;border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 12px rgba(52,199,89,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="AdminPage.buildStaticBlog()" title="Generate static HTML files from database">
+              <i class="fas fa-file-export"></i> Generate Static Files
+            </button>
+          </div>
         </div>
         <div class="admin-table-container">
           <table class="admin-table">
@@ -2061,6 +2066,42 @@ const AdminPage = {
       this.loadBlogPosts();
     } catch (error) {
       Components.toast('Failed to delete', 'error');
+    }
+  },
+
+  async buildStaticBlog() {
+    try {
+      Components.showModal('Generate Static Files', `
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="padding:16px;background:rgba(52,199,89,0.06);border:1px solid rgba(52,199,89,0.15);border-radius:var(--radius-sm)">
+            <i class="fas fa-terminal" style="color:var(--success);margin-right:8px"></i>
+            <strong>Run this command in your terminal:</strong>
+          </div>
+          <div style="position:relative">
+            <pre style="background:#1d1d1f;color:#fff;padding:16px;border-radius:var(--radius-sm);font-size:0.85rem;overflow-x:auto;margin:0;line-height:1.6"><code>npm run build-blog</code></pre>
+            <button style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.1);border:none;color:#fff;padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer" onclick="navigator.clipboard.writeText('npm run build-blog');Components.toast('Command copied!','success')">
+              <i class="fas fa-copy"></i> Copy
+            </button>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">
+            This will: <br>
+            1. Generate individual blog post HTML files from the database<br>
+            2. Regenerate <code>blog/index.html</code> with all posts<br>
+            3. Update <code>sitemap.xml</code> with new URLs<br><br>
+            <strong>Tip:</strong> Run this after creating or editing blog posts to publish the changes live.
+          </p>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" style="flex:1" onclick="navigator.clipboard.writeText('npm run build-blog');Components.toast('Command copied!','success');document.querySelector('.modal-overlay')?.remove()">
+              <i class="fas fa-copy"></i> Copy & Close
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="document.querySelector('.modal-overlay')?.remove()">
+              Close
+            </button>
+          </div>
+        </div>
+      `, '500px');
+    } catch (error) {
+      Components.toast('Error: ' + error.message, 'error');
     }
   },
 
