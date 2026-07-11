@@ -58,7 +58,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
 .blog-footer-bottom-copy{font-size:.75rem;color:rgba(255,255,255,.35)}
 .blog-footer-payment-icons{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
-.blog-footer-payment-icons .payment-icon-text{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;font-size:0.65rem;font-weight:700;letter-spacing:0.04em;border:1px solid rgba(255,255,255,.25);border-radius:3px;text-transform:uppercase;color:rgba(255,255,255,.35);line-height:1.2;transition:color .2s ease,border-color .2s ease}
+.blog-footer-payment-icons .payment-icon-text{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;font-size:0.65rem;font-weight:700;letter-spacing:0.04em;border:1px solid rgba(0,0,0,.15);border-radius:3px;text-transform:uppercase;color:rgba(0,0,0,.45);line-height:1.2;transition:color .2s ease,border-color .2s ease}
 
 .blog-footer-payment-icons .payment-icon-text:hover{color:#0066cc;border-color:#0066cc}
 .blog-footer-payment-icons .payment-icon-text svg{flex-shrink:0}

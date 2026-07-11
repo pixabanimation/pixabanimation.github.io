@@ -252,7 +252,7 @@ function generatePostHtml(post, recentPosts) {
   const metaDesc = post.meta_description || post.excerpt || '';
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -276,6 +276,7 @@ ${ogTags}
   <meta name="twitter:description" content="${esc(metaDesc)}">
   <meta name="twitter:image" content="${escAttr(coverImg)}">
   <link rel="canonical" href="${BASE_URL}/blog/${post.slug}.html">
+  <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="blog.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -342,27 +343,41 @@ ${ogTags}
   <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="blog-navbar" id="blogNavbar">
-    <div class="blog-nav-container">
-      <a href="${BASE_URL}/" class="blog-nav-brand">
-        <img src="${LOGO_URL}" alt="PixabAnimation">
-        PixabAnimation
-      </a>
-      <button class="blog-nav-toggle" onclick="document.getElementById('blogNavLinks').classList.toggle('open')" aria-label="Toggle menu">
+  <!-- Navigation (matching homepage) -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
-      <ul class="blog-nav-links" id="blogNavLinks">
-        <li><a href="${BASE_URL}/">Home</a></li>
-        <li><a href="${BASE_URL}/#/shop">Shop</a></li>
-        <li><a href="${BASE_URL}/#/shop?category=videos">Videos</a></li>
-        <li><a href="${BASE_URL}/#/about">About</a></li>
-        <li><a href="${BASE_URL}/#/contact">Contact</a></li>
-        <li><a href="index.html">Blog</a></li>
+      <ul class="nav-links" id="navLinks">
+        <li class="nav-brand-item">
+          <a href="${BASE_URL}/" class="nav-brand">
+            <img src="${BASE_URL}/assets/pixabanimation-logo.png" alt="PixabAnimation" class="brand-logo" width="36" height="32">
+          </a>
+        </li>
+        <li><a href="${BASE_URL}/" class="nav-link active" data-nav><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="${BASE_URL}/#/shop" class="nav-link" data-nav><i class="fas fa-store"></i> Shop</a></li>
+        <li><a href="${BASE_URL}/#/shop?category=videos" class="nav-link" data-nav><i class="fas fa-video"></i> Videos</a></li>
+        <li><a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins" class="nav-link" data-nav><i class="fas fa-plug"></i> Plugins</a></li>
+        <li><a href="index.html" class="nav-link" data-nav><i class="fas fa-newspaper"></i> Blog</a></li>
+        <li><a href="${BASE_URL}/#/about" class="nav-link" data-nav><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="${BASE_URL}/#/contact" class="nav-link" data-nav><i class="fas fa-envelope"></i> Contact</a></li>
+        <li class="nav-divider-mobile"><hr></li>
+        <li><a href="${BASE_URL}/#/wishlist" class="nav-link nav-action-mobile" data-nav><i class="fas fa-heart"></i> Wishlist <span class="badge wishlist-badge-mobile">0</span></a></li>
+        <li><a href="${BASE_URL}/#/cart" class="nav-link nav-action-mobile" data-nav><i class="fas fa-shopping-bag"></i> Cart <span class="badge cart-badge-mobile">0</span></a></li>
+        <li><a href="${BASE_URL}/#/login" class="nav-link nav-action-mobile" data-nav><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
+        <li><a href="${BASE_URL}/#/profile" class="nav-link nav-action-mobile" data-nav><i class="fas fa-user"></i> Profile</a></li>
       </ul>
-      <div class="blog-nav-actions">
-        <a href="${BASE_URL}/#/shop"><i class="fas fa-store"></i></a>
-        <a href="${BASE_URL}/#/cart"><i class="fas fa-shopping-bag"></i></a>
+      <div class="nav-actions">
+        <a href="${BASE_URL}/#/wishlist" class="nav-icon-btn" aria-label="Wishlist">
+          <i class="fas fa-heart"></i>
+          <span class="badge wishlist-badge">0</span>
+        </a>
+        <a href="${BASE_URL}/#/cart" class="nav-icon-btn" aria-label="Cart">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="badge cart-badge">0</span>
+        </a>
+        <a href="${BASE_URL}/#/login" class="btn btn-sm btn-primary">Sign In</a>
       </div>
     </div>
   </nav>
@@ -455,14 +470,16 @@ ${sidebarTagsHtml(recentPosts.map(p => typeof p.tags === 'string' ? JSON.parse(p
   </div>
 </div>
 
-  <!-- Footer -->
-  <footer class="blog-footer">
-    <div class="blog-footer-content">
-      <div class="blog-footer-grid">
-        <div class="blog-footer-brand">
-          <div class="name"><img src="${LOGO_URL}" alt="" style="width:24px;height:20px"> PixabAnimation</div>
-          <div class="desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</div>
-          <div class="blog-footer-social">
+  <!-- Footer — matching homepage -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-grid">
+        <!-- Brand -->
+        <div class="footer-brand">
+          <img src="${BASE_URL}/assets/pixabanimation-logo.png" alt="PixabAnimation Logo" class="footer-logo" width="28" height="24" loading="lazy">
+          <span class="footer-brand-name">PixabAnimation</span>
+          <p class="footer-brand-desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</p>
+          <div class="footer-social">
             <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
             <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
             <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -470,46 +487,56 @@ ${sidebarTagsHtml(recentPosts.map(p => typeof p.tags === 'string' ? JSON.parse(p
             <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
           </div>
         </div>
-        <div class="blog-footer-col">
-          <h4>Shop</h4>
-          <a href="${BASE_URL}/#/shop">All Assets</a>
-          <a href="${BASE_URL}/#/shop?category=videos">Animation &amp; Video</a>
-          <a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins">After Effects Plugins</a>
+        <!-- Shop -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Shop</h4>
+          <a href="${BASE_URL}/#/shop" class="footer-link">All Assets</a>
+          <a href="${BASE_URL}/#/shop?category=videos" class="footer-link">Animation &amp; Video</a>
+          <a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins" class="footer-link">After Effects Plugins</a>
+          <a href="${BASE_URL}/#/shop?category=background-animation" class="footer-link">Background Animation</a>
+          <a href="${BASE_URL}/#/shop?category=infographic-animation" class="footer-link">Infographic Animation</a>
         </div>
-        <div class="blog-footer-col">
-          <h4>Categories</h4>
-          <a href="${BASE_URL}/#/shop?category=videos">Motion Graphics</a>
-          <a href="${BASE_URL}/#/shop?category=green-screen-mockup">Green Screen</a>
-          <a href="${BASE_URL}/#/shop">View All</a>
+        <!-- Categories -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Categories</h4>
+          <a href="${BASE_URL}/#/shop?category=videos" class="footer-link">Motion Graphics</a>
+          <a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins" class="footer-link">Plugins &amp; Extensions</a>
+          <a href="${BASE_URL}/#/shop?category=green-screen-mockup" class="footer-link">Green Screen Mockups</a>
+          <a href="${BASE_URL}/#/shop?category=ads-design" class="footer-link">Advertising Design</a>
+          <a href="${BASE_URL}/#/shop" class="footer-link footer-link-all">View All <i class="fas fa-arrow-right"></i></a>
         </div>
-        <div class="blog-footer-col">
-          <h4>Support</h4>
-          <a href="${BASE_URL}/#/contact">Contact Us</a>
-          <a href="${BASE_URL}/#/about">About Us</a>
-          <a href="index.html">Blog</a>
-          <a href="${BASE_URL}/#/privacy-policy">Privacy</a>
+        <!-- Support -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Support</h4>
+          <a href="${BASE_URL}/#/contact" class="footer-link">Contact Us</a>
+          <a href="${BASE_URL}/#/about" class="footer-link">About Us</a>
+          <a href="${BASE_URL}/#/privacy-policy" class="footer-link">Privacy Policy</a>
+          <a href="${BASE_URL}/#/refund-policy" class="footer-link">Refund Policy</a>
+          <a href="${BASE_URL}/#/terms-of-use" class="footer-link">Terms of Use</a>
+          <a href="index.html" class="footer-link">Blog</a>
         </div>
-        <div class="blog-footer-col blog-footer-col-newsletter">
-          <h4>Stay in the Loop</h4>
-          <p class="blog-footer-newsletter-text">Get early access to new releases, exclusive discounts, and creative inspiration.</p>
-          <form class="blog-footer-newsletter-form" action="${BASE_URL}/" method="get">
+        <!-- Newsletter -->
+        <div class="footer-col footer-col-newsletter">
+          <h4 class="footer-col-title">Stay in the Loop</h4>
+          <p class="footer-newsletter-text">Get early access to new releases, subscriber-only discounts, and creative inspiration.</p>
+          <form class="footer-newsletter-form" action="${BASE_URL}/" method="get">
             <input type="email" placeholder="Enter your email" required>
             <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
           </form>
-          <p class="blog-footer-note">No spam. Unsubscribe anytime.</p>
+          <p class="footer-newsletter-note">No spam. Unsubscribe anytime.</p>
         </div>
       </div>
-      <div class="blog-footer-bottom">
-        <div class="blog-footer-bottom-links">
+      <div class="footer-bottom">
+        <div class="footer-bottom-links">
           <a href="${BASE_URL}/#/privacy-policy">Privacy</a>
-          <span style="color:rgba(255,255,255,.3)">·</span>
+          <span class="footer-bottom-sep">·</span>
           <a href="${BASE_URL}/#/refund-policy">Refunds</a>
-          <span style="color:rgba(255,255,255,.3)">·</span>
+          <span class="footer-bottom-sep">·</span>
           <a href="${BASE_URL}/#/terms-of-use">Terms</a>
-          <span style="color:rgba(255,255,255,.3)">·</span>
+          <span class="footer-bottom-sep">·</span>
           <a href="${BASE_URL}/#/contact">Support</a>
         </div>
-        <p class="blog-footer-bottom-copy">&copy; &copy; 2026 PixabAnimation &amp; SPurno. All rights reserved.</p>
+        <p class="footer-bottom-copy">&copy; 2026 PixabAnimation & SPurno. All rights reserved.</p>
         <div class="blog-footer-payment-icons">
           <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#8622E7"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">S</text></svg> Skrill</span>
           <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#2D9CDB"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">P</text></svg> Payoneer</span>
@@ -517,10 +544,16 @@ ${sidebarTagsHtml(recentPosts.map(p => typeof p.tags === 'string' ? JSON.parse(p
       </div>
     </div>
   </footer>
-
   <script>
-    window.addEventListener('scroll', () => {
-      document.getElementById('blogNavbar').classList.toggle('scrolled', window.scrollY > 50);
+    window.addEventListener('scroll', function() {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+    document.addEventListener('click', function(e) {
+      var toggle = e.target.closest('#navToggle');
+      if (toggle) { document.getElementById('navLinks').classList.toggle('open'); return; }
+      if (!e.target.closest('.nav-links') && !e.target.closest('#navToggle')) {
+        document.getElementById('navLinks').classList.remove('open');
+      }
     });
   </script>
 </body>

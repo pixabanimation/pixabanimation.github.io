@@ -1,284 +1,414 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Mastering After Effects Expressions — PixabAnimation</title><meta name="description" content="Master After Effects expressions with this comprehensive guide. Learn JavaScript-based animation automation, from basics to advanced techniques."><meta property="og:title" content="Mastering After Effects Expressions"><meta property="og:description" content="Comprehensive guide to mastering After Effects expressions."><meta property="og:image" content="https://pixabanimation.github.io/assets/images/blog/mastering-after-effects-expressions.png">
- <meta property="og:type" content="article">
- <meta property="og:url" content="https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html">
- <meta property="og:site_name" content="PixabAnimation">
- <meta property="og:locale" content="en_US">
- <meta property="article:published_time" content="2026-02-03">
- <meta property="article:modified_time" content="2026-02-03">
- <meta property="article:author" content="PixabAnimation Team">
- <meta property="article:section" content="Animation & Scripting">
- <meta property="article:tag" content="After Effects">
- <meta property="article:tag" content="Expressions">
- <meta property="article:tag" content="JavaScript">
- <meta property="article:tag" content="Animation Automation">
- <meta property="article:tag" content="Motion Design">
- <meta property="article:tag" content="Scripting">
- <meta name="twitter:site" content="@pixabanimation">
- <meta name="twitter:creator" content="@pixabanimation">
- <meta name="twitter:title" content="Mastering After Effects Expressions">
- <meta name="twitter:description" content="Master After Effects expressions with this comprehensive guide. Learn JavaScript-based animation automation, from basics to advanced techniques.">
- <meta name="twitter:image" content="https://pixabanimation.github.io/assets/images/blog/mastering-after-effects-expressions.png">
- <link rel="canonical" href="https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html"><link rel="stylesheet" href="blog.css">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"> <script type="application/ld+json">
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mastering After Effects Expressions — PixabAnimation — PixabAnimation</title>
+  <meta name="description" content="Master JavaScript-based animation automation in After Effects — from basics to advanced techniques.">
+  <meta property="og:title" content="Mastering After Effects Expressions — PixabAnimation">
+  <meta property="og:description" content="Master JavaScript-based animation automation in After Effects — from basics to advanced techniques.">
+  <meta property="og:image" content="https://pixabanimation.github.io/assets/images/blog/mastering-after-effects-expressions.png">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html">
+  <meta property="og:site_name" content="PixabAnimation">
+  <meta property="og:locale" content="en_US">
+  <meta property="article:published_time" content="2026-02-03">
+  <meta property="article:modified_time" content="2026-02-03">
+  <meta property="article:author" content="PixabAnimation Team">
+  <meta property="article:section" content="Animation &amp; Scripting">
+  <meta property="article:tag" content="After Effects">
+  <meta property="article:tag" content="Expressions">
+  <meta property="article:tag" content="JavaScript">
+  <meta property="article:tag" content="Animation Automation">
+  <meta property="article:tag" content="Motion Design">
+  <meta property="article:tag" content="Scripting">
+  <meta name="twitter:site" content="@pixabanimation">
+  <meta name="twitter:creator" content="@pixabanimation">
+  <meta name="twitter:title" content="Mastering After Effects Expressions — PixabAnimation">
+  <meta name="twitter:description" content="Master JavaScript-based animation automation in After Effects — from basics to advanced techniques.">
+  <meta name="twitter:image" content="https://pixabanimation.github.io/assets/images/blog/mastering-after-effects-expressions.png">
+  <link rel="canonical" href="https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="blog.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
 {
- "@context": "https://schema.org",
- "@type": "BlogPosting",
- "headline": "Mastering After Effects Expressions",
- "description": "Master After Effects expressions with this comprehensive guide. Learn JavaScript-based animation automation, from basics to advanced techniques.",
- "image": "https://pixabanimation.github.io/assets/images/blog/mastering-after-effects-expressions.png",
- "datePublished": "2026-02-03",
- "dateModified": "2026-02-03",
- "author": {
- "@type": "Organization",
- "name": "PixabAnimation Team",
- "url": "https://pixabanimation.github.io"
- },
- "publisher": {
- "@type": "Organization",
- "name": "PixabAnimation",
- "logo": {
- "@type": "ImageObject",
- "url": "https://pixabanimation.github.io/assets/pixabanimation-logo.png"
- }
- },
- "mainEntityOfPage": {
- "@type": "WebPage",
- "@id": "https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html"
- },
- "keywords": "After Effects, Expressions, JavaScript, Animation Automation, Motion Design, Scripting",
- "articleSection": "Animation & Scripting",
- "wordCount": 2200,
- "timeRequired": "15 min read"
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Mastering After Effects Expressions — PixabAnimation",
+  "description": "Master JavaScript-based animation automation in After Effects — from basics to advanced techniques.",
+  "image": "https://pixabanimation.github.io/assets/images/blog/mastering-after-effects-expressions.png",
+  "datePublished": "2026-02-03",
+  "dateModified": "2026-02-03",
+  "author": {
+    "@type": "Organization",
+    "name": "PixabAnimation Team",
+    "url": "https://pixabanimation.github.io"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PixabAnimation",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://pixabanimation.github.io/assets/pixabanimation-logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html"
+  },
+  "keywords": "After Effects, Expressions, JavaScript, Animation Automation, Motion Design, Scripting",
+  "articleSection": "Animation &amp; Scripting",
+  "timeRequired": "15 min read"
 }
- </script>
- <script type="application/ld+json">
+  </script>
+  <script type="application/ld+json">
 {
- "@context": "https://schema.org",
- "@type": "BreadcrumbList",
- "itemListElement": [
- {
- "@type": "ListItem",
- "position": 1,
- "name": "Home",
- "item": "https://pixabanimation.github.io"
- },
- {
- "@type": "ListItem",
- "position": 2,
- "name": "Blog",
- "item": "https://pixabanimation.github.io/blog/"
- },
- {
- "@type": "ListItem",
- "position": 3,
- "name": "Mastering After Effects Expressions",
- "item": "https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html"
- }
- ]
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://pixabanimation.github.io"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://pixabanimation.github.io/blog/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Mastering After Effects Expressions",
+      "item": "https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html"
+    }
+  ]
 }
- </script>
- <link rel="icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="32x32">
- <link rel="apple-touch-icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="180x180">
- <meta name="msapplication-TileColor" content="#0066cc">
- <meta name="theme-color" content="#ffffff">
+  </script>
+  <link rel="icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="32x32">
+  <link rel="apple-touch-icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="180x180">
+  <meta name="msapplication-TileColor" content="#0066cc">
+  <meta name="theme-color" content="#ffffff">
 </head>
 <body>
- <!-- Navigation -->
- <nav class="blog-navbar" id="blogNavbar">
- <div class="blog-nav-container">
- <a href="https://pixabanimation.github.io/" class="blog-nav-brand">
- <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation">
- PixabAnimation
- </a>
- <button class="blog-nav-toggle" onclick="document.getElementById('blogNavLinks').classList.toggle('open')" aria-label="Toggle menu">
- <span></span><span></span><span></span>
- </button>
- <ul class="blog-nav-links" id="blogNavLinks">
- <li><a href="https://pixabanimation.github.io/">Home</a></li>
- <li><a href="https://pixabanimation.github.io/#/shop">Shop</a></li>
- <li><a href="https://pixabanimation.github.io/#/shop?category=videos">Videos</a></li>
- <li><a href="https://pixabanimation.github.io/#/about">About</a></li>
- <li><a href="https://pixabanimation.github.io/#/contact">Contact</a></li>
- <li><a href="index.html">Blog</a></li>
- </ul>
- <div class="blog-nav-actions">
- <a href="https://pixabanimation.github.io/#/shop"><i class="fas fa-store"></i></a>
- <a href="https://pixabanimation.github.io/#/cart"><i class="fas fa-shopping-bag"></i></a>
- </div>
- </div>
- </nav><div class="blog-wrapper"><article>
-<div style="margin-bottom:24px"><div class="blog-category"><span style="font-size:1.2rem">✦</span> After Effects & Motion</div><h1>Mastering After Effects Expressions: From Beginner to Advanced</h1><div class="blog-meta"><span>📅 February 3, 2026</span><span>•</span><span>👁️ 28.7K+ Views</span><span>•</span><span>📝 PixabAnimation Team</span></div></div>
-<div class="blog-cover"><img src="../assets/images/blog/mastering-after-effects-expressions.png" alt="Mastering After Effects Expressions: From Beginner to Advanced" loading="lazy"></div>
-<div class="blog-content">
+  <!-- Navigation (matching homepage) -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li class="nav-brand-item">
+          <a href="https://pixabanimation.github.io/" class="nav-brand">
+            <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation" class="brand-logo" width="36" height="32">
+          </a>
+        </li>
+        <li><a href="https://pixabanimation.github.io/" class="nav-link active" data-nav><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop" class="nav-link" data-nav><i class="fas fa-store"></i> Shop</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop?category=videos" class="nav-link" data-nav><i class="fas fa-video"></i> Videos</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="nav-link" data-nav><i class="fas fa-plug"></i> Plugins</a></li>
+        <li><a href="index.html" class="nav-link" data-nav><i class="fas fa-newspaper"></i> Blog</a></li>
+        <li><a href="https://pixabanimation.github.io/#/about" class="nav-link" data-nav><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="https://pixabanimation.github.io/#/contact" class="nav-link" data-nav><i class="fas fa-envelope"></i> Contact</a></li>
+        <li class="nav-divider-mobile"><hr></li>
+        <li><a href="https://pixabanimation.github.io/#/wishlist" class="nav-link nav-action-mobile" data-nav><i class="fas fa-heart"></i> Wishlist <span class="badge wishlist-badge-mobile">0</span></a></li>
+        <li><a href="https://pixabanimation.github.io/#/cart" class="nav-link nav-action-mobile" data-nav><i class="fas fa-shopping-bag"></i> Cart <span class="badge cart-badge-mobile">0</span></a></li>
+        <li><a href="https://pixabanimation.github.io/#/login" class="nav-link nav-action-mobile" data-nav><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
+        <li><a href="https://pixabanimation.github.io/#/profile" class="nav-link nav-action-mobile" data-nav><i class="fas fa-user"></i> Profile</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="https://pixabanimation.github.io/#/wishlist" class="nav-icon-btn" aria-label="Wishlist">
+          <i class="fas fa-heart"></i>
+          <span class="badge wishlist-badge">0</span>
+        </a>
+        <a href="https://pixabanimation.github.io/#/cart" class="nav-icon-btn" aria-label="Cart">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="badge cart-badge">0</span>
+        </a>
+        <a href="https://pixabanimation.github.io/#/login" class="btn btn-sm btn-primary">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+<div class="blog-wrapper">
+  <article>
+    <div style="margin-bottom:24px">
+      <div class="blog-category"><span style="font-size:1.2rem">✦</span> Animation &amp; Scripting</div>
+      <h1>Mastering After Effects Expressions</h1>
+      <div class="blog-meta">
+        <span>📅 February 3, 2026</span>
+        <span>•</span>
+        <span>📝 PixabAnimation Team</span>
+      </div>
+    </div>
+
+    <div class="blog-cover">
+      <img src="https://pixabanimation.github.io/assets/images/blog/mastering-after-effects-expressions.png" alt="Mastering After Effects Expressions" loading="lazy">
+    </div>
+
+    <div class="blog-content">
 <p>After Effects expressions are one of the most powerful tools in a motion designer's arsenal. Based on JavaScript (specifically ExtendScript), expressions allow you to automate complex animations, create dynamic relationships between layers, and achieve effects that would be impossible or impractical to keyframe manually. This comprehensive guide takes you from expression basics to advanced techniques that will transform your motion design workflow.</p>
+
+
 <p>Whether you are an experienced motion designer looking to level up your skills or a beginner wondering where to start with expressions, this guide covers the essential concepts, practical examples, and advanced techniques that professional motion designers use daily.</p>
 
-</h2>
+      
+      
 
- <!-- Ad Banner 1 -->
- <div class="blog-ad-container">
- <div class="blog-ad-inner">
- <span class="blog-ad-label">Ad</span>
- <div class="blog-ad-content">
- <div class="blog-ad-icon"><i class="fas fa-cube"></i></div>
- <div class="blog-ad-text">
- <h3>Premium Motion Graphics Assets</h3>
- <p>Browse 500+ professional 4K motion backgrounds, animated templates, and stock footage — crafted for creators who demand the best.</p>
- <a href="https://pixabanimation.github.io/#/shop" class="blog-ad-cta">Browse Collection <i class="fas fa-arrow-right"></i></a>
- </div>
- </div>
- </div>
- </div>
+<p>      ## What Are After Effects Expressions?</p>
 
- <h2>What Are After Effects Expressions?</h2>
 <p>Expressions are small snippets of JavaScript code that can control any animatable property in After Effects. Instead of setting fixed keyframes, you write code that calculates the property value based on time, other properties, layers, or any other data available in the composition. When you add an expression to a property, it overrides any keyframes on that property — the expression output becomes the property value.</p>
+
+
 <p>The key advantage of expressions is that they create relationships that persist even when compositions change. A position expression that links to another layer's position will automatically update if the source layer moves, without requiring manual keyframe updates. This makes expressions invaluable for character rigging, UI animation, data visualization, and complex multi-layer animations.</p>
 
 <h2>Essential Expression Language Fundamentals</h2>
-<p>Before diving into complex expressions, mastering the fundamentals is essential. The expression language is based on JavaScript but with After Effects-specific objects and methods. Key concepts include: <code>value</code> — the property's current value (static or keyframed), <code>time</code> — the current time in seconds, <code>index</code> — the layer's index number, and <code>thisComp</code> — the current composition.</p>
-<p>Accessing properties of other layers is done through methods like <code>thisComp.layer("Layer Name")</code> or <code>thisComp.layer(index)</code>. From there, you can access any property: <code>.transform.position</code>, <code>.transform.opacity</code>, <code>.effect("Effect Name")("Slider")</code>. Understanding the property hierarchy is essential — the property path follows the same structure you see in the timeline panel.</p>
 
-<!-- Ad Banner 2 -->
- <div class="blog-ad-container">
- <div class="blog-ad-inner">
- <span class="blog-ad-label">Ad</span>
- <div class="blog-ad-content">
- <div class="blog-ad-icon"><i class="fas fa-video"></i></div>
- <div class="blog-ad-text">
- <h3>4K Video Clips & Templates</h3>
- <p>Royalty-free motion graphics, lower thirds, and title animations for your next project.</p>
- <a href="https://pixabanimation.github.io/#/shop?category=videos" class="blog-ad-cta">Explore Library <i class="fas fa-arrow-right"></i></a>
- </div>
- </div>
- </div>
- </div>
+<p>Before diving into complex expressions, mastering the fundamentals is essential. The expression language is based on JavaScript but with After Effects-specific objects and methods. Key concepts include: `value` — the property's current value (static or keyframed), `time` — the current time in seconds, `index` — the layer's index number, and `thisComp` — the current composition.</p>
 
- <h2>Essential Expression Techniques</h2>
+
+<p>Accessing properties of other layers is done through methods like `thisComp.layer("Layer Name")` or `thisComp.layer(index)`. From there, you can access any property: `.transform.position`, `.transform.opacity`, `.effect("Effect Name")("Slider")`. Understanding the property hierarchy is essential — the property path follows the same structure you see in the timeline panel.</p>
+
+      
+
+<p>      ## Essential Expression Techniques</p>
+
 <h3>The Wiggle Expression</h3>
-<p>Perhaps the most famous expression, <code>wiggle(freq, amp)</code> adds random motion to any property. The first argument controls frequency (how many wiggles per second), while the second controls amplitude (how much variation). A position wiggle like <code>wiggle(5, 50)</code> creates organic camera shake, while an opacity wiggle creates flicker. Advanced usage combines multiple wiggle calls or uses <code>wiggle</code> with <code>seedRandom</code> for reproducible randomization.</p>
+
+<p>Perhaps the most famous expression, `wiggle(freq, amp)` adds random motion to any property. The first argument controls frequency (how many wiggles per second), while the second controls amplitude (how much variation). A position wiggle like `wiggle(5, 50)` creates organic camera shake, while an opacity wiggle creates flicker. Advanced usage combines multiple wiggle calls or uses `wiggle` with `seedRandom` for reproducible randomization.</p>
+
+
 <h3>Loop Expressions</h3>
-<p>Loop expressions are essential for creating seamless repeating animations. <code>loopOut("cycle")</code> repeats the keyframe sequence from the last keyframe to the first. <code>loopOut("pingpong")</code> alternates forward and backward through the keyframes. <code>loopOut("offset")</code> continues the motion trend beyond the last keyframe. <code>loopIn()</code> variants loop the beginning of the animation. These expressions are invaluable for background animations, loading spinners, and continuous motion.</p>
+
+<p>Loop expressions are essential for creating seamless repeating animations. `loopOut("cycle")` repeats the keyframe sequence from the last keyframe to the first. `loopOut("pingpong")` alternates forward and backward through the keyframes. `loopOut("offset")` continues the motion trend beyond the last keyframe. `loopIn()` variants loop the beginning of the animation. These expressions are invaluable for background animations, loading spinners, and continuous motion.</p>
+
+
 <h3>The Linear and Ease Functions</h3>
-<p>The <code>linear()</code> and <code>ease()</code> functions map one value range to another, creating smooth interpolations. <code>linear(t, tMin, tMax, value1, value2)</code> takes an input value t and outputs a value between value1 and value2 as t goes from tMin to tMax. The <code>ease()</code> and <code>easeIn()</code>/<code>easeOut()</code> variants add bezier easing. These functions are the foundation of data-driven animations and value mapping in expressions.</p>
+
+<p>The `linear()` and `ease()` functions map one value range to another, creating smooth interpolations. `linear(t, tMin, tMax, value1, value2)` takes an input value t and outputs a value between value1 and value2 as t goes from tMin to tMax. The `ease()` and `easeIn()`/`easeOut()` variants add bezier easing. These functions are the foundation of data-driven animations and value mapping in expressions.</p>
 
 <h2>Intermediate Expression Techniques</h2>
+
 <h3>Time-Based Animation</h3>
-<p>Using the <code>time</code> variable directly creates animations that progress continuously without keyframes. <code>time * 360</code> on rotation creates a continuous spin at 360 degrees per second. <code>Math.sin(time * 2) * 50</code> creates smooth oscillating motion using sine waves. Combining multiple trigonometric functions creates complex, organic motion patterns that would be tedious to keyframe.</p>
+
+<p>Using the `time` variable directly creates animations that progress continuously without keyframes. `time <em> 360` on rotation creates a continuous spin at 360 degrees per second. `Math.sin(time </em> 2) * 50` creates smooth oscillating motion using sine waves. Combining multiple trigonometric functions creates complex, organic motion patterns that would be tedious to keyframe.</p>
+
+
 <h3>Layer Index and Color Cycling</h3>
-<p>Using <code>index</code> creates automatic variation across duplicated layers. For example, position expression <code>x = index * 50; [x, value[1]]</code> evenly spaces duplicated layers horizontally. For color cycling in shape layers, <code>h = (index * 30) % 360; hsla(h, 70, 60, 1)</code> creates rainbow color variations that automatically adjust when layers are duplicated.</p>
+
+<p>Using `index` creates automatic variation across duplicated layers. For example, position expression `x = index <em> 50; [x, value[1]]` evenly spaces duplicated layers horizontally. For color cycling in shape layers, `h = (index </em> 30) % 360; hsla(h, 70, 60, 1)` creates rainbow color variations that automatically adjust when layers are duplicated.</p>
 
 <h2>Advanced Expression Techniques</h2>
+
 <h3>Data-Driven Animation with JSON</h3>
-<p>After Effects can import JSON data files and use expressions to drive animations from the data. Using <code>footage("data.json").dataValue(["key1", "key2"])</code>, you can access specific data points and map them to animation properties. This is powerful for creating animated charts, infographics, and data visualizations that automatically update when the source data changes.</p>
+
+<p>After Effects can import JSON data files and use expressions to drive animations from the data. Using `footage("data.json").dataValue(["key1", "key2"])`, you can access specific data points and map them to animation properties. This is powerful for creating animated charts, infographics, and data visualizations that automatically update when the source data changes.</p>
+
+
 <h3>Physics Simulations</h3>
-<p>With expressions, you can simulate basic physics including inertia, spring motion, and bouncing. A spring expression like <code>freq = 3; decay = 5; n = 0; if (numKeys > 0) { n = nearestKey(time).index; if (key(n).time > time) n--; } if (n > 0) { t = time - key(n).time; v = velocityAtTime(key(n).time - 0.001) * 0.1; value + v * Math.sin(t * freq * 2 * Math.PI) / Math.exp(decay * t); } else value</code> creates a natural overshoot and settle effect.</p>
+
+<p>With expressions, you can simulate basic physics including inertia, spring motion, and bouncing. A spring expression like `freq = 3; decay = 5; n = 0; if (numKeys > 0) { n = nearestKey(time).index; if (key(n).time > time) n--; } if (n > 0) { t = time - key(n).time; v = velocityAtTime(key(n).time - 0.001) <em> 0.1; value + v </em> Math.sin(t <em> freq </em> 2 <em> Math.PI) / Math.exp(decay </em> t); } else value` creates a natural overshoot and settle effect.</p>
 
 <h2>Expressions for Character Animation</h2>
-<p>Character animation is one of the most powerful applications of expressions in After Effects. Using expressions, you can create automatic head turns that follow the mouse position, eye darts with natural timing, breathing cycles that affect chest position and arm movement, and walk cycles with automatic limb positioning. The <code>toWorld()</code> and <code>fromWorld()</code> methods enable sophisticated spatial relationships between character parts.</p>
+
+<p>Character animation is one of the most powerful applications of expressions in After Effects. Using expressions, you can create automatic head turns that follow the mouse position, eye darts with natural timing, breathing cycles that affect chest position and arm movement, and walk cycles with automatic limb positioning. The `toWorld()` and `fromWorld()` methods enable sophisticated spatial relationships between character parts.</p>
+
+
 <p>For advanced character rigging, combining expressions with DuIK or RubberHose creates hybrid workflows that leverage the best of both tools. Expressions handle the mathematical relationships while dedicated rigging tools provide the user interface.</p>
 
 <h2>Performance Optimization for Expressions</h2>
-<p>Well-written expressions are performant, but certain patterns can slow down After Effects significantly. Best practices include avoiding per-frame calculations when possible, caching results with variables instead of recalculating, using <code>value</code> instead of <code>thisProperty</code> for simple pass-through, limiting use of <code>sampleImage</code> and <code>sampleGraph</code> which are computationally expensive, and using <code>posterizeTime()</code> to reduce calculation frequency for non-critical animations.</p>
+
+<p>Well-written expressions are performant, but certain patterns can slow down After Effects significantly. Best practices include avoiding per-frame calculations when possible, caching results with variables instead of recalculating, using `value` instead of `thisProperty` for simple pass-through, limiting use of `sampleImage` and `sampleGraph` which are computationally expensive, and using `posterizeTime()` to reduce calculation frequency for non-critical animations.</p>
 
 <h2>Debugging and Testing Expressions</h2>
-<p>Debugging expressions is an essential skill. After Effects provides several tools: the Graph Editor shows expression output over time, enabling visual debugging; the Pick Whip helps build property references without typing; <code>posterizeTime()</code> can help identify frame-specific issues; and breaking complex expressions into smaller parts and testing each component separately is the most effective debugging strategy.</p>
 
-<blockquote>"Expressions turn After Effects from an animation tool into a programming environment. The moment you master expressions, you stop animating by hand and start building animation systems that work intelligently and automatically." — Motion Designer, 2026</blockquote>
+<p>Debugging expressions is an essential skill. After Effects provides several tools: the Graph Editor shows expression output over time, enabling visual debugging; the Pick Whip helps build property references without typing; `posterizeTime()` can help identify frame-specific issues; and breaking complex expressions into smaller parts and testing each component separately is the most effective debugging strategy.</p>
+
+<p>> "Expressions turn After Effects from an animation tool into a programming environment. The moment you master expressions, you stop animating by hand and start building animation systems that work intelligently and automatically." — Motion Designer, 2026</p>
 
 <p>Mastering After Effects expressions is a journey that rewards continuous learning and experimentation. By building a strong foundation in the fundamentals, practicing with real projects, and progressively tackling more complex techniques, any motion designer can leverage expressions to work faster, create more sophisticated animations, and solve problems that would otherwise be impractical to keyframe.</p>
-</div>
-<div>
- <!-- Ad Banner 3 -->
- <div class="blog-ad-container">
- <div class="blog-ad-inner">
- <span class="blog-ad-label">Ad</span>
- <div class="blog-ad-content">
- <div class="blog-ad-icon"><i class="fas fa-pen-fancy"></i></div>
- <div class="blog-ad-text">
- <h3>After Effects Templates</h3>
- <p>Professional logo reveals, typography animations, and infographic templates designed to make an impact.</p>
- <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="blog-ad-cta">View Collection <i class="fas fa-arrow-right"></i></a>
- </div>
- </div>
- </div>
- </div>
+    </div>
 
- <div class="tags-section"><div class="label">Tags</div><a href="#" class="tag">After Effects</a><a href="#" class="tag">Expressions</a><a href="#" class="tag">JavaScript</a><a href="#" class="tag">Motion Design</a><a href="#" class="tag">Animation</a><a href="#" class="tag">Tutorial</a></div>
-<div class="author-bio"><div class="author-avatar">P</div><div style="flex:1"><div style="font-weight:600;font-size:1rem;margin-bottom:4px">PixabAnimation Team</div><div style="font-size:.85rem;color:rgba(0,0,0,.5)">PixabAnimation creates premium motion graphics and animation assets for creators worldwide.</div></div></div>
-<div class="useful-links"><div class="label">Useful Links</div><div class="grid"><a href="https://pixabanimation.github.io/#/shop">▸ Shop Premium Assets</a><a href="https://pixabanimation.github.io/#/shop?category=videos">▸ Motion Graphics Stock</a><a href="https://pixabanimation.github.io/#/about">▸ About PixabAnimation</a><a href="https://pixabanimation.github.io/#/">▸ Return to Homepage</a></div></div>
-</article>
-<aside class="sidebar">
-<div class="sidebar-section"><div class="sidebar-title">Recent Posts</div><a href="ai-motion-graphics-revolution.html" class="sidebar-post"><span class="icon">🎨</span><div><div class="title">AI Revolution in Motion Graphics</div><div class="date">Jan 15, 2026</div></div></a><a href="typography-trends-2026.html" class="sidebar-post"><span class="icon">🔤</span><div><div class="title">Typography Trends 2026</div><div class="date">Jan 25, 2026</div></div></a><a href="freelancing-tips-motion-designers.html" class="sidebar-post"><span class="icon">💼</span><div><div class="title">Freelancing Tips for Designers</div><div class="date">Jan 30, 2026</div></div></a></div>
-<div class="sidebar-section"><div class="sidebar-title">Popular Tags</div><div style="display:flex;flex-wrap:wrap;gap:6px"><a href="#" style="padding:5px 12px;background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.06);border-radius:9999px;font-size:.75rem;color:rgba(0,0,0,.55);text-decoration:none">After Effects</a><a href="#" style="padding:5px 12px;background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.06);border-radius:9999px;font-size:.75rem;color:rgba(0,0,0,.55);text-decoration:none">Expressions</a><a href="#" style="padding:5px 12px;background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.06);border-radius:9999px;font-size:.75rem;color:rgba(0,0,0,.55);text-decoration:none">Animation</a><a href="#" style="padding:5px 12px;background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.06);border-radius:9999px;font-size:.75rem;color:rgba(0,0,0,.55);text-decoration:none">Tutorial</a></div></div>
-</aside>
-<div class="back-section"><a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a></div>
+    <div class="tags-section">
+      <div class="label">Tags</div>
+<a href="index.html" class="tag">After Effects</a>
+      <a href="index.html" class="tag">Expressions</a>
+      <a href="index.html" class="tag">JavaScript</a>
+      <a href="index.html" class="tag">Animation Automation</a>
+      <a href="index.html" class="tag">Motion Design</a>
+      <a href="index.html" class="tag">Scripting</a>
+    </div>
+
+    <div class="share-section">
+      <span class="label">Share</span>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html" target="_blank" class="share-btn" style="background:rgba(0,0,0,.04)" onmouseover="this.style.background='#1877f2';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">f</a>
+      <a href="https://twitter.com/intent/tweet?text=Mastering%20After%20Effects%20Expressions&url=https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html" target="_blank" class="share-btn" onmouseover="this.style.background='#000';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">𝕏</a>
+      <a href="https://www.pinterest.com/pin/create/button/?url=https://pixabanimation.github.io/blog/mastering-after-effects-expressions.html&description=Master%20JavaScript-based%20animation%20automation%20in%20After%20Effects%20%E2%80%94%20from%20basics%20to%20advanced%20techniques." target="_blank" class="share-btn" onmouseover="this.style.background='#e60023';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">P</a>
+      <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);alert('Link copied!')" onmouseover="this.style.background='rgba(0,102,204,0.1)';this.style.color='#0066cc'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'"><i class="fas fa-link"></i></button>
+    </div>
+
+    <div class="author-bio">
+      <div class="author-avatar">P</div>
+      <div class="author-info">
+        <div class="name">PixabAnimation Team</div>
+        <div class="desc">PixabAnimation creates premium motion graphics, animation assets, and stock footage used by creators worldwide. Our team of motion designers and creative technologists explores the intersection of animation and emerging technology.</div>
+      </div>
+      <div class="author-social">
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Twitter">𝕏</a>
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+
+    <div class="useful-links">
+      <div class="label">Useful Links</div>
+      <div class="grid">
+        <a href="https://pixabanimation.github.io/#/shop">▸ Shop Premium Assets</a>
+        <a href="https://pixabanimation.github.io/#/shop?category=videos">▸ Motion Graphics Stock</a>
+        <a href="https://pixabanimation.github.io/#/about">▸ About PixabAnimation</a>
+        <a href="https://pixabanimation.github.io/">▸ Return to Homepage</a>
+      </div>
+    </div>
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Recent Posts</div>
+      <a href="ai-motion-graphics-revolution.html" class="sidebar-post">
+        <span class="icon" style="background:#0066cc20;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">📄</span>
+        <div><div class="title">The AI Revolution in Motion Graphics</div><div class="date">Jan 15, 2026</div></div>
+      </a>
+      <a href="claude-ai-coding-productivity.html" class="sidebar-post">
+        <span class="icon" style="background:#0066cc20;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">📄</span>
+        <div><div class="title">Claude AI for Coding: Productivity Tips</div><div class="date">Jan 18, 2026</div></div>
+      </a>
+      <a href="chatgpt-codex-vs-claude-coding.html" class="sidebar-post">
+        <span class="icon" style="background:#0066cc20;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">📄</span>
+        <div><div class="title">ChatGPT Codex vs Claude for Coding</div><div class="date">Jan 20, 2026</div></div>
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Popular Tags</div>
+      <div class="sidebar-tags">
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Motion Design')">Motion Design</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Freelancing')">Freelancing</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('JavaScript')">JavaScript</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('AI')">AI</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('After Effects')">After Effects</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Web Animation')">Web Animation</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Machine Learning')">Machine Learning</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Snapdragon 8 Elite')">Snapdragon 8 Elite</a>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Top Authors</div>
+      <div class="sidebar-author" style="margin-bottom:12px">
+        <div class="initial">P</div>
+        <div><div class="name">PixabAnimation</div><div class="role">Content Creator</div></div>
+      </div>
+      <div class="sidebar-author">
+        <div class="initial" style="background:linear-gradient(135deg,#5856d6,#af52de)">S</div>
+        <div><div class="name">SPurno</div><div class="role">Motion Design Expert</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="back-section">
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+  </div>
 </div>
- <!-- Footer -->
- <footer class="blog-footer">
- <div class="blog-footer-content">
- <div class="blog-footer-grid">
- <div class="blog-footer-brand">
- <div class="name"><img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="" style="width:24px;height:20px"> PixabAnimation</div>
- <div class="desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</div>
- <div class="blog-footer-social">
- <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
- <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
- <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
- <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
- <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
- </div>
- </div>
- <div class="blog-footer-col">
- <h4>Shop</h4>
- <a href="https://pixabanimation.github.io/#/shop">All Assets</a>
- <a href="https://pixabanimation.github.io/#/shop?category=videos">Animation & Video</a>
- <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins">After Effects Plugins</a>
- </div>
- <div class="blog-footer-col">
- <h4>Categories</h4>
- <a href="https://pixabanimation.github.io/#/shop?category=videos">Motion Graphics</a>
- <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup">Green Screen</a>
- <a href="https://pixabanimation.github.io/#/shop">View All</a>
- </div>
- <div class="blog-footer-col">
- <h4>Support</h4>
- <a href="https://pixabanimation.github.io/#/contact">Contact Us</a>
- <a href="https://pixabanimation.github.io/#/about">About Us</a>
- <a href="index.html">Blog</a>
- <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
- </div>
- <div class="blog-footer-col blog-footer-col-newsletter">
- <h4>Stay in the Loop</h4>
- <p class="blog-footer-newsletter-text">Get early access to new releases, exclusive discounts, and creative inspiration.</p>
- <form class="blog-footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
- <input type="email" placeholder="Enter your email" required>
- <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
- </form>
- <p class="blog-footer-note">No spam. Unsubscribe anytime.</p>
- </div>
- </div>
- <div class="blog-footer-bottom">
- <div class="blog-footer-bottom-links">
- <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
- <span style="color:rgba(255,255,255,.3)">·</span>
- <a href="https://pixabanimation.github.io/#/refund-policy">Refunds</a>
- <span style="color:rgba(255,255,255,.3)">·</span>
- <a href="https://pixabanimation.github.io/#/terms-of-use">Terms</a>
- <span style="color:rgba(255,255,255,.3)">·</span>
- <a href="https://pixabanimation.github.io/#/contact">Support</a>
- </div>
- <p class="blog-footer-bottom-copy">&copy; © 2026 PixabAnimation & SPurno. All rights reserved.</p>
- <div class="blog-footer-payment-icons">
- <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#8622E7"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">S</text></svg> Skrill</span>
- <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#2D9CDB"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">P</text></svg> Payoneer</span>
- </div>
- </div>
- </div>
- </footer>
- <script>
- window.addEventListener('scroll', () => {
- document.getElementById('blogNavbar').classList.toggle('scrolled', window.scrollY > 50);
- });
- </script>
-</body></html>
+
+  <!-- Footer — matching homepage -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-grid">
+        <!-- Brand -->
+        <div class="footer-brand">
+          <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation Logo" class="footer-logo" width="28" height="24" loading="lazy">
+          <span class="footer-brand-name">PixabAnimation</span>
+          <p class="footer-brand-desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <!-- Shop -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Shop</h4>
+          <a href="https://pixabanimation.github.io/#/shop" class="footer-link">All Assets</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=videos" class="footer-link">Animation &amp; Video</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="footer-link">After Effects Plugins</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=background-animation" class="footer-link">Background Animation</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=infographic-animation" class="footer-link">Infographic Animation</a>
+        </div>
+        <!-- Categories -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Categories</h4>
+          <a href="https://pixabanimation.github.io/#/shop?category=videos" class="footer-link">Motion Graphics</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="footer-link">Plugins &amp; Extensions</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup" class="footer-link">Green Screen Mockups</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=ads-design" class="footer-link">Advertising Design</a>
+          <a href="https://pixabanimation.github.io/#/shop" class="footer-link footer-link-all">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <!-- Support -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Support</h4>
+          <a href="https://pixabanimation.github.io/#/contact" class="footer-link">Contact Us</a>
+          <a href="https://pixabanimation.github.io/#/about" class="footer-link">About Us</a>
+          <a href="https://pixabanimation.github.io/#/privacy-policy" class="footer-link">Privacy Policy</a>
+          <a href="https://pixabanimation.github.io/#/refund-policy" class="footer-link">Refund Policy</a>
+          <a href="https://pixabanimation.github.io/#/terms-of-use" class="footer-link">Terms of Use</a>
+          <a href="index.html" class="footer-link">Blog</a>
+        </div>
+        <!-- Newsletter -->
+        <div class="footer-col footer-col-newsletter">
+          <h4 class="footer-col-title">Stay in the Loop</h4>
+          <p class="footer-newsletter-text">Get early access to new releases, subscriber-only discounts, and creative inspiration.</p>
+          <form class="footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
+          </form>
+          <p class="footer-newsletter-note">No spam. Unsubscribe anytime.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-bottom-links">
+          <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
+          <span class="footer-bottom-sep">·</span>
+          <a href="https://pixabanimation.github.io/#/refund-policy">Refunds</a>
+          <span class="footer-bottom-sep">·</span>
+          <a href="https://pixabanimation.github.io/#/terms-of-use">Terms</a>
+          <span class="footer-bottom-sep">·</span>
+          <a href="https://pixabanimation.github.io/#/contact">Support</a>
+        </div>
+        <p class="footer-bottom-copy">&copy; 2026 PixabAnimation & SPurno. All rights reserved.</p>
+        <div class="blog-footer-payment-icons">
+          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#8622E7"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">S</text></svg> Skrill</span>
+          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#2D9CDB"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">P</text></svg> Payoneer</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    window.addEventListener('scroll', function() {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+    document.addEventListener('click', function(e) {
+      var toggle = e.target.closest('#navToggle');
+      if (toggle) { document.getElementById('navLinks').classList.toggle('open'); return; }
+      if (!e.target.closest('.nav-links') && !e.target.closest('#navToggle')) {
+        document.getElementById('navLinks').classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>

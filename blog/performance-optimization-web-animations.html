@@ -1,242 +1,358 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Performance Optimization for Web Animations — PixabAnimation</title><meta name="description" content="Optimize web animation performance with expert techniques. Learn about GPU-accelerated properties, layout thrashing prevention, and rendering optimization."><meta property="og:title" content="Performance Optimization for Web Animations"><meta property="og:description" content="Expert techniques for optimizing web animation performance."><meta property="og:image" content="https://pixabanimation.github.io/assets/images/blog/performance-optimization-web-animations.png">
- <meta property="og:type" content="article">
- <meta property="og:url" content="https://pixabanimation.github.io/blog/performance-optimization-web-animations.html">
- <meta property="og:site_name" content="PixabAnimation">
- <meta property="og:locale" content="en_US">
- <meta property="article:published_time" content="2026-02-22">
- <meta property="article:modified_time" content="2026-02-22">
- <meta property="article:author" content="PixabAnimation Team">
- <meta property="article:section" content="Web Performance">
- <meta property="article:tag" content="Performance">
- <meta property="article:tag" content="Web Animation">
- <meta property="article:tag" content="Optimization">
- <meta property="article:tag" content="GPU">
- <meta property="article:tag" content="Rendering">
- <meta property="article:tag" content="Frontend">
- <meta name="twitter:site" content="@pixabanimation">
- <meta name="twitter:creator" content="@pixabanimation">
- <meta name="twitter:title" content="Performance Optimization for Web Animations">
- <meta name="twitter:description" content="Optimize web animation performance with expert techniques. Learn about GPU-accelerated properties, layout thrashing prevention, and rendering optimization.">
- <meta name="twitter:image" content="https://pixabanimation.github.io/assets/images/blog/performance-optimization-web-animations.png">
- <link rel="canonical" href="https://pixabanimation.github.io/blog/performance-optimization-web-animations.html"><link rel="stylesheet" href="blog.css">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"> <script type="application/ld+json">
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animation Performance Optimization — PixabAnimation — PixabAnimation</title>
+  <meta name="description" content="Optimize web animation performance — GPU acceleration, layout thrashing prevention, and rendering tips.">
+  <meta property="og:title" content="Animation Performance Optimization — PixabAnimation">
+  <meta property="og:description" content="Optimize web animation performance — GPU acceleration, layout thrashing prevention, and rendering tips.">
+  <meta property="og:image" content="https://pixabanimation.github.io/assets/images/blog/performance-optimization-web-animations.png">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://pixabanimation.github.io/blog/performance-optimization-web-animations.html">
+  <meta property="og:site_name" content="PixabAnimation">
+  <meta property="og:locale" content="en_US">
+  <meta property="article:published_time" content="2026-02-22">
+  <meta property="article:modified_time" content="2026-02-22">
+  <meta property="article:author" content="PixabAnimation Team">
+  <meta property="article:section" content="Web Performance">
+  <meta property="article:tag" content="Performance">
+  <meta property="article:tag" content="Web Animation">
+  <meta property="article:tag" content="Optimization">
+  <meta property="article:tag" content="GPU">
+  <meta property="article:tag" content="Rendering">
+  <meta property="article:tag" content="Frontend">
+  <meta name="twitter:site" content="@pixabanimation">
+  <meta name="twitter:creator" content="@pixabanimation">
+  <meta name="twitter:title" content="Animation Performance Optimization — PixabAnimation">
+  <meta name="twitter:description" content="Optimize web animation performance — GPU acceleration, layout thrashing prevention, and rendering tips.">
+  <meta name="twitter:image" content="https://pixabanimation.github.io/assets/images/blog/performance-optimization-web-animations.png">
+  <link rel="canonical" href="https://pixabanimation.github.io/blog/performance-optimization-web-animations.html">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="blog.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
 {
- "@context": "https://schema.org",
- "@type": "BlogPosting",
- "headline": "Performance Optimization for Web Animations",
- "description": "Optimize web animation performance with expert techniques. Learn about GPU-accelerated properties, layout thrashing prevention, and rendering optimization.",
- "image": "https://pixabanimation.github.io/assets/images/blog/performance-optimization-web-animations.png",
- "datePublished": "2026-02-22",
- "dateModified": "2026-02-22",
- "author": {
- "@type": "Organization",
- "name": "PixabAnimation Team",
- "url": "https://pixabanimation.github.io"
- },
- "publisher": {
- "@type": "Organization",
- "name": "PixabAnimation",
- "logo": {
- "@type": "ImageObject",
- "url": "https://pixabanimation.github.io/assets/pixabanimation-logo.png"
- }
- },
- "mainEntityOfPage": {
- "@type": "WebPage",
- "@id": "https://pixabanimation.github.io/blog/performance-optimization-web-animations.html"
- },
- "keywords": "Performance, Web Animation, Optimization, GPU, Rendering, Frontend",
- "articleSection": "Web Performance",
- "wordCount": 2200,
- "timeRequired": "8 min read"
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Animation Performance Optimization — PixabAnimation",
+  "description": "Optimize web animation performance — GPU acceleration, layout thrashing prevention, and rendering tips.",
+  "image": "https://pixabanimation.github.io/assets/images/blog/performance-optimization-web-animations.png",
+  "datePublished": "2026-02-22",
+  "dateModified": "2026-02-22",
+  "author": {
+    "@type": "Organization",
+    "name": "PixabAnimation Team",
+    "url": "https://pixabanimation.github.io"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "PixabAnimation",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://pixabanimation.github.io/assets/pixabanimation-logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://pixabanimation.github.io/blog/performance-optimization-web-animations.html"
+  },
+  "keywords": "Performance, Web Animation, Optimization, GPU, Rendering, Frontend",
+  "articleSection": "Web Performance",
+  "timeRequired": "8 min read"
 }
- </script>
- <script type="application/ld+json">
+  </script>
+  <script type="application/ld+json">
 {
- "@context": "https://schema.org",
- "@type": "BreadcrumbList",
- "itemListElement": [
- {
- "@type": "ListItem",
- "position": 1,
- "name": "Home",
- "item": "https://pixabanimation.github.io"
- },
- {
- "@type": "ListItem",
- "position": 2,
- "name": "Blog",
- "item": "https://pixabanimation.github.io/blog/"
- },
- {
- "@type": "ListItem",
- "position": 3,
- "name": "Performance Optimization for Web Animations",
- "item": "https://pixabanimation.github.io/blog/performance-optimization-web-animations.html"
- }
- ]
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://pixabanimation.github.io"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://pixabanimation.github.io/blog/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Animation Performance Optimization",
+      "item": "https://pixabanimation.github.io/blog/performance-optimization-web-animations.html"
+    }
+  ]
 }
- </script>
- <link rel="icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="32x32">
- <link rel="apple-touch-icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="180x180">
- <meta name="msapplication-TileColor" content="#0066cc">
- <meta name="theme-color" content="#ffffff">
+  </script>
+  <link rel="icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="32x32">
+  <link rel="apple-touch-icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="180x180">
+  <meta name="msapplication-TileColor" content="#0066cc">
+  <meta name="theme-color" content="#ffffff">
 </head>
 <body>
- <!-- Navigation -->
- <nav class="blog-navbar" id="blogNavbar">
- <div class="blog-nav-container">
- <a href="https://pixabanimation.github.io/" class="blog-nav-brand">
- <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation">
- PixabAnimation
- </a>
- <button class="blog-nav-toggle" onclick="document.getElementById('blogNavLinks').classList.toggle('open')" aria-label="Toggle menu">
- <span></span><span></span><span></span>
- </button>
- <ul class="blog-nav-links" id="blogNavLinks">
- <li><a href="https://pixabanimation.github.io/">Home</a></li>
- <li><a href="https://pixabanimation.github.io/#/shop">Shop</a></li>
- <li><a href="https://pixabanimation.github.io/#/shop?category=videos">Videos</a></li>
- <li><a href="https://pixabanimation.github.io/#/about">About</a></li>
- <li><a href="https://pixabanimation.github.io/#/contact">Contact</a></li>
- <li><a href="index.html">Blog</a></li>
- </ul>
- <div class="blog-nav-actions">
- <a href="https://pixabanimation.github.io/#/shop"><i class="fas fa-store"></i></a>
- <a href="https://pixabanimation.github.io/#/cart"><i class="fas fa-shopping-bag"></i></a>
- </div>
- </div>
- </nav><div class="blog-wrapper"><article>
-<div style="margin-bottom:24px"><div class="blog-category"><span style="font-size:1.2rem">✦</span> Web Performance</div><h1>Performance Optimization for Web Animations: The Developer's Guide</h1><div class="blog-meta"><span>📅 February 22, 2026</span><span>•</span><span>👁️ 15.3K+ Views</span><span>•</span><span>📝 PixabAnimation Team</span></div></div>
-<div class="blog-cover"><img src="../assets/images/blog/performance-optimization-web-animations.png" alt="Performance Optimization for Web Animations: The Developer&#39;s Guide" loading="lazy"></div>
-<div class="blog-content"><p>Performance is the most critical consideration for web animations. A beautiful animation that runs at 30fps creates a worse user experience than a simple animation at 60fps. This guide covers professional techniques for optimizing web animation performance, ensuring smooth motion across all devices.</p>
+  <!-- Navigation (matching homepage) -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li class="nav-brand-item">
+          <a href="https://pixabanimation.github.io/" class="nav-brand">
+            <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation" class="brand-logo" width="36" height="32">
+          </a>
+        </li>
+        <li><a href="https://pixabanimation.github.io/" class="nav-link active" data-nav><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop" class="nav-link" data-nav><i class="fas fa-store"></i> Shop</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop?category=videos" class="nav-link" data-nav><i class="fas fa-video"></i> Videos</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="nav-link" data-nav><i class="fas fa-plug"></i> Plugins</a></li>
+        <li><a href="index.html" class="nav-link" data-nav><i class="fas fa-newspaper"></i> Blog</a></li>
+        <li><a href="https://pixabanimation.github.io/#/about" class="nav-link" data-nav><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="https://pixabanimation.github.io/#/contact" class="nav-link" data-nav><i class="fas fa-envelope"></i> Contact</a></li>
+        <li class="nav-divider-mobile"><hr></li>
+        <li><a href="https://pixabanimation.github.io/#/wishlist" class="nav-link nav-action-mobile" data-nav><i class="fas fa-heart"></i> Wishlist <span class="badge wishlist-badge-mobile">0</span></a></li>
+        <li><a href="https://pixabanimation.github.io/#/cart" class="nav-link nav-action-mobile" data-nav><i class="fas fa-shopping-bag"></i> Cart <span class="badge cart-badge-mobile">0</span></a></li>
+        <li><a href="https://pixabanimation.github.io/#/login" class="nav-link nav-action-mobile" data-nav><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
+        <li><a href="https://pixabanimation.github.io/#/profile" class="nav-link nav-action-mobile" data-nav><i class="fas fa-user"></i> Profile</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="https://pixabanimation.github.io/#/wishlist" class="nav-icon-btn" aria-label="Wishlist">
+          <i class="fas fa-heart"></i>
+          <span class="badge wishlist-badge">0</span>
+        </a>
+        <a href="https://pixabanimation.github.io/#/cart" class="nav-icon-btn" aria-label="Cart">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="badge cart-badge">0</span>
+        </a>
+        <a href="https://pixabanimation.github.io/#/login" class="btn btn-sm btn-primary">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+<div class="blog-wrapper">
+  <article>
+    <div style="margin-bottom:24px">
+      <div class="blog-category"><span style="font-size:1.2rem">✦</span> Web Performance</div>
+      <h1>Animation Performance Optimization</h1>
+      <div class="blog-meta">
+        <span>📅 February 22, 2026</span>
+        <span>•</span>
+        <span>📝 PixabAnimation Team</span>
+      </div>
+    </div>
+
+    <div class="blog-cover">
+      <img src="https://pixabanimation.github.io/assets/images/blog/performance-optimization-web-animations.png" alt="Animation Performance Optimization" loading="lazy">
+    </div>
+
+    <div class="blog-content">
+<p>Performance is the most critical consideration for web animations. A beautiful animation that runs at 30fps creates a worse user experience than a simple animation at 60fps. This guide covers professional techniques for optimizing web animation performance, ensuring smooth motion across all devices.</p>
+
 <h2>Understanding the Rendering Pipeline</h2>
+
 <p>Browser rendering follows a specific pipeline: JavaScript > Style > Layout > Paint > Composite. Animations that trigger layout or paint are significantly more expensive than those that only trigger composite. The key to performant animation is using only transform and opacity properties, which skip layout and paint steps. Animating width, height, top, left, or margin triggers expensive layout recalculations.</p>
 
- <!-- Ad Banner 1 -->
- <div class="blog-ad-container">
- <div class="blog-ad-inner">
- <span class="blog-ad-label">Ad</span>
- <div class="blog-ad-content">
- <div class="blog-ad-icon"><i class="fas fa-cube"></i></div>
- <div class="blog-ad-text">
- <h3>Premium Motion Graphics Assets</h3>
- <p>Browse 500+ professional 4K motion backgrounds, animated templates, and stock footage — crafted for creators who demand the best.</p>
- <a href="https://pixabanimation.github.io/#/shop" class="blog-ad-cta">Browse Collection <i class="fas fa-arrow-right"></i></a>
- </div>
- </div>
- </div>
- </div>
+      
 
+      
+<h2>GPU-Accelerated Properties</h2>
 
-<!-- Ad Banner 2 -->
- <div class="blog-ad-container">
- <div class="blog-ad-inner">
- <span class="blog-ad-label">Ad</span>
- <div class="blog-ad-content">
- <div class="blog-ad-icon"><i class="fas fa-video"></i></div>
- <div class="blog-ad-text">
- <h3>4K Video Clips & Templates</h3>
- <p>Royalty-free motion graphics, lower thirds, and title animations for your next project.</p>
- <a href="https://pixabanimation.github.io/#/shop?category=videos" class="blog-ad-cta">Explore Library <i class="fas fa-arrow-right"></i></a>
- </div>
- </div>
- </div>
- </div>
-
- <h2>GPU-Accelerated Properties</h2>
 <p>Modern browsers offload transform and opacity animations to the GPU, ensuring smooth performance. Use transform for position (translate), rotation (rotate), and scale changes. Use opacity for fades and reveals. The will-change property hints to the browser that an element will animate, but use it sparingly — overuse consumes GPU memory.</p>
+
 <h2>Detecting and Fixing Jank</h2>
+
 <p>Jank — visible stuttering in animations — occurs when frames take longer than 16ms (for 60fps). Use Chrome DevTools Performance tab to identify long frames. Look for forced reflows (layout triggered by reading layout properties after changing them), expensive paint operations, and JavaScript tasks blocking the main thread. Fix jank by moving heavy calculations to Web Workers, debouncing scroll/resize handlers, and using requestAnimationFrame for JavaScript animations.</p>
+
 <h2>Lazy Loading Animation Libraries</h2>
+
 <p>Animation libraries can be large. Lazy load animations using dynamic imports, only loading the animation library when needed. Use IntersectionObserver to start animations only when elements enter the viewport. For below-the-fold animations, defer initialization using requestIdleCallback.</p>
+
 <h2>Device and Browser Testing</h2>
-<p>Test animations on actual mobile devices, which have less GPU power than desktops. Test on low-end devices that represent your users. Use software rendering mode to simulate limited GPU. Test across browsers — Safari typically has the strictest GPU memory limits. Lighthouse reports identify animation performance issues with specific recommendations.</p></div>
-<div class="back-section"><a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a>
- <!-- Ad Banner 3 -->
- <div class="blog-ad-container">
- <div class="blog-ad-inner">
- <span class="blog-ad-label">Ad</span>
- <div class="blog-ad-content">
- <div class="blog-ad-icon"><i class="fas fa-pen-fancy"></i></div>
- <div class="blog-ad-text">
- <h3>After Effects Templates</h3>
- <p>Professional logo reveals, typography animations, and infographic templates designed to make an impact.</p>
- <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="blog-ad-cta">View Collection <i class="fas fa-arrow-right"></i></a>
- </div>
- </div>
- </div>
- </div>
- </div>
-</article>
-<aside class="sidebar"><div style="font-size:.85rem;font-weight:600;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #0066cc">Recent Posts</div><a href="web-animation-css-javascript.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;padding:8px;border-radius:8px"><span style="font-size:1.2rem">🌐</span><div><div style="font-size:.8rem;color:#1d1d1f">Web Animation Guide</div></div></a><a href="threejs-3d-web-experiences.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;padding:8px;border-radius:8px"><span style="font-size:1.2rem">3D</span><div><div style="font-size:.8rem;color:#1d1d1f">Three.js Guide</div></div></a></aside>
+
+<p>Test animations on actual mobile devices, which have less GPU power than desktops. Test on low-end devices that represent your users. Use software rendering mode to simulate limited GPU. Test across browsers — Safari typically has the strictest GPU memory limits. Lighthouse reports identify animation performance issues with specific recommendations.</p>
+    </div>
+
+    <div class="tags-section">
+      <div class="label">Tags</div>
+<a href="index.html" class="tag">Performance</a>
+      <a href="index.html" class="tag">Web Animation</a>
+      <a href="index.html" class="tag">Optimization</a>
+      <a href="index.html" class="tag">GPU</a>
+      <a href="index.html" class="tag">Rendering</a>
+      <a href="index.html" class="tag">Frontend</a>
+    </div>
+
+    <div class="share-section">
+      <span class="label">Share</span>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://pixabanimation.github.io/blog/performance-optimization-web-animations.html" target="_blank" class="share-btn" style="background:rgba(0,0,0,.04)" onmouseover="this.style.background='#1877f2';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">f</a>
+      <a href="https://twitter.com/intent/tweet?text=Animation%20Performance%20Optimization&url=https://pixabanimation.github.io/blog/performance-optimization-web-animations.html" target="_blank" class="share-btn" onmouseover="this.style.background='#000';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">𝕏</a>
+      <a href="https://www.pinterest.com/pin/create/button/?url=https://pixabanimation.github.io/blog/performance-optimization-web-animations.html&description=Optimize%20web%20animation%20performance%20%E2%80%94%20GPU%20acceleration%2C%20layout%20thrashing%20prevention%2C%20and%20rendering%20tips." target="_blank" class="share-btn" onmouseover="this.style.background='#e60023';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">P</a>
+      <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);alert('Link copied!')" onmouseover="this.style.background='rgba(0,102,204,0.1)';this.style.color='#0066cc'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'"><i class="fas fa-link"></i></button>
+    </div>
+
+    <div class="author-bio">
+      <div class="author-avatar">P</div>
+      <div class="author-info">
+        <div class="name">PixabAnimation Team</div>
+        <div class="desc">PixabAnimation creates premium motion graphics, animation assets, and stock footage used by creators worldwide. Our team of motion designers and creative technologists explores the intersection of animation and emerging technology.</div>
+      </div>
+      <div class="author-social">
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Twitter">𝕏</a>
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+
+    <div class="useful-links">
+      <div class="label">Useful Links</div>
+      <div class="grid">
+        <a href="https://pixabanimation.github.io/#/shop">▸ Shop Premium Assets</a>
+        <a href="https://pixabanimation.github.io/#/shop?category=videos">▸ Motion Graphics Stock</a>
+        <a href="https://pixabanimation.github.io/#/about">▸ About PixabAnimation</a>
+        <a href="https://pixabanimation.github.io/">▸ Return to Homepage</a>
+      </div>
+    </div>
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Recent Posts</div>
+      <a href="ai-motion-graphics-revolution.html" class="sidebar-post">
+        <span class="icon" style="background:#0066cc20;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">📄</span>
+        <div><div class="title">The AI Revolution in Motion Graphics</div><div class="date">Jan 15, 2026</div></div>
+      </a>
+      <a href="claude-ai-coding-productivity.html" class="sidebar-post">
+        <span class="icon" style="background:#0066cc20;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">📄</span>
+        <div><div class="title">Claude AI for Coding: Productivity Tips</div><div class="date">Jan 18, 2026</div></div>
+      </a>
+      <a href="chatgpt-codex-vs-claude-coding.html" class="sidebar-post">
+        <span class="icon" style="background:#0066cc20;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">📄</span>
+        <div><div class="title">ChatGPT Codex vs Claude for Coding</div><div class="date">Jan 20, 2026</div></div>
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Popular Tags</div>
+      <div class="sidebar-tags">
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Motion Design')">Motion Design</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Freelancing')">Freelancing</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('JavaScript')">JavaScript</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('AI')">AI</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('After Effects')">After Effects</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Web Animation')">Web Animation</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Machine Learning')">Machine Learning</a>
+      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Snapdragon 8 Elite')">Snapdragon 8 Elite</a>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Top Authors</div>
+      <div class="sidebar-author" style="margin-bottom:12px">
+        <div class="initial">P</div>
+        <div><div class="name">PixabAnimation</div><div class="role">Content Creator</div></div>
+      </div>
+      <div class="sidebar-author">
+        <div class="initial" style="background:linear-gradient(135deg,#5856d6,#af52de)">S</div>
+        <div><div class="name">SPurno</div><div class="role">Motion Design Expert</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="back-section">
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+  </div>
 </div>
- <!-- Footer -->
- <footer class="blog-footer">
- <div class="blog-footer-content">
- <div class="blog-footer-grid">
- <div class="blog-footer-brand">
- <div class="name"><img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="" style="width:24px;height:20px"> PixabAnimation</div>
- <div class="desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</div>
- <div class="blog-footer-social">
- <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
- <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
- <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
- <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
- <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
- </div>
- </div>
- <div class="blog-footer-col">
- <h4>Shop</h4>
- <a href="https://pixabanimation.github.io/#/shop">All Assets</a>
- <a href="https://pixabanimation.github.io/#/shop?category=videos">Animation & Video</a>
- <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins">After Effects Plugins</a>
- </div>
- <div class="blog-footer-col">
- <h4>Categories</h4>
- <a href="https://pixabanimation.github.io/#/shop?category=videos">Motion Graphics</a>
- <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup">Green Screen</a>
- <a href="https://pixabanimation.github.io/#/shop">View All</a>
- </div>
- <div class="blog-footer-col">
- <h4>Support</h4>
- <a href="https://pixabanimation.github.io/#/contact">Contact Us</a>
- <a href="https://pixabanimation.github.io/#/about">About Us</a>
- <a href="index.html">Blog</a>
- <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
- </div>
- <div class="blog-footer-col blog-footer-col-newsletter">
- <h4>Stay in the Loop</h4>
- <p class="blog-footer-newsletter-text">Get early access to new releases, exclusive discounts, and creative inspiration.</p>
- <form class="blog-footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
- <input type="email" placeholder="Enter your email" required>
- <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
- </form>
- <p class="blog-footer-note">No spam. Unsubscribe anytime.</p>
- </div>
- </div>
- <div class="blog-footer-bottom">
- <div class="blog-footer-bottom-links">
- <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
- <span style="color:rgba(255,255,255,.3)">·</span>
- <a href="https://pixabanimation.github.io/#/refund-policy">Refunds</a>
- <span style="color:rgba(255,255,255,.3)">·</span>
- <a href="https://pixabanimation.github.io/#/terms-of-use">Terms</a>
- <span style="color:rgba(255,255,255,.3)">·</span>
- <a href="https://pixabanimation.github.io/#/contact">Support</a>
- </div>
- <p class="blog-footer-bottom-copy">&copy; © 2026 PixabAnimation & SPurno. All rights reserved.</p>
- <div class="blog-footer-payment-icons">
- <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#8622E7"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">S</text></svg> Skrill</span>
- <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#2D9CDB"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">P</text></svg> Payoneer</span>
- </div>
- </div>
- </div>
- </footer>
- <script>
- window.addEventListener('scroll', () => {
- document.getElementById('blogNavbar').classList.toggle('scrolled', window.scrollY > 50);
- });
- </script>
-</body></html>
+
+  <!-- Footer — matching homepage -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-grid">
+        <!-- Brand -->
+        <div class="footer-brand">
+          <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation Logo" class="footer-logo" width="28" height="24" loading="lazy">
+          <span class="footer-brand-name">PixabAnimation</span>
+          <p class="footer-brand-desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <!-- Shop -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Shop</h4>
+          <a href="https://pixabanimation.github.io/#/shop" class="footer-link">All Assets</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=videos" class="footer-link">Animation &amp; Video</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="footer-link">After Effects Plugins</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=background-animation" class="footer-link">Background Animation</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=infographic-animation" class="footer-link">Infographic Animation</a>
+        </div>
+        <!-- Categories -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Categories</h4>
+          <a href="https://pixabanimation.github.io/#/shop?category=videos" class="footer-link">Motion Graphics</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="footer-link">Plugins &amp; Extensions</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup" class="footer-link">Green Screen Mockups</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=ads-design" class="footer-link">Advertising Design</a>
+          <a href="https://pixabanimation.github.io/#/shop" class="footer-link footer-link-all">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <!-- Support -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Support</h4>
+          <a href="https://pixabanimation.github.io/#/contact" class="footer-link">Contact Us</a>
+          <a href="https://pixabanimation.github.io/#/about" class="footer-link">About Us</a>
+          <a href="https://pixabanimation.github.io/#/privacy-policy" class="footer-link">Privacy Policy</a>
+          <a href="https://pixabanimation.github.io/#/refund-policy" class="footer-link">Refund Policy</a>
+          <a href="https://pixabanimation.github.io/#/terms-of-use" class="footer-link">Terms of Use</a>
+          <a href="index.html" class="footer-link">Blog</a>
+        </div>
+        <!-- Newsletter -->
+        <div class="footer-col footer-col-newsletter">
+          <h4 class="footer-col-title">Stay in the Loop</h4>
+          <p class="footer-newsletter-text">Get early access to new releases, subscriber-only discounts, and creative inspiration.</p>
+          <form class="footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
+          </form>
+          <p class="footer-newsletter-note">No spam. Unsubscribe anytime.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-bottom-links">
+          <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
+          <span class="footer-bottom-sep">·</span>
+          <a href="https://pixabanimation.github.io/#/refund-policy">Refunds</a>
+          <span class="footer-bottom-sep">·</span>
+          <a href="https://pixabanimation.github.io/#/terms-of-use">Terms</a>
+          <span class="footer-bottom-sep">·</span>
+          <a href="https://pixabanimation.github.io/#/contact">Support</a>
+        </div>
+        <p class="footer-bottom-copy">&copy; 2026 PixabAnimation & SPurno. All rights reserved.</p>
+        <div class="blog-footer-payment-icons">
+          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#8622E7"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">S</text></svg> Skrill</span>
+          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#2D9CDB"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">P</text></svg> Payoneer</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    window.addEventListener('scroll', function() {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+    document.addEventListener('click', function(e) {
+      var toggle = e.target.closest('#navToggle');
+      if (toggle) { document.getElementById('navLinks').classList.toggle('open'); return; }
+      if (!e.target.closest('.nav-links') && !e.target.closest('#navToggle')) {
+        document.getElementById('navLinks').classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>
