@@ -417,7 +417,18 @@ async function main() {
   const posts = result.rows;
   console.log(`Found ${posts.length} posts to generate.\n`);
 
-  let generated = 0;
+
+    // Convert external cover URLs to local slug-based paths.
+    // Each blog post's image is saved as assets/images/blog/{slug}.{ext}.
+    // Since multiple posts may share the same Unsplash URL, we use the post's
+    // own unique slug rather than a URL-to-slug map (which would have duplicate keys).
+    for (const post of posts) {
+      if (post.cover_image && (post.cover_image.startsWith('http://') || post.cover_image.startsWith('https://'))) {
+        post.cover_image = post.slug;
+      }
+    }
+
+    let generated = 0;
   let skipped = 0;
 
   for (const post of posts) {
