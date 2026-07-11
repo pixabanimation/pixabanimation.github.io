@@ -211,11 +211,11 @@ const AdminQuotation = {
                   </div>
                   <div class="form-group">
                     <label>Tax Rate (%)</label>
-                    <input type="number" id="qt_tax_rate" value="${isEdit ? quote.tax_rate : 0}" min="0" max="100" step="0.1" oninput="AdminQuotation.updateSummary()">
+                    <input type="number" id="qt_tax_rate" value="${isEdit ? quote.tax_rate : 0}" min="0" max="100" step="0.1">
                   </div>
                   <div class="form-group">
                     <label>Status</label>
-                    <select id="qt_status" onchange="AdminQuotation.updateSummary()">
+                    <select id="qt_status">
                       <option value="draft" ${isEdit && quote.status === 'draft' ? 'selected' : ''}>Draft</option>
                       <option value="sent" ${isEdit && quote.status === 'sent' ? 'selected' : ''}>Sent</option>
                       <option value="accepted" ${isEdit && quote.status === 'accepted' ? 'selected' : ''}>Accepted</option>
@@ -263,11 +263,11 @@ const AdminQuotation = {
           <div class="admin-invoice-preview-wrapper">
             <div class="admin-invoice-preview-header">
               <h4><i class="fas fa-eye"></i> Quotation Preview</h4>
-              <span style="font-size:0.75rem;color:var(--text-muted)">Animation billing quote</span>
+              <span style="font-size:0.75rem;color:var(--text-muted)">Live — updates as you type</span>
             </div>
             <div class="admin-invoice-preview-container" id="quotePreviewContainer">
               <div class="admin-invoice-preview landscape" id="quotePreview">
-                ${this.generateQuotePreview(quote)}
+                <div style="padding:40px;text-align:center;color:#999;font-size:14px">Loading preview…</div>
               </div>
             </div>
           </div>
@@ -275,13 +275,35 @@ const AdminQuotation = {
       </div>
     `;
 
-    // Auto-update preview on input
+    // Attach real-time input listeners for live preview
+    this.attachLivePreviewListeners();
+    const initialServices = this.getServices();
+    this.updateSummary(initialServices);
+    this.updateQuotePreview(initialServices);
+  },
+
+  attachLivePreviewListeners() {
+    const refresh = () => {
+      const services = this.getServices();
+      this.updateSummary(services);
+      this.updateQuotePreview(services);
+    };
+
+    // All inputs, textareas, and selects in the quotation form trigger live preview
     document.querySelectorAll('#quotationForm input, #quotationForm textarea, #quotationForm select').forEach(el => {
-      el.addEventListener('input', () => this.updateQuotePreview());
-      el.addEventListener('change', () => this.updateQuotePreview());
+      el.addEventListener('input', refresh);
+      el.addEventListener('change', refresh);
     });
 
-    this.updateSummary();
+    this._liveRefresh = refresh;
+    // Attach listeners to initial service row inputs
+    this.attachServiceRowListeners();
+  },
+
+  attachServiceRowListeners() {
+    document.querySelectorAll('.qt-svc-desc, .qt-svc-duration, .qt-svc-rate').forEach(el => {
+      el.addEventListener('input', this._liveRefresh);
+    });
   },
 
   generateServiceRow(index, description = '', duration = '', rate = '', amount = '') {
@@ -296,8 +318,7 @@ const AdminQuotation = {
           <input type="text" class="qt-svc-duration" value="${duration}" placeholder="e.g. 2 weeks">
         </div>
         <div class="form-group">
-          <label>Rate ($)</label>
-          <input type="number" class="qt-svc-rate" value="${rate || 0}" min="0" step="0.01" oninput="AdminQuotation.updateSummary()">
+          <label>Rate ($)</label>                    <input type="number" class="qt-svc-rate" value="${rate || 0}" min="0" step="0.01">
         </div>
         <div class="form-group">
           <label>Amount</label>
@@ -314,14 +335,23 @@ const AdminQuotation = {
     const container = document.getElementById('quoteServicesContainer');
     const index = container.children.length;
     container.insertAdjacentHTML('beforeend', this.generateServiceRow(index));
-    this.updateSummary();
+    // Attach listeners to the new row's inputs
+    const newRow = container.lastElementChild;
+    newRow.querySelectorAll('.qt-svc-desc, .qt-svc-duration, .qt-svc-rate').forEach(el => {
+      el.addEventListener('input', this._liveRefresh);
+    });
+    const services = this.getServices();
+    this.updateSummary(services);
+    this.updateQuotePreview(services);
   },
 
   removeService(btn) {
     const row = btn.closest('.admin-quote-service-row');
     if (document.querySelectorAll('.admin-quote-service-row').length > 1) {
       row.remove();
-      this.updateSummary();
+      const services = this.getServices();
+      this.updateSummary(services);
+      this.updateQuotePreview(services);
     } else {
       Components.toast('Need at least one service', 'warning');
     }
@@ -337,8 +367,8 @@ const AdminQuotation = {
     });
   },
 
-  updateSummary() {
-    const services = this.getServices();
+  updateSummary(services) {
+    services = services || this.getServices();
     const subtotal = services.reduce((sum, s) => sum + s.amount, 0);
     const taxRate = parseFloat(document.getElementById('qt_tax_rate')?.value || 0);
     const taxAmount = subtotal * (taxRate / 100);
@@ -360,18 +390,17 @@ const AdminQuotation = {
       }
     });
 
-    this.updateQuotePreview();
   },
 
-  updateQuotePreview() {
+  updateQuotePreview(services) {
     const preview = document.getElementById('quotePreview');
     if (preview) {
-      preview.innerHTML = this.generateQuotePreview(null);
+      preview.innerHTML = this.generateQuotePreview(null, services);
     }
   },
 
-  generateQuotePreview(quote) {
-    const services = this.getServices();
+  generateQuotePreview(quote, services) {
+    services = services || this.getServices();
     const subtotal = services.reduce((sum, s) => sum + s.amount, 0);
     const taxRate = parseFloat(document.getElementById('qt_tax_rate')?.value || (quote?.tax_rate || 0));
     const taxAmount = subtotal * (taxRate / 100);
