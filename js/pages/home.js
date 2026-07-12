@@ -79,52 +79,32 @@ const HomePage = {
       const allProducts = featuredProducts.length > 0 ? featuredProducts : videoProducts.slice(0, 8);
 
       content.innerHTML = `
-        <!-- ============================================ -->
-        <!-- HERO — Apple-Inspired Product Tile            -->
-        <!-- ============================================ -->
-        <!-- ============================================ -->
-        <!-- HERO — Apple.com-Inspired White/Light         -->
-        <!-- ============================================ -->
-        <section class="hero" style="background:#fff;min-height:auto">
-          <div class="hero-content" style="width:100%;max-width:1100px">
+        <!-- HERO — Apple.com Style -->
+        <section class="hero" style="background:#fff;padding:140px 24px 80px">
+          <div class="hero-content" style="width:100%;max-width:980px">
             <div class="hero-text" style="animation:fadeInUp 0.8s ease-out">
-              <h1 style="font-family:var(--font-display);font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:700;line-height:1.05;letter-spacing:-0.005em;margin-bottom:8px;color:#1d1d1f">
+              <h1 style="font-family:var(--font-display);font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.05;letter-spacing:-0.003em;margin-bottom:12px;color:#1d1d1f">
                 Premium Motion<br>
-                <span style="color:var(--ds-primary)">Graphics &amp; Animation</span>
+                <span style="color:#1d1d1f">Graphics &amp; Animation</span>
               </h1>
               
-              <p style="font-family:var(--font-primary);font-size:clamp(1rem,1.2vw,1.15rem);font-weight:400;line-height:1.6;letter-spacing:-0.022em;color:rgba(0,0,0,0.56);margin-bottom:36px;max-width:500px">
-                Cinema-grade <strong style="color:#1d1d1f">4K motion graphics</strong>, animation assets, and professional editing templates for creators, editors, and motion designers worldwide.
+              <p style="font-family:var(--font-primary);font-size:clamp(1rem,1.2vw,1.25rem);font-weight:400;line-height:1.5;letter-spacing:-0.022em;color:#6e6e73;margin-bottom:28px;max-width:480px">
+                Cinema-grade <strong style="color:#1d1d1f">4K motion graphics</strong>, animation assets, and professional editing templates.
               </p>
               
-              <div style="display:flex;gap:12px;flex-wrap:wrap">
-                <a href="#/shop" class="ds-pill-cta" style="padding:12px 24px;font-size:16px;gap:8px">
+              <div style="display:flex;gap:16px;flex-wrap:wrap">
+                <a href="#/shop" class="ds-pill-cta">
                   Browse Assets
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h8M7 2l4 5-4 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
-                <a href="#/shop?category=videos" class="ds-pill-cta-secondary" style="padding:12px 24px;font-size:16px;border-color:rgba(0,0,0,0.2);color:rgba(0,0,0,0.64)">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <a href="#/shop?category=videos" class="ds-pill-cta-secondary">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                   Watch Demo
                 </a>
               </div>
-
-              <div style="display:flex;gap:40px;margin-top:44px;padding-top:28px;border-top:1px solid rgba(0,0,0,0.06)">
-                <div>
-                  <div style="font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:#1d1d1f;letter-spacing:-0.02em">500+</div>
-                  <div style="font-family:var(--font-primary);font-size:12px;font-weight:400;letter-spacing:-0.007em;color:rgba(0,0,0,0.4)">Premium Assets</div>
-                </div>
-                <div>
-                  <div style="font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:#1d1d1f;letter-spacing:-0.02em">10K+</div>
-                  <div style="font-family:var(--font-primary);font-size:12px;font-weight:400;letter-spacing:-0.007em;color:rgba(0,0,0,0.4)">Happy Creators</div>
-                </div>
-                <div>
-                  <div style="font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:#1d1d1f;letter-spacing:-0.02em">4K</div>
-                  <div style="font-family:var(--font-primary);font-size:12px;font-weight:400;letter-spacing:-0.007em;color:rgba(0,0,0,0.4)">Ultra HD Quality</div>
-                </div>
-              </div>
             </div>
 
-            <div class="hero-image" style="position:relative;animation:fadeInUp 0.8s ease-out 0.2s both">
+            <div class="hero-image" style="position:relative;animation:fadeInUp 0.8s ease-out 0.2s both;margin-top:48px">
               ${VideoPlayer.render({
                 src: 'assets/videos/red-motion-animated-background.mp4',
                 poster: 'assets/images/motion-red.jpg',
@@ -135,115 +115,89 @@ const HomePage = {
                 loop: false,
                 className: 'hero-video'
               })}
-
-              <!-- Floating badge 1 -->
-              <div style="position:absolute;top:-10px;right:-10px;padding:10px 14px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,0,0,0.06);border-radius:12px;animation:float 7s ease-in-out infinite;box-shadow:0 2px 12px rgba(0,0,0,0.08)">
-                <span style="font-size:1.1rem">🎬</span>
-                <div>
-                  <div style="font-family:var(--font-primary);font-weight:500;font-size:12px;letter-spacing:-0.01em;color:#1d1d1f">4K Ultra HD</div>
-                  <div style="font-family:var(--font-primary);font-size:10px;color:rgba(0,0,0,0.35)">Cinematic Quality</div>
-                </div>
-              </div>
-
-              <!-- Floating badge 2 -->
-              <div style="position:absolute;bottom:-10px;left:-10px;padding:10px 14px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,0,0,0.06);border-radius:12px;animation:float 7s ease-in-out infinite 3.5s;box-shadow:0 2px 12px rgba(0,0,0,0.08)">
-                <span style="font-size:1.1rem">⚡</span>
-                <div>
-                  <div style="font-family:var(--font-primary);font-weight:500;font-size:12px;letter-spacing:-0.01em;color:#1d1d1f">Instant Download</div>
-                  <div style="font-family:var(--font-primary);font-size:10px;color:rgba(0,0,0,0.35)">After Purchase</div>
-                </div>
-              </div>
             </div>
           </div>
         </section>
 
-        <!-- ============================================ -->
-        <!-- TRUST BAR — Apple.com Clean Stats Row        -->
-        <!-- ============================================ -->
-        <div style="max-width:1100px;margin:-24px auto 0;padding:0 24px;position:relative;z-index:3">
-          <div class="mobile-trust-bar" style="display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid rgba(0,0,0,0.06);border-radius:14px;padding:0;box-shadow:0 2px 12px rgba(0,0,0,0.04)">
-            <div style="text-align:center;padding:22px 12px;border-right:1px solid rgba(0,0,0,0.04)">
-              <div style="font-family:var(--font-primary);font-weight:500;font-size:12px;letter-spacing:-0.01em;color:rgba(0,0,0,0.64);margin-bottom:2px">
-                <i class="fas fa-cloud-download-alt" style="font-size:1rem;color:var(--ds-primary);margin-right:6px"></i>Instant Download
+        <!-- TRUST BAR — Apple Style -->
+        <div style="max-width:980px;margin:0 auto;padding:0 24px">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid #d2d2d7;border-radius:14px;overflow:hidden">
+            <div style="text-align:center;padding:24px 16px;border-right:1px solid #d2d2d7">
+              <div style="font-size:14px;font-weight:500;color:#1d1d1f;margin-bottom:4px">
+                <i class="fas fa-cloud-download-alt" style="color:#0071e3;margin-right:8px"></i>Instant Download
               </div>
-              <div style="font-family:var(--font-primary);font-size:10px;color:rgba(0,0,0,0.3)">Access immediately</div>
+              <div style="font-size:12px;color:#86868b">Access immediately</div>
             </div>
-            <div style="text-align:center;padding:22px 12px;border-right:1px solid rgba(0,0,0,0.04)">
-              <div style="font-family:var(--font-primary);font-weight:500;font-size:12px;letter-spacing:-0.01em;color:rgba(0,0,0,0.64);margin-bottom:2px">
-                <i class="fas fa-crown" style="font-size:1rem;color:var(--ds-primary);margin-right:6px"></i>Premium Quality
+            <div style="text-align:center;padding:24px 16px;border-right:1px solid #d2d2d7">
+              <div style="font-size:14px;font-weight:500;color:#1d1d1f;margin-bottom:4px">
+                <i class="fas fa-crown" style="color:#0071e3;margin-right:8px"></i>Premium Quality
               </div>
-              <div style="font-family:var(--font-primary);font-size:10px;color:rgba(0,0,0,0.3)">Hand-curated assets</div>
+              <div style="font-size:12px;color:#86868b">Hand-curated assets</div>
             </div>
-            <div style="text-align:center;padding:22px 12px;border-right:1px solid rgba(0,0,0,0.04)">
-              <div style="font-family:var(--font-primary);font-weight:500;font-size:12px;letter-spacing:-0.01em;color:rgba(0,0,0,0.64);margin-bottom:2px">
-                <i class="fas fa-undo-alt" style="font-size:1rem;color:var(--ds-primary);margin-right:6px"></i>14-Day Guarantee
+            <div style="text-align:center;padding:24px 16px;border-right:1px solid #d2d2d7">
+              <div style="font-size:14px;font-weight:500;color:#1d1d1f;margin-bottom:4px">
+                <i class="fas fa-undo-alt" style="color:#0071e3;margin-right:8px"></i>14-Day Guarantee
               </div>
-              <div style="font-family:var(--font-primary);font-size:10px;color:rgba(0,0,0,0.3)">Satisfaction assured</div>
+              <div style="font-size:12px;color:#86868b">Satisfaction assured</div>
             </div>
-            <div style="text-align:center;padding:22px 12px">
-              <div style="font-family:var(--font-primary);font-weight:500;font-size:12px;letter-spacing:-0.01em;color:rgba(0,0,0,0.64);margin-bottom:2px">
-                <i class="fas fa-headset" style="font-size:1rem;color:var(--ds-primary);margin-right:6px"></i>24/7 Support
+            <div style="text-align:center;padding:24px 16px">
+              <div style="font-size:14px;font-weight:500;color:#1d1d1f;margin-bottom:4px">
+                <i class="fas fa-headset" style="color:#0071e3;margin-right:8px"></i>24/7 Support
               </div>
-              <div style="font-family:var(--font-primary);font-size:10px;color:rgba(0,0,0,0.3)">We're here to help</div>
+              <div style="font-size:12px;color:#86868b">We're here to help</div>
             </div>
           </div>
         </div>
 
-        <!-- ============================================ -->
-        <!-- FEATURED — Apple.com Product Showcase        -->
-        <!-- ============================================ -->
-        <section style="padding:100px 24px;max-width:1100px;margin:0 auto;background:#fff">
+        <!-- FEATURED — Apple Product Showcase -->
+        <section style="padding:100px 24px;max-width:980px;margin:0 auto;background:#fff">
           <div style="text-align:center;margin-bottom:48px">
-            <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,2.8vw,2.5rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;margin-bottom:12px;color:#1d1d1f">
+            <h2 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.05;letter-spacing:-0.003em;margin-bottom:12px;color:#1d1d1f">
               Top Animation Assets
             </h2>
-            <p style="font-family:var(--font-primary);font-size:clamp(0.95rem,1vw,1.05rem);font-weight:400;line-height:1.5;letter-spacing:-0.022em;color:rgba(0,0,0,0.5);max-width:520px;margin:0 auto">
-              Handpicked premium motion graphics and creative templates for editors and motion designers.
+            <p style="font-family:var(--font-primary);font-size:clamp(1rem,1.2vw,1.25rem);font-weight:400;line-height:1.5;letter-spacing:-0.022em;color:#86868b;max-width:520px;margin:0 auto">
+              Handpicked premium motion graphics and creative templates.
             </p>
           </div>
           <div class="product-grid">
             ${allProducts.slice(0, 8).map((p, i) => Components.productCard(p, i)).join('')}
           </div>
-          <div style="text-align:center;margin-top:44px" id="loadMoreContainer">
-            <button onclick="HomePage.loadMore()" class="ds-pill-cta" id="loadMoreBtn" style="padding:12px 28px;font-size:15px;cursor:pointer;border:none;font-family:var(--font-primary)">
+          <div style="text-align:center;margin-top:48px" id="loadMoreContainer">
+            <button onclick="HomePage.loadMore()" class="ds-pill-cta" id="loadMoreBtn">
               <i class="fas fa-cog" id="loadMoreSpinner" style="margin-right:8px;animation:spin 1s linear infinite;display:none"></i>
-              <i class="fas fa-chevron-down" style="margin-right:8px"></i>
               Load More
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v8M3 7l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
         </section>
 
         ${(categoryProducts['adobe-after-effect-plugins'] || []).length > 0 ? `
-        <!-- ============================================ -->
-        <!-- AFTER EFFECTS PLUGINS — Category Spotlight    -->
-        <!-- ============================================ -->
-        <section style="padding:80px 24px;max-width:1100px;margin:0 auto;background:#fff;border-top:1px solid rgba(0,0,0,0.04)">
+        <!-- AFTER EFFECTS PLUGINS -->
+        <section style="padding:80px 24px;max-width:980px;margin:0 auto;background:#fff;border-top:1px solid #d2d2d7">
           <div style="text-align:center;margin-bottom:48px">
-            <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,2.8vw,2.5rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;margin-bottom:12px;color:#1d1d1f">
+            <h2 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.05;letter-spacing:-0.003em;margin-bottom:12px;color:#1d1d1f">
               After Effects Plugins
             </h2>
-            <p style="font-family:var(--font-primary);font-size:clamp(0.95rem,1vw,1.05rem);font-weight:400;line-height:1.5;letter-spacing:-0.022em;color:rgba(0,0,0,0.5);max-width:520px;margin:0 auto">
-              Extend your creative toolkit with powerful After Effects plugins and extensions.
+            <p style="font-family:var(--font-primary);font-size:clamp(1rem,1.2vw,1.25rem);font-weight:400;line-height:1.5;letter-spacing:-0.022em;color:#86868b;max-width:520px;margin:0 auto">
+              Extend your creative toolkit with powerful plugins and extensions.
             </p>
           </div>
           <div class="product-grid">
             ${(categoryProducts['adobe-after-effect-plugins'] || []).slice(0, 8).map((p, i) => Components.productCard(p, i)).join('')}
           </div>
-          <div style="text-align:center;margin-top:44px">
-            <a href="#/shop?category=after-effects-plugins" class="ds-pill-cta" style="padding:12px 28px;font-size:15px">
+          <div style="text-align:center;margin-top:48px">
+            <a href="#/shop?category=after-effects-plugins" class="ds-pill-cta">
               View All Plugins
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h8M7 2l4 5-4 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
           </div>
         </section>
         ` : ''}
 
-        <!-- ============================================ -->
-        <!-- CATEGORIES — Apple-Style Album Cover Slider   -->
-        <!-- ============================================ -->
-        <section style="padding:80px 24px;max-width:1100px;margin:0 auto;background:transparent">
+        <!-- CATEGORIES — Apple Album Cover Slider -->
+        <section style="padding:80px 24px;max-width:980px;margin:0 auto;background:#f5f5f7;border-radius:20px;margin-top:40px">
           <div style="text-align:center;margin-bottom:44px">
-            <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,2.8vw,2.5rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f">
+            <h2 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.05;letter-spacing:-0.003em;color:#1d1d1f">
               Explore Categories
             </h2>
           </div>
@@ -269,48 +223,44 @@ const HomePage = {
           </div>
         </section>
 
-        <!-- ============================================ -->
-        <!-- WHY PIXABANIMATION — Apple.com Value Props    -->
-        <!-- ============================================ -->
-        <section style="padding:100px 24px;background:#fff;border-top:1px solid rgba(0,0,0,0.04);border-bottom:1px solid rgba(0,0,0,0.04)">
-          <div style="max-width:1100px;margin:0 auto">
+        <!-- WHY PIXABANIMATION — Apple Value Props -->
+        <section style="padding:100px 24px;background:#fff;border-top:1px solid #d2d2d7;border-bottom:1px solid #d2d2d7">
+          <div style="max-width:980px;margin:0 auto">
             <div style="text-align:center;margin-bottom:48px">
-              <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,2.8vw,2.5rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f">
+              <h2 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.05;letter-spacing:-0.003em;color:#1d1d1f">
                 Built for Creators
               </h2>
             </div>
             <div class="home-value-grid">
-              <div style="padding:36px 28px;border:1px solid rgba(0,0,0,0.06);border-radius:14px;transition:all 0.2s ease;background:#fafafa"
-                   onmouseover="this.style.borderColor='rgba(0,102,204,0.2)';this.style.background='#f5f7f9'"
-                   onmouseout="this.style.borderColor='rgba(0,0,0,0.06)';this.style.background='#fafafa'">
-                <div style="width:44px;height:44px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--ds-primary);background:rgba(0,102,204,0.06);border-radius:10px"><i class="fas fa-film"></i></div>
-                <h3 style="font-family:var(--font-primary);font-size:17px;font-weight:600;line-height:1.24;letter-spacing:-0.022em;margin-bottom:6px;color:#1d1d1f">Cinema-Grade 4K Quality</h3>
-                <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.6;letter-spacing:-0.013em;color:rgba(0,0,0,0.48)">Every asset rendered in true 4K. Compatible with After Effects, Premiere Pro, Final Cut Pro, and DaVinci Resolve.</p>
+              <div style="padding:36px 28px;border:1px solid #d2d2d7;border-radius:18px;transition:all 0.3s ease;background:#fafafa"
+                   onmouseover="this.style.borderColor='#0071e3'"
+                   onmouseout="this.style.borderColor='#d2d2d7'">
+                <div style="width:48px;height:48px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#0071e3;background:rgba(0,113,227,0.08);border-radius:12px"><i class="fas fa-film"></i></div>
+                <h3 style="font-family:var(--font-primary);font-size:17px;font-weight:600;line-height:1.24;letter-spacing:-0.022em;margin-bottom:8px;color:#1d1d1f">Cinema-Grade 4K Quality</h3>
+                <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.47;letter-spacing:-0.013em;color:#6e6e73">Every asset rendered in true 4K. Compatible with After Effects, Premiere Pro, Final Cut Pro, and DaVinci Resolve.</p>
               </div>
-              <div style="padding:36px 28px;border:1px solid rgba(0,0,0,0.06);border-radius:14px;transition:all 0.2s ease;background:#fafafa"
-                   onmouseover="this.style.borderColor='rgba(0,102,204,0.2)';this.style.background='#f5f7f9'"
-                   onmouseout="this.style.borderColor='rgba(0,0,0,0.06)';this.style.background='#fafafa'">
-                <div style="width:44px;height:44px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--ds-primary);background:rgba(0,102,204,0.06);border-radius:10px"><i class="fas fa-bolt"></i></div>
-                <h3 style="font-family:var(--font-primary);font-size:17px;font-weight:600;line-height:1.24;letter-spacing:-0.022em;margin-bottom:6px;color:#1d1d1f">Instant Access</h3>
-                <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.6;letter-spacing:-0.013em;color:rgba(0,0,0,0.48)">Download immediately in full resolution. No watermarks, no queues. Start creating the moment you buy.</p>
+              <div style="padding:36px 28px;border:1px solid #d2d2d7;border-radius:18px;transition:all 0.3s ease;background:#fafafa"
+                   onmouseover="this.style.borderColor='#0071e3'"
+                   onmouseout="this.style.borderColor='#d2d2d7'">
+                <div style="width:48px;height:48px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#0071e3;background:rgba(0,113,227,0.08);border-radius:12px"><i class="fas fa-bolt"></i></div>
+                <h3 style="font-family:var(--font-primary);font-size:17px;font-weight:600;line-height:1.24;letter-spacing:-0.022em;margin-bottom:8px;color:#1d1d1f">Instant Access</h3>
+                <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.47;letter-spacing:-0.013em;color:#6e6e73">Download immediately in full resolution. No watermarks, no queues. Start creating the moment you buy.</p>
               </div>
-              <div style="padding:36px 28px;border:1px solid rgba(0,0,0,0.06);border-radius:14px;transition:all 0.2s ease;background:#fafafa"
-                   onmouseover="this.style.borderColor='rgba(0,102,204,0.2)';this.style.background='#f5f7f9'"
-                   onmouseout="this.style.borderColor='rgba(0,0,0,0.06)';this.style.background='#fafafa'">
-                <div style="width:44px;height:44px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--ds-primary);background:rgba(0,102,204,0.06);border-radius:10px"><i class="fas fa-layer-group"></i></div>
-                <h3 style="font-family:var(--font-primary);font-size:17px;font-weight:600;line-height:1.24;letter-spacing:-0.022em;margin-bottom:6px;color:#1d1d1f">Editor-Friendly</h3>
-                <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.6;letter-spacing:-0.013em;color:rgba(0,0,0,0.48)">Works with Premiere Pro, After Effects, Final Cut Pro, DaVinci Resolve, and more. Professional formats out of the box.</p>
+              <div style="padding:36px 28px;border:1px solid #d2d2d7;border-radius:18px;transition:all 0.3s ease;background:#fafafa"
+                   onmouseover="this.style.borderColor='#0071e3'"
+                   onmouseout="this.style.borderColor='#d2d2d7'">
+                <div style="width:48px;height:48px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#0071e3;background:rgba(0,113,227,0.08);border-radius:12px"><i class="fas fa-layer-group"></i></div>
+                <h3 style="font-family:var(--font-primary);font-size:17px;font-weight:600;line-height:1.24;letter-spacing:-0.022em;margin-bottom:8px;color:#1d1d1f">Editor-Friendly</h3>
+                <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.47;letter-spacing:-0.013em;color:#6e6e73">Works with Premiere Pro, After Effects, Final Cut Pro, DaVinci Resolve, and more. Professional formats out of the box.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- ============================================ -->
-        <!-- WORLDWIDE CUSTOMER COUNTRIES — Flag Slider    -->
-        <!-- ============================================ -->
-        <section style="padding:48px 24px 40px;background:#f5f5f7;border-top:1px solid rgba(0,0,0,0.04)">
-          <div style="text-align:center;margin-bottom:24px">
-            <h2 style="font-family:var(--font-display);font-size:clamp(1rem,1.6vw,1.3rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f">
+        <!-- WORLDWIDE CUSTOMER COUNTRIES — Flag Slider -->
+        <section style="padding:60px 24px;background:#f5f5f7;border-top:1px solid #d2d2d7">
+          <div style="text-align:center;margin-bottom:32px">
+            <h2 style="font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:700;line-height:1.1;letter-spacing:-0.003em;color:#1d1d1f">
               Worldwide Customer Countries
             </h2>
           </div>
@@ -343,37 +293,33 @@ const HomePage = {
           </div>
         </section>
 
-        <!-- ============================================ -->
-        <!-- NEWSLETTER — Apple.com Light CTA              -->
-        <!-- ============================================ -->
-        <section style="padding:80px 24px;text-align:center;position:relative;overflow:hidden;background:#f5f5f7;border-top:1px solid rgba(0,0,0,0.04)">
+        <!-- NEWSLETTER — Apple Light CTA -->
+        <section style="padding:80px 24px;text-align:center;position:relative;overflow:hidden;background:#f5f5f7">
           <div style="max-width:520px;margin:0 auto;position:relative;z-index:1">
-            <h2 style="font-family:var(--font-display);font-size:clamp(1.6rem,2.5vw,2.2rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f;margin-bottom:10px">
+            <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:700;line-height:1.05;letter-spacing:-0.003em;color:#1d1d1f;margin-bottom:12px">
               Join the Community
             </h2>
-            <p style="font-family:var(--font-primary);font-size:14px;font-weight:400;line-height:1.5;letter-spacing:-0.013em;color:rgba(0,0,0,0.48);margin-bottom:24px">
+            <p style="font-family:var(--font-primary);font-size:17px;font-weight:400;line-height:1.47;letter-spacing:-0.022em;color:#86868b;margin-bottom:28px">
               Get early access to new releases, subscriber-only discounts, and creative inspiration.
             </p>
-            <div style="display:flex;gap:8px;max-width:420px;margin:0 auto">
+            <div style="display:flex;gap:12px;max-width:440px;margin:0 auto">
               <input type="email" placeholder="Enter your email" id="newsletterEmail" 
-                     style="flex:1;padding:12px 18px;border-radius:9999px;border:1px solid rgba(0,0,0,0.12);background:#fff;color:#1d1d1f;font-size:14px;outline:none;font-family:var(--font-primary);transition:border-color 0.2s ease;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+                     style="flex:1;padding:14px 20px;border-radius:980px;border:1px solid #d2d2d7;background:#fff;color:#1d1d1f;font-size:17px;outline:none;font-family:var(--font-primary);transition:border-color 0.3s ease">
               <button onclick="App.subscribeNewsletter(event)" 
-                      style="padding:12px 24px;background:var(--ds-primary);color:white;border-radius:9999px;font-weight:500;font-size:14px;cursor:pointer;border:none;transition:background 0.2s ease, transform 0.2s ease;white-space:nowrap;font-family:var(--font-primary)">
+                      class="ds-pill-cta">
                 Subscribe
               </button>
             </div>
-            <p style="font-family:var(--font-primary);font-size:11px;color:rgba(0,0,0,0.25);margin-top:12px">
+            <p style="font-family:var(--font-primary);font-size:12px;color:#86868b;margin-top:12px">
               No spam. Unsubscribe anytime.
             </p>
           </div>
         </section>
 
-        <!-- ============================================ -->
-        <!-- TESTIMONIALS — Draggable Carousel             -->
-        <!-- ============================================ -->
-        <section style="padding:80px 24px 80px;max-width:1100px;margin:0 auto;background:#fff">
-          <div style="text-align:center;margin-bottom:36px">
-            <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,2.5vw,2.2rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f">
+        <!-- TESTIMONIALS — Apple Carousel -->
+        <section style="padding:80px 24px;max-width:980px;margin:0 auto;background:#fff">
+          <div style="text-align:center;margin-bottom:48px">
+            <h2 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.05;letter-spacing:-0.003em;color:#1d1d1f">
               Loved by Creators Worldwide
             </h2>
           </div>
@@ -410,30 +356,28 @@ const HomePage = {
             ${HomePage.testimonials.map((_, i) => `<span class="testimonial-slider-dot${i === 0 ? ' active' : ''}" data-index="${i}"></span>`).join('')}
           </div>
         </section>
-        <!-- ============================================ -->
-        <!-- FAQ — Grid Accordion                          -->
-        <!-- ============================================ -->
-        <section style="padding:60px 24px;background:#fff;border-top:1px solid rgba(0,0,0,0.04)">
-          <div style="max-width:900px;margin:0 auto">
-            <div style="text-align:center;margin-bottom:28px">
-              <h2 style="font-family:var(--font-display);font-size:clamp(1.3rem,2vw,1.6rem);font-weight:700;line-height:1.1;letter-spacing:-0.005em;color:#1d1d1f">
+        <!-- FAQ — Apple Accordion -->
+        <section style="padding:80px 24px;background:#fff;border-top:1px solid #d2d2d7">
+          <div style="max-width:800px;margin:0 auto">
+            <div style="text-align:center;margin-bottom:48px">
+              <h2 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.05;letter-spacing:-0.003em;color:#1d1d1f">
                 FAQs
               </h2>
             </div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px" id="faqContainer">
+            <div style="display:grid;grid-template-columns:1fr;gap:0" id="faqContainer">
               ${faqs.map((faq) => `
-                <div style="border:1px solid rgba(0,0,0,0.06);border-radius:10px;overflow:hidden;transition:border-color 0.2s ease,box-shadow 0.2s ease;background:#fafafa;align-self:start"
-                     onmouseenter="this.style.borderColor='rgba(0,102,204,0.2)';this.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'"
-                     onmouseleave="this.style.borderColor='rgba(0,0,0,0.06)';this.style.boxShadow='none'"
+                <div style="border-bottom:1px solid #d2d2d7;overflow:hidden;transition:background 0.2s ease;background:transparent"
+                     onmouseenter="this.style.background='#f5f5f7'"
+                     onmouseleave="this.style.background='transparent'"
                      onclick="this.classList.toggle('active');const panel=this.querySelector('.faq-answer');panel.style.maxHeight=panel.style.maxHeight||'0px';panel.style.maxHeight=panel.style.maxHeight==='0px'?panel.scrollHeight+'px':'0px';this.querySelector('.faq-chevron').style.transform=panel.style.maxHeight!=='0px'?'rotate(180deg)':'rotate(0deg)'">
-                  <div style="display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;user-select:none">
-                    <span style="flex:1;font-family:var(--font-primary);font-size:13px;font-weight:500;letter-spacing:-0.01em;color:#1d1d1f;line-height:1.3">${faq.q}</span>
-                    <svg class="faq-chevron" width="12" height="12" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;transition:transform 0.3s ease;color:rgba(0,0,0,0.25)">
+                  <div style="display:flex;align-items:center;gap:12px;padding:20px 0;cursor:pointer;user-select:none">
+                    <span style="flex:1;font-family:var(--font-primary);font-size:17px;font-weight:400;letter-spacing:-0.022em;color:#1d1d1f;line-height:1.47">${faq.q}</span>
+                    <svg class="faq-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;transition:transform 0.3s ease;color:#86868b">
                       <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </div>
-                  <div class="faq-answer" style="max-height:0;overflow:hidden;transition:max-height 0.3s cubic-bezier(0.4,0,0.2,1);padding:0 14px 0 14px">
-                    <p style="font-family:var(--font-primary);font-size:12.5px;font-weight:400;line-height:1.5;letter-spacing:-0.01em;color:rgba(0,0,0,0.48);padding-bottom:14px;margin:0;border-top:1px solid rgba(0,0,0,0.04);padding-top:10px">${faq.a}</p>
+                  <div class="faq-answer" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease;padding:0">
+                    <p style="font-family:var(--font-primary);font-size:17px;font-weight:400;line-height:1.47;letter-spacing:-0.022em;color:#6e6e73;padding:0 0 20px 0;margin:0">${faq.a}</p>
                   </div>
                 </div>
               `).join('')}
