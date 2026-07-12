@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OnePlus 13 Review: The 6,000mAh Battery and 100W Charging Champion — PixabAnimation</title>
+  <title>OnePlus 13 Review: The 6,000mAh Battery and 100W Charging Champion</title>
   <meta name="description" content="OnePlus 13 complete review: 6,000mAh silicon-carbon battery with 100W SUPERVOOC charging, Snapdragon 8 Elite, triple 50MP Hasselblad cameras, 6.82-inch 120Hz AMOLED, IP69 certification, OxygenOS 15.">
   <meta property="og:title" content="OnePlus 13 Review: The 6,000mAh Battery and 100W Charging Champion">
   <meta property="og:description" content="OnePlus 13 complete review: 6,000mAh silicon-carbon battery with 100W SUPERVOOC charging, Snapdragon 8 Elite, triple 50MP Hasselblad cameras, 6.82-inch 120Hz AMOLED, IP69 certification, OxygenOS 15.">
@@ -91,66 +91,80 @@
   </script>
   <link rel="icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="32x32">
   <link rel="apple-touch-icon" type="image/png" href="https://pixabanimation.github.io/assets/pixabanimation-logo.png" sizes="180x180">
-  <meta name="msapplication-TileColor" content="#0066cc">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="msapplication-TileColor" content="#4338CA">
+  <meta name="theme-color" content="#FAF8F5">
 </head>
 <body>
-  <!-- Navigation (matching homepage) -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+  <!-- Reading Progress Bar -->
+  <div class="reading-progress" id="readingProgress"></div>
+
+  <!-- Navigation -->
+  <nav class="blog-navbar" id="navbar">
+    <div class="blog-nav-container">
+      <button class="blog-nav-toggle" id="navToggle" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
-      <ul class="nav-links" id="navLinks">
-        <li class="nav-brand-item">
-          <a href="https://pixabanimation.github.io/" class="nav-brand">
-            <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation" class="brand-logo" width="36" height="32">
-          </a>
-        </li>
-        <li><a href="https://pixabanimation.github.io/" class="nav-link active" data-nav><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="https://pixabanimation.github.io/#/shop" class="nav-link" data-nav><i class="fas fa-store"></i> Shop</a></li>
-        <li><a href="https://pixabanimation.github.io/#/shop?category=videos" class="nav-link" data-nav><i class="fas fa-video"></i> Videos</a></li>
-        <li><a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="nav-link" data-nav><i class="fas fa-plug"></i> Plugins</a></li>
-        <li><a href="index.html" class="nav-link" data-nav><i class="fas fa-newspaper"></i> Blog</a></li>
-        <li><a href="https://pixabanimation.github.io/#/about" class="nav-link" data-nav><i class="fas fa-info-circle"></i> About</a></li>
-        <li><a href="https://pixabanimation.github.io/#/contact" class="nav-link" data-nav><i class="fas fa-envelope"></i> Contact</a></li>
-        <li class="nav-divider-mobile"><hr></li>
-        <li><a href="https://pixabanimation.github.io/#/wishlist" class="nav-link nav-action-mobile" data-nav><i class="fas fa-heart"></i> Wishlist <span class="badge wishlist-badge-mobile">0</span></a></li>
-        <li><a href="https://pixabanimation.github.io/#/cart" class="nav-link nav-action-mobile" data-nav><i class="fas fa-shopping-bag"></i> Cart <span class="badge cart-badge-mobile">0</span></a></li>
-        <li><a href="https://pixabanimation.github.io/#/login" class="nav-link nav-action-mobile" data-nav><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
-        <li><a href="https://pixabanimation.github.io/#/profile" class="nav-link nav-action-mobile" data-nav><i class="fas fa-user"></i> Profile</a></li>
+      <ul class="blog-nav-links" id="navLinks">
+        <li><a href="https://pixabanimation.github.io/" class="blog-nav-brand">
+          <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation" width="28" height="24">
+          PixabAnimation
+        </a></li>
+        <li><a href="https://pixabanimation.github.io/">Home</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop">Shop</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop?category=videos">Videos</a></li>
+        <li><a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins">Plugins</a></li>
+        <li><a href="index.html" class="active">Blog</a></li>
+        <li><a href="https://pixabanimation.github.io/#/about">About</a></li>
+        <li><a href="https://pixabanimation.github.io/#/contact">Contact</a></li>
       </ul>
-      <div class="nav-actions">
-        <a href="https://pixabanimation.github.io/#/wishlist" class="nav-icon-btn" aria-label="Wishlist">
-          <i class="fas fa-heart"></i>
-          <span class="badge wishlist-badge">0</span>
-        </a>
-        <a href="https://pixabanimation.github.io/#/cart" class="nav-icon-btn" aria-label="Cart">
-          <i class="fas fa-shopping-bag"></i>
-          <span class="badge cart-badge">0</span>
-        </a>
-        <a href="https://pixabanimation.github.io/#/login" class="btn btn-sm btn-primary">Sign In</a>
+      <div class="blog-nav-actions">
+        <a href="https://pixabanimation.github.io/#/wishlist"><i class="fas fa-heart"></i></a>
+        <a href="https://pixabanimation.github.io/#/cart"><i class="fas fa-shopping-bag"></i></a>
+        <a href="https://pixabanimation.github.io/#/login" class="btn btn-sm btn-primary" style="background:var(--accent);color:#fff;padding:6px 16px;border-radius:9999px;font-size:.82rem;font-weight:600;text-decoration:none">Sign In</a>
       </div>
     </div>
   </nav>
 
-<div class="blog-wrapper">
-  <article>
-    <div style="margin-bottom:24px">
-      <div class="blog-category"><span style="font-size:1.2rem">✦</span> Mobile Phone</div>
-      <h1>OnePlus 13 Review: The 6,000mAh Battery and 100W Charging Champion</h1>
-      <div class="blog-meta">
-        <span>📅 July 9, 2026</span>
-        <span>•</span>
-        <span>📝 PixabAnimation Team</span>
+  <!-- Breadcrumbs -->
+  <div class="breadcrumb-bar">
+    <a href="https://pixabanimation.github.io/">Home</a><span class="sep">/</span>
+    <a href="index.html">Blog</a><span class="sep">/</span>
+    <a href="index.html">Mobile Phone</a><span class="sep">/</span>
+    <span class="current">OnePlus 13 Review: The 6,000mAh Battery and 100W Charging Champion</span>
+  </div>
+
+  <!-- Blog Layout -->
+  <div class="blog-wrapper">
+    <article>
+      <!-- Hero -->
+      <div class="article-hero">
+        <a href="index.html" class="article-category-badge"><i class="fas fa-tag" style="font-size:0.7rem"></i> Mobile Phone</a>
+        <h1>OnePlus 13 Review: The 6,000mAh Battery and 100W Charging Champion</h1>
+        <div class="article-meta-row">
+          <span class="meta-item"><i class="fas fa-calendar-alt"></i> July 9, 2026</span>
+          <span class="meta-dot"></span>
+          <span class="meta-item"><i class="fas fa-user"></i> PixabAnimation Team</span>
+          <span class="meta-dot"></span>
+          <span class="reading-time-badge"><i class="fas fa-clock"></i> 12 min read</span>
+        </div>
       </div>
-    </div>
 
-    <div class="blog-cover">
-      <img src="https://pixabanimation.github.io/assets/images/blog/oneplus-13-review-specs-battery.png" alt="OnePlus 13 Review: The 6,000mAh Battery and 100W Charging Champion" loading="lazy">
-    </div>
+      <!-- Cover Image -->
+      <div class="blog-cover">
+        <img src="https://pixabanimation.github.io/assets/images/blog/oneplus-13-review-specs-battery.png" alt="OnePlus 13 Review: The 6,000mAh Battery and 100W Charging Champion" loading="lazy">
+      </div>
 
-    <div class="blog-content">
+      <!-- Mobile TOC -->
+      <div class="mobile-toc" id="mobileToc">
+        <button class="mobile-toc-toggle" onclick="document.getElementById('mobileToc').classList.toggle('open')">
+          <span><i class="fas fa-list" style="margin-right:8px"></i> Table of Contents</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <ul class="toc-list"><li><a href="#introduction-the-battery-king-returns">Introduction: The Battery King Returns</a></li><li><a href="#design-and-build-quality">Design and Build Quality</a></li><li><a href="#complete-specifications">Complete Specifications</a></li><li><a href="#battery-and-charging-best-in-class">Battery and Charging — Best in Class</a></li><li><a href="#verdict">Verdict</a></li></ul>
+      </div>
+
+      <!-- Article Content -->
+      <div class="blog-content">
 <strong>Introduction: The Battery King Returns</strong>
 <p>The OnePlus 13 redefines what's possible with smartphone battery life. Featuring a massive 6,000mAh silicon-carbon battery with 100W SUPERVOOC wired charging and 50W wireless charging, the OnePlus 13 sets new standards for endurance and charging speed. Combined with the Snapdragon 8 Elite processor and a refined Hasselblad camera system, it's one of the most compelling flagship values of 2025.</p>
 
@@ -233,220 +247,291 @@
 
 <strong>Verdict</strong>
 <p>The OnePlus 13 wins the endurance wars with best-in-class battery life and charging speeds. Starting at $899, it's one of the best flagship values of 2025.</p>
-    </div>
+      </div>
 
-    <div class="tags-section">
-      <div class="label">Tags</div>
-<a href="index.html" class="tag">OnePlus 13</a>
+      <!-- Tags -->
+      <div class="tags-section">
+        <div class="label">Tags</div>
+        <a href="index.html" class="tag">OnePlus 13</a>
       <a href="index.html" class="tag">6000mAh Battery</a>
       <a href="index.html" class="tag">100W Charging</a>
       <a href="index.html" class="tag">Snapdragon 8 Elite</a>
       <a href="index.html" class="tag">Hasselblad Camera</a>
       <a href="index.html" class="tag">IP69</a>
-    </div>
-
-    <div class="share-section">
-      <span class="label">Share</span>
-      <a href="https://www.facebook.com/sharer/sharer.php?u=https://pixabanimation.github.io/blog/oneplus-13-review-specs-battery.html" target="_blank" class="share-btn" style="background:rgba(0,0,0,.04)" onmouseover="this.style.background='#1877f2';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">f</a>
-      <a href="https://twitter.com/intent/tweet?text=OnePlus%2013%20Review%3A%20The%206%2C000mAh%20Battery%20and%20100W%20Charging%20Champion&url=https://pixabanimation.github.io/blog/oneplus-13-review-specs-battery.html" target="_blank" class="share-btn" onmouseover="this.style.background='#000';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">𝕏</a>
-      <a href="https://www.pinterest.com/pin/create/button/?url=https://pixabanimation.github.io/blog/oneplus-13-review-specs-battery.html&description=OnePlus%2013%20complete%20review%3A%206%2C000mAh%20silicon-carbon%20battery%20with%20100W%20SUPERVOOC%20charging%2C%20Snapdragon%208%20Elite%2C%20triple%2050MP%20Hasselblad%20cameras%2C%206.82-inch%20120Hz%20AMOLED%2C%20IP69%20certification%2C%20OxygenOS%2015." target="_blank" class="share-btn" onmouseover="this.style.background='#e60023';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">P</a>
-      <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);alert('Link copied!')" onmouseover="this.style.background='rgba(0,102,204,0.1)';this.style.color='#0066cc'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'"><i class="fas fa-link"></i></button>
-    </div>
-
-    <div class="author-bio">
-      <div class="author-avatar">P</div>
-      <div class="author-info">
-        <div class="name">PixabAnimation Team</div>
-        <div class="desc">PixabAnimation creates premium motion graphics, animation assets, and stock footage used by creators worldwide. Our team of motion designers and creative technologists explores the intersection of animation and emerging technology.</div>
       </div>
-      <div class="author-social">
-        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" aria-label="Twitter">𝕏</a>
-        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-      </div>
-    </div>
 
+      <!-- Share -->
+      <div class="share-section">
+        <span class="label">Share</span>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://pixabanimation.github.io/blog/oneplus-13-review-specs-battery.html" target="_blank" class="share-btn" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://twitter.com/intent/tweet?text=OnePlus%2013%20Review%3A%20The%206%2C000mAh%20Battery%20and%20100W%20Charging%20Champion&url=https://pixabanimation.github.io/blog/oneplus-13-review-specs-battery.html" target="_blank" class="share-btn" title="Share on X"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://www.pinterest.com/pin/create/button/?url=https://pixabanimation.github.io/blog/oneplus-13-review-specs-battery.html&description=OnePlus%2013%20complete%20review%3A%206%2C000mAh%20silicon-carbon%20battery%20with%20100W%20SUPERVOOC%20charging%2C%20Snapdragon%208%20Elite%2C%20triple%2050MP%20Hasselblad%20cameras%2C%206.82-inch%20120Hz%20AMOLED%2C%20IP69%20certification%2C%20OxygenOS%2015." target="_blank" class="share-btn" title="Share on Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>{this.innerHTML='<i class=\'fas fa-check\'></i>';setTimeout(()=>{this.innerHTML='<i class=\'fas fa-link\'></i>'},1500)})" title="Copy link"><i class="fas fa-link"></i></button>
+      </div>
+
+      <!-- Author Bio -->
+      <div class="author-bio">
+        <div class="author-avatar">P</div>
+        <div class="author-info">
+          <div class="name">PixabAnimation Team</div>
+          <div class="desc">PixabAnimation creates premium motion graphics, animation assets, and stock footage used by creators worldwide. Our team of motion designers and creative technologists explores the intersection of animation and emerging technology.</div>
+        </div>
+        <div class="author-social">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <!-- Ad Slots -->
       <div id="ad-slot-1-article"></div>
       <div id="ad-slot-2-article" style="margin-top:16px"></div>
       <div id="ad-slot-3-article" style="margin-top:16px"></div>
 
-    <div class="useful-links">
-      <div class="label">Useful Links</div>
-      <div class="grid">
-        <a href="https://pixabanimation.github.io/#/shop">▸ Shop Premium Assets</a>
-        <a href="https://pixabanimation.github.io/#/shop?category=videos">▸ Motion Graphics Stock</a>
-        <a href="https://pixabanimation.github.io/#/about">▸ About PixabAnimation</a>
-        <a href="https://pixabanimation.github.io/">▸ Return to Homepage</a>
+      <!-- Useful Links -->
+      <div class="useful-links">
+        <div class="label">Useful Links</div>
+        <div class="grid">
+          <a href="https://pixabanimation.github.io/#/shop"><i class="fas fa-shopping-bag" style="margin-right:6px"></i> Shop Premium Assets</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=videos"><i class="fas fa-video" style="margin-right:6px"></i> Motion Graphics Stock</a>
+          <a href="https://pixabanimation.github.io/#/about"><i class="fas fa-info-circle" style="margin-right:6px"></i> About PixabAnimation</a>
+          <a href="https://pixabanimation.github.io/"><i class="fas fa-home" style="margin-right:6px"></i> Return to Homepage</a>
+        </div>
       </div>
-    </div>
-  </article>
+    </article>
 
-  <aside class="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-title">Recent Posts</div>
-      <a href="ai-motion-graphics-revolution.html" class="sidebar-post">
-        <span class="icon" style="background:#0066cc20;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">📄</span>
-        <div><div class="title">The AI Revolution in Motion Graphics</div><div class="date">Jan 15, 2026</div></div>
-      </a>
-      <a href="claude-ai-coding-productivity.html" class="sidebar-post">
-        <span class="icon" style="background:#0066cc20;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">📄</span>
-        <div><div class="title">Claude AI for Coding: Productivity Tips</div><div class="date">Jan 18, 2026</div></div>
-      </a>
-      <a href="chatgpt-codex-vs-claude-coding.html" class="sidebar-post">
-        <span class="icon" style="background:#0066cc20;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0">📄</span>
-        <div><div class="title">ChatGPT Codex vs Claude for Coding</div><div class="date">Jan 20, 2026</div></div>
-      </a>
-    </div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Reading Progress -->
+      <div class="sidebar-section reading-progress-sidebar">
+        <div class="progress-text" id="readingPercent">0%</div>
+        <div class="progress-label">Read</div>
+      </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-title">Popular Tags</div>
-      <div class="sidebar-tags">
-      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Motion Design')">Motion Design</a>
-      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Freelancing')">Freelancing</a>
-      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('JavaScript')">JavaScript</a>
-      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('AI')">AI</a>
-      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('After Effects')">After Effects</a>
-      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Web Animation')">Web Animation</a>
-      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Machine Learning')">Machine Learning</a>
-      <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Snapdragon 8 Elite')">Snapdragon 8 Elite</a>
-      </div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-title">Top Authors</div>
-      <div class="sidebar-author" style="margin-bottom:12px">
-        <div class="initial">P</div>
-        <div><div class="name">PixabAnimation</div><div class="role">Content Creator</div></div>
-      </div>
-      <div class="sidebar-author">
-        <div class="initial" style="background:linear-gradient(135deg,#5856d6,#af52de)">S</div>
-        <div><div class="name">SPurno</div><div class="role">Motion Design Expert</div></div>
-      </div>
-    </div>
+      
+      <!-- Table of Contents -->
       <div class="sidebar-section">
-        <div class="sidebar-title">Ad</div>
-        <div id="ad-slot-1"></div>
-        <div id="ad-slot-2" style="margin-top:16px"></div>
-        <div id="ad-slot-3" style="margin-top:16px"></div>
+        <div class="sidebar-title">Contents</div>
+        <ul class="toc-list"><li><a href="#introduction-the-battery-king-returns">Introduction: The Battery King Returns</a></li><li><a href="#design-and-build-quality">Design and Build Quality</a></li><li><a href="#complete-specifications">Complete Specifications</a></li><li><a href="#battery-and-charging-best-in-class">Battery and Charging — Best in Class</a></li><li><a href="#verdict">Verdict</a></li></ul>
       </div>
-  </aside>
 
-  <div class="back-section">
-    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+      <!-- Recent Posts -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Recent Posts</div>
+        <a href="apple-iphone-17-iphone-17-air-review.html" class="sidebar-post">
+          <span class="icon"><i class="fas fa-file-alt" style="color:#059669"></i></span>
+          <div><div class="title">Apple iPhone 17 and iPhone 17 Air: ProMotion for Everyone — Complete Review</div><div class="date">Jul 9, 2026</div></div>
+        </a>
+        <a href="apple-iphone-17-pro-max-specs-features.html" class="sidebar-post">
+          <span class="icon"><i class="fas fa-file-alt" style="color:#059669"></i></span>
+          <div><div class="title">Apple iPhone 17 Pro Max: Complete Specifications and In-Depth Review</div><div class="date">Jul 9, 2026</div></div>
+        </a>
+        <a href="apple-watch-series-11-features-specs.html" class="sidebar-post">
+          <span class="icon"><i class="fas fa-file-alt" style="color:#D97706"></i></span>
+          <div><div class="title">Apple Watch Series 11: Health, Fitness, and Connectivity Evolved</div><div class="date">Jul 9, 2026</div></div>
+        </a>
+        <a href="asus-rog-zephyrus-g14-2025-gaming-laptop.html" class="sidebar-post">
+          <span class="icon"><i class="fas fa-file-alt" style="color:#2563EB"></i></span>
+          <div><div class="title">ASUS ROG Zephyrus G14 (2025): The Ultimate Gaming Ultrabook</div><div class="date">Jul 9, 2026</div></div>
+        </a>
+      </div>
+
+      <!-- Popular Tags -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Popular Tags</div>
+        <div class="sidebar-tags">
+          <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Motion Design')">Motion Design</a>
+          <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Freelancing')">Freelancing</a>
+          <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('JavaScript')">JavaScript</a>
+          <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('AI')">AI</a>
+          <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Apple Intelligence')">Apple Intelligence</a>
+          <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Snapdragon 8 Elite')">Snapdragon 8 Elite</a>
+          <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Machine Learning')">Machine Learning</a>
+          <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Web Animation')">Web Animation</a>
+          <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('After Effects')">After Effects</a>
+          <a href="index.html" class="sidebar-tag" onclick="return plSearchTag('Flagship Phone')">Flagship Phone</a>
+        </div>
+      </div>
+
+      <!-- Authors -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Authors</div>
+        <div class="sidebar-author">
+          <div class="initial">P</div>
+          <div><div class="name">PixabAnimation</div><div class="role">Content Creator</div></div>
+        </div>
+        <div class="sidebar-author">
+          <div class="initial" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">S</div>
+          <div><div class="name">SPurno</div><div class="role">Motion Design Expert</div></div>
+        </div>
+      </div>
+
+      <!-- Ads -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">Sponsored</div>
+        <div id="ad-slot-1"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-cube"></i></div><div class="blog-ad-text"><h3>Premium Motion Graphics</h3><p>4000+ professional 4K motion backgrounds and templates.</p><a href="https://pixabanimation.github.io/#/shop" class="blog-ad-cta">Browse <i class="fas fa-arrow-right"></i></a></div></div></div></div></div>
+        <div id="ad-slot-2" style="margin-top:12px"></div>
+        <div id="ad-slot-3" style="margin-top:12px"></div>
+      </div>
+    </aside>
+
+    
+  <div class="related-articles">
+    <h2 class="related-articles-title">Related Articles</h2>
+    <div class="related-grid">
+      <a href="apple-iphone-17-iphone-17-air-review.html" class="related-card">
+        <img src="https://pixabanimation.github.io/assets/images/blog/apple-iphone-17-iphone-17-air-review.png" alt="Apple iPhone 17 and iPhone 17 Air: ProMotion for Everyone — Complete Review" class="related-card-img" loading="lazy">
+        <div class="related-card-body">
+          <div class="related-card-cat">Mobile Phone</div>
+          <div class="related-card-title">Apple iPhone 17 and iPhone 17 Air: ProMotion for Everyone — Complete Review</div>
+          <div class="related-card-meta">Jul 9, 2026 · 9 min read</div>
+        </div>
+      </a>
+      <a href="apple-iphone-17-pro-max-specs-features.html" class="related-card">
+        <img src="https://pixabanimation.github.io/assets/images/blog/apple-iphone-17-pro-max-specs-features.png" alt="Apple iPhone 17 Pro Max: Complete Specifications and In-Depth Review" class="related-card-img" loading="lazy">
+        <div class="related-card-body">
+          <div class="related-card-cat">Mobile Phone</div>
+          <div class="related-card-title">Apple iPhone 17 Pro Max: Complete Specifications and In-Depth Review</div>
+          <div class="related-card-meta">Jul 9, 2026 · 14 min read</div>
+        </div>
+      </a>
+      <a href="google-pixel-10-pro-specs-ai-features.html" class="related-card">
+        <img src="https://pixabanimation.github.io/assets/images/blog/google-pixel-10-pro-specs-ai-features.png" alt="Google Pixel 10 Pro Review: The AI Photography Champion of 2025" class="related-card-img" loading="lazy">
+        <div class="related-card-body">
+          <div class="related-card-cat">Mobile Phone</div>
+          <div class="related-card-title">Google Pixel 10 Pro Review: The AI Photography Champion of 2025</div>
+          <div class="related-card-meta">Jul 9, 2026 · 12 min read</div>
+        </div>
+      </a>
+    </div>
   </div>
-</div>
 
-  <!-- Footer — matching homepage -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-grid">
-        <!-- Brand -->
-        <div class="footer-brand">
-          <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation Logo" class="footer-logo" width="28" height="24" loading="lazy">
-          <span class="footer-brand-name">PixabAnimation</span>
-          <p class="footer-brand-desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</p>
-          <div class="footer-social">
+    <!-- Back -->
+    <div class="back-section">
+      <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="blog-footer">
+    <div class="blog-footer-content">
+      <div class="blog-footer-grid">
+        <div class="blog-footer-brand">
+          <img src="https://pixabanimation.github.io/assets/pixabanimation-logo.png" alt="PixabAnimation Logo" width="28" height="24" loading="lazy" style="filter:brightness(0) invert(1)">
+          <span class="name">PixabAnimation</span>
+          <p class="desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</p>
+          <div class="blog-footer-social">
             <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
             <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
             <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
             <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
           </div>
         </div>
-        <!-- Shop -->
-        <div class="footer-col">
-          <h4 class="footer-col-title">Shop</h4>
-          <a href="https://pixabanimation.github.io/#/shop" class="footer-link">All Assets</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=videos" class="footer-link">Animation &amp; Video</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="footer-link">After Effects Plugins</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=background-animation" class="footer-link">Background Animation</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=infographic-animation" class="footer-link">Infographic Animation</a>
+        <div class="blog-footer-col">
+          <h4>Shop</h4>
+          <a href="https://pixabanimation.github.io/#/shop">All Assets</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=videos">Animation & Video</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins">AE Plugins</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=background-animation">Backgrounds</a>
         </div>
-        <!-- Categories -->
-        <div class="footer-col">
-          <h4 class="footer-col-title">Categories</h4>
-          <a href="https://pixabanimation.github.io/#/shop?category=videos" class="footer-link">Motion Graphics</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins" class="footer-link">Plugins &amp; Extensions</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup" class="footer-link">Green Screen Mockups</a>
-          <a href="https://pixabanimation.github.io/#/shop?category=ads-design" class="footer-link">Advertising Design</a>
-          <a href="https://pixabanimation.github.io/#/shop" class="footer-link footer-link-all">View All <i class="fas fa-arrow-right"></i></a>
+        <div class="blog-footer-col">
+          <h4>Categories</h4>
+          <a href="https://pixabanimation.github.io/#/shop?category=videos">Motion Graphics</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=adobe-after-effect-plugins">Plugins</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=green-screen-mockup">Green Screen</a>
+          <a href="https://pixabanimation.github.io/#/shop?category=ads-design">Advertising</a>
         </div>
-        <!-- Support -->
-        <div class="footer-col">
-          <h4 class="footer-col-title">Support</h4>
-          <a href="https://pixabanimation.github.io/#/contact" class="footer-link">Contact Us</a>
-          <a href="https://pixabanimation.github.io/#/about" class="footer-link">About Us</a>
-          <a href="https://pixabanimation.github.io/#/privacy-policy" class="footer-link">Privacy Policy</a>
-          <a href="https://pixabanimation.github.io/#/refund-policy" class="footer-link">Refund Policy</a>
-          <a href="https://pixabanimation.github.io/#/terms-of-use" class="footer-link">Terms of Use</a>
-          <a href="index.html" class="footer-link">Blog</a>
+        <div class="blog-footer-col">
+          <h4>Support</h4>
+          <a href="https://pixabanimation.github.io/#/contact">Contact Us</a>
+          <a href="https://pixabanimation.github.io/#/about">About Us</a>
+          <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy Policy</a>
+          <a href="https://pixabanimation.github.io/#/terms-of-use">Terms of Use</a>
+          <a href="index.html">Blog</a>
         </div>
-        <!-- Newsletter -->
-        <div class="footer-col footer-col-newsletter">
-          <h4 class="footer-col-title">Stay in the Loop</h4>
-          <p class="footer-newsletter-text">Get early access to new releases, subscriber-only discounts, and creative inspiration.</p>
-          <form class="footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
+        <div class="blog-footer-col blog-footer-col-newsletter">
+          <h4>Stay in the Loop</h4>
+          <p class="blog-footer-newsletter-text">Get early access to new releases and creative inspiration.</p>
+          <form class="blog-footer-newsletter-form" action="https://pixabanimation.github.io/" method="get">
             <input type="email" placeholder="Enter your email" required>
             <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
           </form>
-          <p class="footer-newsletter-note">No spam. Unsubscribe anytime.</p>
+          <p class="blog-footer-note">No spam. Unsubscribe anytime.</p>
         </div>
       </div>
-      <div class="footer-bottom">
-        <div class="footer-bottom-links">
+      <div class="blog-footer-bottom">
+        <div class="blog-footer-bottom-links">
           <a href="https://pixabanimation.github.io/#/privacy-policy">Privacy</a>
-          <span class="footer-bottom-sep">·</span>
           <a href="https://pixabanimation.github.io/#/refund-policy">Refunds</a>
-          <span class="footer-bottom-sep">·</span>
           <a href="https://pixabanimation.github.io/#/terms-of-use">Terms</a>
-          <span class="footer-bottom-sep">·</span>
           <a href="https://pixabanimation.github.io/#/contact">Support</a>
         </div>
-        <p class="footer-bottom-copy">&copy; 2026 PixabAnimation & SPurno. All rights reserved.</p>
+        <p class="blog-footer-bottom-copy">&copy; 2026 PixabAnimation & SPurno. All rights reserved.</p>
         <div class="blog-footer-payment-icons">
-          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#8622E7"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">S</text></svg> Skrill</span>
-          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#2D9CDB"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">P</text></svg> Payoneer</span>
+          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14"><rect width="20" height="20" rx="4" fill="#8622E7"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">S</text></svg> Skrill</span>
+          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14"><rect width="20" height="20" rx="4" fill="#2D9CDB"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">P</text></svg> Payoneer</span>
         </div>
       </div>
     </div>
   </footer>
-  <script>
-    window.addEventListener('scroll', function() {
-      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-    });
-    document.addEventListener('click', function(e) {
-      var toggle = e.target.closest('#navToggle');
-      if (toggle) { document.getElementById('navLinks').classList.toggle('open'); return; }
-      if (!e.target.closest('.nav-links') && !e.target.closest('#navToggle')) {
-        document.getElementById('navLinks').classList.remove('open');
-      }
-    });
-  </script>
 
-    <style>
-    .blog-ad-container{margin:40px 0;text-align:center;overflow:hidden;border-radius:16px;background:#fff;border:1px solid rgba(0,0,0,.06);box-shadow:0 2px 12px rgba(0,0,0,.04);position:relative;transition:all .3s ease}
-    .blog-ad-container:hover{box-shadow:0 4px 24px rgba(0,0,0,.08);border-color:rgba(0,102,204,.12)}
-    .blog-ad-inner{display:flex;align-items:center;justify-content:center;width:100%;min-height:200px;background:linear-gradient(135deg,#fafafa,#f5f5f7);position:relative;padding:32px 24px}.blog-ad-inner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,102,204,.03) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(41,151,255,.02) 0%,transparent 60%);pointer-events:none}
-    .blog-ad-label{position:absolute;top:10px;right:14px;font-size:.6rem;color:rgba(0,0,0,.2);text-transform:uppercase;letter-spacing:1.2px;font-weight:600;background:rgba(0,0,0,.03);padding:2px 10px;border-radius:9999px}
-    .blog-ad-content{display:flex;align-items:center;gap:28px;padding:8px;position:relative;z-index:1;max-width:700px;width:100%}
-    .blog-ad-icon{width:72px;height:72px;border-radius:18px;background:linear-gradient(135deg,#0066cc,#2997ff);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(0,102,204,.25);transition:transform .3s ease,box-shadow .3s ease}
-    .blog-ad-container:hover .blog-ad-icon{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,102,204,.35)}
-    .blog-ad-text{text-align:left;flex:1}
-    .blog-ad-text h3{font-size:1.1rem;font-weight:700;color:#1d1d1f;margin-bottom:4px;letter-spacing:-.01em;line-height:1.3}
-    .blog-ad-text p{font-size:.85rem;color:rgba(0,0,0,.5);line-height:1.5;margin-bottom:10px}
-    .blog-ad-cta{display:inline-flex;align-items:center;gap:6px;padding:8px 20px;background:linear-gradient(135deg,#0066cc,#0071e3);color:#fff;border-radius:9999px;font-size:.8rem;font-weight:500;text-decoration:none;transition:all .25s ease;letter-spacing:-.01em}
-    .blog-content .blog-ad-cta{color:#fff;text-decoration:none}
-    .blog-content .blog-ad-cta:hover{color:#fff;background:linear-gradient(135deg,#0071e3,#2997ff);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,102,204,.3)}
-    .blog-ad-cta:active{transform:translateY(0)}
-    .blog-ad-cta i{font-size:.7rem;transition:transform .2s ease}
-    .blog-ad-cta:hover i{transform:translateX(2px)}
-    @media(max-width:768px){.blog-ad-container{margin:24px 0}.blog-ad-inner{min-height:auto;padding:24px 16px}.blog-ad-content{flex-direction:column;gap:16px;text-align:center}.blog-ad-text{text-align:center}.blog-ad-icon{width:56px;height:56px;font-size:1.3rem;border-radius:14px}}
-  </style>
+  <!-- Scripts -->
+  <script>
+  // Navbar scroll
+  window.addEventListener('scroll', function() {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+  });
+  // Mobile nav toggle
+  document.addEventListener('click', function(e) {
+    var toggle = e.target.closest('#navToggle');
+    if (toggle) { document.getElementById('navLinks').classList.toggle('open'); return; }
+    if (!e.target.closest('.blog-nav-links') && !e.target.closest('#navToggle')) {
+      document.getElementById('navLinks').classList.remove('open');
+    }
+  });
+  // Reading progress
+  (function() {
+    var bar = document.getElementById('readingProgress');
+    var pct = document.getElementById('readingPercent');
+    var article = document.querySelector('article');
+    if (!bar || !article) return;
+    function update() {
+      var rect = article.getBoundingClientRect();
+      var total = article.scrollHeight - window.innerHeight;
+      var scrolled = -rect.top;
+      var percent = Math.min(100, Math.max(0, Math.round((scrolled / total) * 100)));
+      bar.style.width = percent + '%';
+      if (pct) pct.textContent = percent + '%';
+    }
+    window.addEventListener('scroll', update);
+    update();
+  })();
+  // Active TOC highlighting
+  (function() {
+    var links = document.querySelectorAll('.toc-list a');
+    if (links.length === 0) return;
+    var ids = Array.from(links).map(function(a) { return a.getAttribute('href').slice(1); });
+    function highlight() {
+      var scrollY = window.scrollY + 100;
+      var current = '';
+      for (var i = 0; i < ids.length; i++) {
+        var el = document.getElementById(ids[i]);
+        if (el && el.offsetTop <= scrollY) current = ids[i];
+      }
+      links.forEach(function(a) {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', highlight);
+    highlight();
+  })();
+  </script>
 
   <!-- Popup Ad Container -->
   <div class="popup-ad-overlay" id="popupAdContainer"></div>
 
-  <!-- Blog Ad Scripts (works without DB) -->
+  <!-- Blog Ad Scripts -->
   <script src="../js/blog-ads.js"></script>
   <script src="../js/popup-ads.js"></script>
 </body>

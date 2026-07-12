@@ -245,11 +245,49 @@ function generatePostHtml(post, recentPosts, blogAds, popupAds) {
   const shortDate = fmtDateShort(post.created_at || post.date);
   const coverImg = coverUrl(post.cover_image);
   const tags = typeof post.tags === 'string' ? JSON.parse(post.tags) : (post.tags || []);
-  const tagLinks = tags.map(t => `<a href="index.html" class="tag">${esc(t)}</a>`).join('\n      ');
+  const tagLinks = tags.map(t => `<a href="index.html" class="tag">${esc(t)}</a>`).join('\n        ');
   const ogTags = tags.map(t => `  <meta property="article:tag" content="${esc(t)}">`).join('\n');
 
   const metaTitle = post.meta_title || post.title;
   const metaDesc = post.meta_description || post.excerpt || '';
+  const shareUrl = `${BASE_URL}/blog/${post.slug}.html`;
+  const shareTitle = encodeURIComponent(metaTitle);
+  const shareDesc = encodeURIComponent(metaDesc);
+
+  // Generate recent posts sidebar HTML
+  const recentHtml = recentPosts
+    .filter(p => p.slug !== post.slug)
+    .slice(0, 4)
+    .map(p => {
+      const pShort = fmtDateShort(p.created_at || p.date);
+      return `        <a href="${p.slug}.html" class="sidebar-post">
+          <span class="icon"><i class="fas fa-file-alt" style="color:${getCatColor(p.category)}"></i></span>
+          <div><div class="title">${esc(p.title)}</div><div class="date">${pShort}</div></div>
+        </a>`;
+    }).join('\n');
+
+  // Generate related posts (same category)
+  const related = recentPosts
+    .filter(p => p.category === post.category && p.slug !== post.slug)
+    .slice(0, 3);
+  const relatedHtml = related.length > 0 ? `
+  <div class="related-articles">
+    <h2 class="related-articles-title">Related Articles</h2>
+    <div class="related-grid">
+${related.map(p => {
+  const pCover = coverUrl(p.cover_image);
+  const pShort = fmtDateShort(p.created_at || p.date);
+  return `      <a href="${p.slug}.html" class="related-card">
+        <img src="${escAttr(pCover)}" alt="${esc(p.title)}" class="related-card-img" loading="lazy">
+        <div class="related-card-body">
+          <div class="related-card-cat">${esc(p.category)}</div>
+          <div class="related-card-title">${esc(p.title)}</div>
+          <div class="related-card-meta">${pShort} · ${p.reading_time || 8} min read</div>
+        </div>
+      </a>`;
+}).join('\n')}
+    </div>
+  </div>` : '';
 
   return `<!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -262,7 +300,7 @@ function generatePostHtml(post, recentPosts, blogAds, popupAds) {
   <meta property="og:description" content="${esc(metaDesc)}">
   <meta property="og:image" content="${escAttr(coverImg)}">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="${BASE_URL}/blog/${post.slug}.html">
+  <meta property="og:url" content="${shareUrl}">
   <meta property="og:site_name" content="PixabAnimation">
   <meta property="og:locale" content="en_US">
   <meta property="article:published_time" content="${isoDate}">
@@ -275,7 +313,7 @@ ${ogTags}
   <meta name="twitter:title" content="${esc(metaTitle)}">
   <meta name="twitter:description" content="${esc(metaDesc)}">
   <meta name="twitter:image" content="${escAttr(coverImg)}">
-  <link rel="canonical" href="${BASE_URL}/blog/${post.slug}.html">
+  <link rel="canonical" href="${shareUrl}">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="blog.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -304,7 +342,7 @@ ${ogTags}
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "${BASE_URL}/blog/${post.slug}.html"
+    "@id": "${shareUrl}"
   },
   "keywords": "${esc(tags.join(', '))}",
   "articleSection": "${esc(post.category || 'Tech')}",
@@ -316,81 +354,63 @@ ${ogTags}
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "${BASE_URL}"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Blog",
-      "item": "${BASE_URL}/blog/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "${esc(post.title)}",
-      "item": "${BASE_URL}/blog/${post.slug}.html"
-    }
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "${BASE_URL}" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "${BASE_URL}/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "${esc(post.title)}", "item": "${shareUrl}" }
   ]
 }
   </script>
   <link rel="icon" type="image/png" href="${LOGO_URL}" sizes="32x32">
   <link rel="apple-touch-icon" type="image/png" href="${LOGO_URL}" sizes="180x180">
-  <meta name="msapplication-TileColor" content="#0066cc">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="msapplication-TileColor" content="#4338CA">
+  <meta name="theme-color" content="#FAF8F5">
 </head>
 <body>
-  <!-- Navigation (matching homepage) -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+  <div class="reading-progress" id="readingProgress"></div>
+  <nav class="blog-navbar" id="navbar">
+    <div class="blog-nav-container">
+      <button class="blog-nav-toggle" id="navToggle" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
-      <ul class="nav-links" id="navLinks">
-        <li class="nav-brand-item">
-          <a href="${BASE_URL}/" class="nav-brand">
-            <img src="${BASE_URL}/assets/pixabanimation-logo.png" alt="PixabAnimation" class="brand-logo" width="36" height="32">
-          </a>
-        </li>
-        <li><a href="${BASE_URL}/" class="nav-link active" data-nav><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="${BASE_URL}/#/shop" class="nav-link" data-nav><i class="fas fa-store"></i> Shop</a></li>
-        <li><a href="${BASE_URL}/#/shop?category=videos" class="nav-link" data-nav><i class="fas fa-video"></i> Videos</a></li>
-        <li><a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins" class="nav-link" data-nav><i class="fas fa-plug"></i> Plugins</a></li>
-        <li><a href="index.html" class="nav-link" data-nav><i class="fas fa-newspaper"></i> Blog</a></li>
-        <li><a href="${BASE_URL}/#/about" class="nav-link" data-nav><i class="fas fa-info-circle"></i> About</a></li>
-        <li><a href="${BASE_URL}/#/contact" class="nav-link" data-nav><i class="fas fa-envelope"></i> Contact</a></li>
-        <li class="nav-divider-mobile"><hr></li>
-        <li><a href="${BASE_URL}/#/wishlist" class="nav-link nav-action-mobile" data-nav><i class="fas fa-heart"></i> Wishlist <span class="badge wishlist-badge-mobile">0</span></a></li>
-        <li><a href="${BASE_URL}/#/cart" class="nav-link nav-action-mobile" data-nav><i class="fas fa-shopping-bag"></i> Cart <span class="badge cart-badge-mobile">0</span></a></li>
-        <li><a href="${BASE_URL}/#/login" class="nav-link nav-action-mobile" data-nav><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
-        <li><a href="${BASE_URL}/#/profile" class="nav-link nav-action-mobile" data-nav><i class="fas fa-user"></i> Profile</a></li>
+      <ul class="blog-nav-links" id="navLinks">
+        <li><a href="${BASE_URL}/" class="blog-nav-brand">
+          <img src="${BASE_URL}/assets/pixabanimation-logo.png" alt="PixabAnimation" width="28" height="24">
+          PixabAnimation
+        </a></li>
+        <li><a href="${BASE_URL}/">Home</a></li>
+        <li><a href="${BASE_URL}/#/shop">Shop</a></li>
+        <li><a href="${BASE_URL}/#/shop?category=videos">Videos</a></li>
+        <li><a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins">Plugins</a></li>
+        <li><a href="index.html" class="active">Blog</a></li>
+        <li><a href="${BASE_URL}/#/about">About</a></li>
+        <li><a href="${BASE_URL}/#/contact">Contact</a></li>
       </ul>
-      <div class="nav-actions">
-        <a href="${BASE_URL}/#/wishlist" class="nav-icon-btn" aria-label="Wishlist">
-          <i class="fas fa-heart"></i>
-          <span class="badge wishlist-badge">0</span>
-        </a>
-        <a href="${BASE_URL}/#/cart" class="nav-icon-btn" aria-label="Cart">
-          <i class="fas fa-shopping-bag"></i>
-          <span class="badge cart-badge">0</span>
-        </a>
-        <a href="${BASE_URL}/#/login" class="btn btn-sm btn-primary">Sign In</a>
+      <div class="blog-nav-actions">
+        <a href="${BASE_URL}/#/wishlist"><i class="fas fa-heart"></i></a>
+        <a href="${BASE_URL}/#/cart"><i class="fas fa-shopping-bag"></i></a>
+        <a href="${BASE_URL}/#/login" style="background:var(--accent);color:#fff;padding:6px 16px;border-radius:9999px;font-size:.82rem;font-weight:600;text-decoration:none">Sign In</a>
       </div>
     </div>
   </nav>
 
+  <div class="breadcrumb-bar">
+    <a href="${BASE_URL}/">Home</a><span class="sep">/</span>
+    <a href="index.html">Blog</a><span class="sep">/</span>
+    <a href="index.html">${esc(post.category || 'Tech')}</a><span class="sep">/</span>
+    <span class="current">${esc(metaTitle)}</span>
+  </div>
+
 <div class="blog-wrapper">
   <article>
-    <div style="margin-bottom:24px">
-      <div class="blog-category"><span style="font-size:1.2rem">✦</span> ${esc(post.category || 'Tech')}</div>
+    <div class="article-hero">
+      <a href="index.html" class="article-category-badge"><i class="fas fa-tag" style="font-size:0.7rem"></i> ${esc(post.category || 'Tech')}</a>
       <h1>${esc(post.title)}</h1>
-      <div class="blog-meta">
-        <span>📅 ${longDate}</span>
-        <span>•</span>
-        <span>📝 ${esc(post.author || 'PixabAnimation Team')}</span>
+      <div class="article-meta-row">
+        <span class="meta-item"><i class="fas fa-calendar-alt"></i> ${longDate}</span>
+        <span class="meta-dot"></span>
+        <span class="meta-item"><i class="fas fa-user"></i> ${esc(post.author || 'PixabAnimation Team')}</span>
+        <span class="meta-dot"></span>
+        <span class="reading-time-badge"><i class="fas fa-clock"></i> ${post.reading_time || 8} min read</span>
       </div>
     </div>
 
@@ -409,10 +429,10 @@ ${tagLinks}
 
     <div class="share-section">
       <span class="label">Share</span>
-      <a href="https://www.facebook.com/sharer/sharer.php?u=${BASE_URL}/blog/${post.slug}.html" target="_blank" class="share-btn" style="background:rgba(0,0,0,.04)" onmouseover="this.style.background='#1877f2';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">f</a>
-      <a href="https://twitter.com/intent/tweet?text=${esc(encodeURIComponent(post.title))}&url=${BASE_URL}/blog/${post.slug}.html" target="_blank" class="share-btn" onmouseover="this.style.background='#000';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">𝕏</a>
-      <a href="https://www.pinterest.com/pin/create/button/?url=${BASE_URL}/blog/${post.slug}.html&description=${esc(encodeURIComponent(metaDesc))}" target="_blank" class="share-btn" onmouseover="this.style.background='#e60023';this.style.color='#fff'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'">P</a>
-      <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);alert('Link copied!')" onmouseover="this.style.background='rgba(0,102,204,0.1)';this.style.color='#0066cc'" onmouseout="this.style.background='rgba(0,0,0,0.04)';this.style.color='rgba(0,0,0,0.4)'"><i class="fas fa-link"></i></button>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" class="share-btn" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://twitter.com/intent/tweet?text=${shareTitle}&url=${shareUrl}" target="_blank" class="share-btn" title="Share on X"><i class="fab fa-x-twitter"></i></a>
+      <a href="https://www.pinterest.com/pin/create/button/?url=${shareUrl}&description=${shareDesc}" target="_blank" class="share-btn" title="Share on Pinterest"><i class="fab fa-pinterest-p"></i></a>
+      <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>{this.innerHTML='<i class=\\'fas fa-check\\'></i>';setTimeout(()=>{this.innerHTML='<i class=\\'fas fa-link\\'></i>'},1500)})" title="Copy link"><i class="fas fa-link"></i></button>
     </div>
 
     <div class="author-bio">
@@ -423,30 +443,35 @@ ${tagLinks}
       </div>
       <div class="author-social">
         <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" aria-label="Twitter">𝕏</a>
+        <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
         <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
       </div>
     </div>
 
-      <div id="ad-slot-1-article"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-cube"></i></div><div class="blog-ad-text"><h3>Premium Motion Graphics Assets</h3><p>Browse 4000+ professional 4K motion backgrounds, animated templates, and stock footage — crafted for creators who demand the best.</p><a href="https://pixabanimation.github.io/#/shop" class="blog-ad-cta">Browse Collection <i class="fas fa-arrow-right"></i></a></div></div></div></div>
-      <div id="ad-slot-2-article"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-film"></i></div><div class="blog-ad-text"><h3>4K Video Clips &amp; Templates</h3><p>Royalty-free motion graphics, lower thirds, and title animations for your next project.</p><a href="https://pixabanimation.github.io/#/shop?category=videos" class="blog-ad-cta">Explore Library <i class="fas fa-arrow-right"></i></a></div></div></div></div>
-      <div id="ad-slot-3-article"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-layer-group"></i></div><div class="blog-ad-text"><h3>After Effects Templates</h3><p>Professional logo reveals, typography animations, and infographic templates designed to make an impact.</p><a href="https://stock.adobe.com/contributor/211977281/SPurnoAnimation" class="blog-ad-cta">View Collection <i class="fas fa-arrow-right"></i></a></div></div></div></div>
+      <div id="ad-slot-1-article"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-cube"></i></div><div class="blog-ad-text"><h3>Premium Motion Graphics Assets</h3><p>Browse 4000+ professional 4K motion backgrounds, animated templates, and stock footage.</p><a href="${BASE_URL}/#/shop" class="blog-ad-cta">Browse Collection <i class="fas fa-arrow-right"></i></a></div></div></div></div>
+      <div id="ad-slot-2-article"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-film"></i></div><div class="blog-ad-text"><h3>4K Video Clips &amp; Templates</h3><p>Royalty-free motion graphics, lower thirds, and title animations.</p><a href="${BASE_URL}/#/shop?category=videos" class="blog-ad-cta">Explore Library <i class="fas fa-arrow-right"></i></a></div></div></div></div>
+      <div id="ad-slot-3-article"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-layer-group"></i></div><div class="blog-ad-text"><h3>After Effects Templates</h3><p>Professional logo reveals, typography animations, and infographic templates.</p><a href="https://stock.adobe.com/contributor/211977281/SPurnoAnimation" class="blog-ad-cta">View Collection <i class="fas fa-arrow-right"></i></a></div></div></div></div>
 
     <div class="useful-links">
       <div class="label">Useful Links</div>
       <div class="grid">
-        <a href="${BASE_URL}/#/shop">▸ Shop Premium Assets</a>
-        <a href="${BASE_URL}/#/shop?category=videos">▸ Motion Graphics Stock</a>
-        <a href="${BASE_URL}/#/about">▸ About PixabAnimation</a>
-        <a href="${BASE_URL}/">▸ Return to Homepage</a>
+        <a href="${BASE_URL}/#/shop"><i class="fas fa-shopping-bag" style="margin-right:6px"></i> Shop Premium Assets</a>
+        <a href="${BASE_URL}/#/shop?category=videos"><i class="fas fa-video" style="margin-right:6px"></i> Motion Graphics Stock</a>
+        <a href="${BASE_URL}/#/about"><i class="fas fa-info-circle" style="margin-right:6px"></i> About PixabAnimation</a>
+        <a href="${BASE_URL}/"><i class="fas fa-home" style="margin-right:6px"></i> Return to Homepage</a>
       </div>
     </div>
   </article>
 
   <aside class="sidebar">
+    <div class="sidebar-section reading-progress-sidebar">
+      <div class="progress-text" id="readingPercent">0%</div>
+      <div class="progress-label">Read</div>
+    </div>
+
     <div class="sidebar-section">
       <div class="sidebar-title">Recent Posts</div>
-${recentPostsHtml(recentPosts, post.slug)}
+${recentHtml}
     </div>
 
     <div class="sidebar-section">
@@ -457,120 +482,116 @@ ${sidebarTagsHtml(recentPosts.map(p => typeof p.tags === 'string' ? JSON.parse(p
     </div>
 
     <div class="sidebar-section">
-      <div class="sidebar-title">Top Authors</div>
-      <div class="sidebar-author" style="margin-bottom:12px">
+      <div class="sidebar-title">Authors</div>
+      <div class="sidebar-author">
         <div class="initial">P</div>
         <div><div class="name">PixabAnimation</div><div class="role">Content Creator</div></div>
       </div>
       <div class="sidebar-author">
-        <div class="initial" style="background:linear-gradient(135deg,#5856d6,#af52de)">S</div>
+        <div class="initial" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">S</div>
         <div><div class="name">SPurno</div><div class="role">Motion Design Expert</div></div>
       </div>
     </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">Ad</div>
-        <div id="ad-slot-1"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-cube"></i></div><div class="blog-ad-text"><h3>Premium Motion Graphics Assets</h3><p>Browse 4000+ professional 4K motion backgrounds, animated templates, and stock footage — crafted for creators who demand the best.</p><a href="https://pixabanimation.github.io/#/shop" class="blog-ad-cta">Browse Collection <i class="fas fa-arrow-right"></i></a></div></div></div></div>
-        <div id="ad-slot-2"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-film"></i></div><div class="blog-ad-text"><h3>4K Video Clips &amp; Templates</h3><p>Royalty-free motion graphics, lower thirds, and title animations for your next project.</p><a href="https://pixabanimation.github.io/#/shop?category=videos" class="blog-ad-cta">Explore Library <i class="fas fa-arrow-right"></i></a></div></div></div></div>
-        <div id="ad-slot-3"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-layer-group"></i></div><div class="blog-ad-text"><h3>After Effects Templates</h3><p>Professional logo reveals, typography animations, and infographic templates designed to make an impact.</p><a href="https://stock.adobe.com/contributor/211977281/SPurnoAnimation" class="blog-ad-cta">View Collection <i class="fas fa-arrow-right"></i></a></div></div></div></div>
-      </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Sponsored</div>
+      <div id="ad-slot-1"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-cube"></i></div><div class="blog-ad-text"><h3>Premium Motion Graphics</h3><p>4000+ professional 4K motion backgrounds and templates.</p><a href="${BASE_URL}/#/shop" class="blog-ad-cta">Browse <i class="fas fa-arrow-right"></i></a></div></div></div></div></div>
+      <div id="ad-slot-2" style="margin-top:12px"></div>
+      <div id="ad-slot-3" style="margin-top:12px"></div>
+    </div>
   </aside>
+
+  ${relatedHtml}
 
   <div class="back-section">
     <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Blog</a>
   </div>
 </div>
 
-  <!-- Footer — matching homepage -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-grid">
-        <!-- Brand -->
-        <div class="footer-brand">
-          <img src="${BASE_URL}/assets/pixabanimation-logo.png" alt="PixabAnimation Logo" class="footer-logo" width="28" height="24" loading="lazy">
-          <span class="footer-brand-name">PixabAnimation</span>
-          <p class="footer-brand-desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</p>
-          <div class="footer-social">
+  <footer class="blog-footer">
+    <div class="blog-footer-content">
+      <div class="blog-footer-grid">
+        <div class="blog-footer-brand">
+          <img src="${BASE_URL}/assets/pixabanimation-logo.png" alt="PixabAnimation Logo" width="28" height="24" loading="lazy" style="filter:brightness(0) invert(1)">
+          <span class="name">PixabAnimation</span>
+          <p class="desc">Premium motion graphics, animation assets, and creative tools for editors, motion designers, and content creators worldwide.</p>
+          <div class="blog-footer-social">
             <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
             <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
             <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
             <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
           </div>
         </div>
-        <!-- Shop -->
-        <div class="footer-col">
-          <h4 class="footer-col-title">Shop</h4>
-          <a href="${BASE_URL}/#/shop" class="footer-link">All Assets</a>
-          <a href="${BASE_URL}/#/shop?category=videos" class="footer-link">Animation &amp; Video</a>
-          <a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins" class="footer-link">After Effects Plugins</a>
-          <a href="${BASE_URL}/#/shop?category=background-animation" class="footer-link">Background Animation</a>
-          <a href="${BASE_URL}/#/shop?category=infographic-animation" class="footer-link">Infographic Animation</a>
+        <div class="blog-footer-col">
+          <h4>Shop</h4>
+          <a href="${BASE_URL}/#/shop">All Assets</a>
+          <a href="${BASE_URL}/#/shop?category=videos">Animation & Video</a>
+          <a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins">AE Plugins</a>
+          <a href="${BASE_URL}/#/shop?category=background-animation">Backgrounds</a>
         </div>
-        <!-- Categories -->
-        <div class="footer-col">
-          <h4 class="footer-col-title">Categories</h4>
-          <a href="${BASE_URL}/#/shop?category=videos" class="footer-link">Motion Graphics</a>
-          <a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins" class="footer-link">Plugins &amp; Extensions</a>
-          <a href="${BASE_URL}/#/shop?category=green-screen-mockup" class="footer-link">Green Screen Mockups</a>
-          <a href="${BASE_URL}/#/shop?category=ads-design" class="footer-link">Advertising Design</a>
-          <a href="${BASE_URL}/#/shop" class="footer-link footer-link-all">View All <i class="fas fa-arrow-right"></i></a>
+        <div class="blog-footer-col">
+          <h4>Categories</h4>
+          <a href="${BASE_URL}/#/shop?category=videos">Motion Graphics</a>
+          <a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins">Plugins</a>
+          <a href="${BASE_URL}/#/shop?category=green-screen-mockup">Green Screen</a>
+          <a href="${BASE_URL}/#/shop?category=ads-design">Advertising</a>
         </div>
-        <!-- Support -->
-        <div class="footer-col">
-          <h4 class="footer-col-title">Support</h4>
-          <a href="${BASE_URL}/#/contact" class="footer-link">Contact Us</a>
-          <a href="${BASE_URL}/#/about" class="footer-link">About Us</a>
-          <a href="${BASE_URL}/#/privacy-policy" class="footer-link">Privacy Policy</a>
-          <a href="${BASE_URL}/#/refund-policy" class="footer-link">Refund Policy</a>
-          <a href="${BASE_URL}/#/terms-of-use" class="footer-link">Terms of Use</a>
-          <a href="index.html" class="footer-link">Blog</a>
+        <div class="blog-footer-col">
+          <h4>Support</h4>
+          <a href="${BASE_URL}/#/contact">Contact Us</a>
+          <a href="${BASE_URL}/#/about">About Us</a>
+          <a href="${BASE_URL}/#/privacy-policy">Privacy Policy</a>
+          <a href="${BASE_URL}/#/terms-of-use">Terms of Use</a>
+          <a href="index.html">Blog</a>
         </div>
-        <!-- Newsletter -->
-        <div class="footer-col footer-col-newsletter">
-          <h4 class="footer-col-title">Stay in the Loop</h4>
-          <p class="footer-newsletter-text">Get early access to new releases, subscriber-only discounts, and creative inspiration.</p>
-          <form class="footer-newsletter-form" action="${BASE_URL}/" method="get">
+        <div class="blog-footer-col blog-footer-col-newsletter">
+          <h4>Stay in the Loop</h4>
+          <p class="blog-footer-newsletter-text">Get early access to new releases and creative inspiration.</p>
+          <form class="blog-footer-newsletter-form" action="${BASE_URL}/" method="get">
             <input type="email" placeholder="Enter your email" required>
             <button type="submit" aria-label="Subscribe"><i class="fas fa-arrow-right"></i></button>
           </form>
-          <p class="footer-newsletter-note">No spam. Unsubscribe anytime.</p>
+          <p class="blog-footer-note">No spam. Unsubscribe anytime.</p>
         </div>
       </div>
-      <div class="footer-bottom">
-        <div class="footer-bottom-links">
+      <div class="blog-footer-bottom">
+        <div class="blog-footer-bottom-links">
           <a href="${BASE_URL}/#/privacy-policy">Privacy</a>
-          <span class="footer-bottom-sep">·</span>
           <a href="${BASE_URL}/#/refund-policy">Refunds</a>
-          <span class="footer-bottom-sep">·</span>
           <a href="${BASE_URL}/#/terms-of-use">Terms</a>
-          <span class="footer-bottom-sep">·</span>
           <a href="${BASE_URL}/#/contact">Support</a>
         </div>
-        <p class="footer-bottom-copy">&copy; 2026 PixabAnimation & SPurno. All rights reserved.</p>
+        <p class="blog-footer-bottom-copy">&copy; 2026 PixabAnimation & SPurno. All rights reserved.</p>
         <div class="blog-footer-payment-icons">
-          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#8622E7"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">S</text></svg> Skrill</span>
-          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14" style="flex-shrink:0"><rect width="20" height="20" rx="4" fill="#2D9CDB"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">P</text></svg> Payoneer</span>
+          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14"><rect width="20" height="20" rx="4" fill="#8622E7"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">S</text></svg> Skrill</span>
+          <span class="payment-icon-text"><svg viewBox="0 0 20 20" width="14" height="14"><rect width="20" height="20" rx="4" fill="#2D9CDB"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">P</text></svg> Payoneer</span>
         </div>
       </div>
     </div>
   </footer>
   <script>
-    window.addEventListener('scroll', function() {
-      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-    });
-    document.addEventListener('click', function(e) {
-      var toggle = e.target.closest('#navToggle');
-      if (toggle) { document.getElementById('navLinks').classList.toggle('open'); return; }
-      if (!e.target.closest('.nav-links') && !e.target.closest('#navToggle')) {
-        document.getElementById('navLinks').classList.remove('open');
-      }
-    });
+  window.addEventListener('scroll', function() {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    var bar = document.getElementById('readingProgress');
+    var pct = document.getElementById('readingPercent');
+    var article = document.querySelector('article');
+    if (bar && article) {
+      var total = article.scrollHeight - window.innerHeight;
+      var percent = Math.min(100, Math.max(0, Math.round((-article.getBoundingClientRect().top / total) * 100)));
+      bar.style.width = percent + '%';
+      if (pct) pct.textContent = percent + '%';
+    }
+  });
+  document.addEventListener('click', function(e) {
+    var toggle = e.target.closest('#navToggle');
+    if (toggle) { document.getElementById('navLinks').classList.toggle('open'); return; }
+    if (!e.target.closest('.blog-nav-links') && !e.target.closest('#navToggle')) {
+      document.getElementById('navLinks').classList.remove('open');
+    }
+  });
   </script>
-
-  <!-- Popup Ad Container -->
   <div class="popup-ad-overlay" id="popupAdContainer"></div>
-
-  <!-- Blog Ad Scripts (static, works without DB) -->
   <script src="../js/blog-ads.js"></script>
   <script src="../js/popup-ads.js"></script>
 </body>
