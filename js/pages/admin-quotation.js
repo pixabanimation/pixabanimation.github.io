@@ -22,17 +22,30 @@ const AdminQuotation = {
     const container = document.getElementById('adminContent');
     try {
       const quotes = await DB.getAllQuotations();
+      const totalValue = quotes.reduce((sum, q) => sum + (parseFloat(q.total) || 0), 0);
+      const acceptedCount = quotes.filter(q => q.status === 'accepted').length;
+      const activeCount = quotes.filter(q => ['draft', 'sent'].includes(q.status)).length;
 
       container.innerHTML = `
         <div class="admin-quotation-page page-enter">
-          <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+          <div class="admin-doc-hero">
             <div>
-              <h3 style="font-size:1.1rem;font-weight:600;margin:0">Animation Quotations</h3>
-              <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0">${quotes.length} quotation${quotes.length !== 1 ? 's' : ''}</p>
+              <div class="admin-doc-kicker"><i class="fas fa-file-signature"></i> Estimate workspace</div>
+              <h3>Animation Quotations</h3>
+              <p>Build scoped animation estimates with services, validity dates, tax, terms, and client-ready PDF export.</p>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="AdminQuotation.render('form', null)">
-              <i class="fas fa-plus"></i> New Quotation
-            </button>
+            <div class="admin-doc-actions">
+              <button class="btn btn-primary btn-sm" onclick="AdminQuotation.render('form', null)">
+                <i class="fas fa-plus"></i> New Quotation
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-doc-stats">
+            <div class="admin-doc-stat"><span>Total quotations</span><strong>${quotes.length}</strong></div>
+            <div class="admin-doc-stat"><span>Active quotes</span><strong>${activeCount}</strong></div>
+            <div class="admin-doc-stat"><span>Accepted</span><strong>${acceptedCount}</strong></div>
+            <div class="admin-doc-stat"><span>Quoted value</span><strong>$${totalValue.toFixed(2)}</strong></div>
           </div>
 
           <div class="admin-table-container">
@@ -51,7 +64,7 @@ const AdminQuotation = {
               </thead>
               <tbody>
                 ${quotes.length === 0 ? 
-                  '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">No quotations yet. Create your first animation quotation!</td></tr>' :
+                  '<tr><td colspan="8"><div class="admin-doc-empty"><i class="fas fa-file-signature"></i><strong>No quotations yet</strong><span>Create your first animation estimate for a client.</span></div></td></tr>' :
                   quotes.map(q => `
                     <tr>
                       <td><span style="font-weight:700;font-size:0.85rem">${q.quote_number}</span></td>
@@ -59,7 +72,7 @@ const AdminQuotation = {
                       <td>${q.client_company || '—'}</td>
                       <td style="font-size:0.85rem;color:var(--text-muted)">${q.date ? new Date(q.date + 'T00:00:00').toLocaleDateString() : '—'}</td>
                       <td style="font-size:0.85rem;color:var(--text-muted)">${q.valid_until ? new Date(q.valid_until + 'T00:00:00').toLocaleDateString() : '—'}</td>
-                      <td style="font-weight:700;color:var(--accent-1)">$${parseFloat(q.total).toFixed(2)}</td>
+                      <td style="font-weight:800;color:var(--doc-green)">$${parseFloat(q.total).toFixed(2)}</td>
                       <td>${this.statusBadge(q.status)}</td>
                       <td>
                         <div style="display:flex;gap:6px">
@@ -93,14 +106,14 @@ const AdminQuotation = {
 
   statusBadge(status) {
     const colors = {
-      'draft': { bg: 'rgba(0,0,0,0.06)', color: 'var(--text-muted)' },
-      'sent': { bg: 'rgba(0,102,204,0.15)', color: 'var(--accent-1)' },
-      'accepted': { bg: 'rgba(16,185,129,0.15)', color: 'var(--success)' },
-      'rejected': { bg: 'rgba(239,68,68,0.15)', color: 'var(--error)' },
-      'cancelled': { bg: 'rgba(0,0,0,0.06)', color: 'var(--text-muted)' }
+      'draft': { bg: 'rgba(100,116,139,0.12)', color: '#475569', dot: '#94a3b8' },
+      'sent': { bg: 'rgba(37,99,235,0.12)', color: '#1d4ed8', dot: '#2563eb' },
+      'accepted': { bg: 'rgba(5,150,105,0.12)', color: '#047857', dot: '#059669' },
+      'rejected': { bg: 'rgba(220,38,38,0.12)', color: '#b91c1c', dot: '#dc2626' },
+      'cancelled': { bg: 'rgba(100,116,139,0.12)', color: '#475569', dot: '#94a3b8' }
     };
     const c = colors[status] || colors.draft;
-    return `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:${c.bg};color:${c.color};text-transform:capitalize">${status}</span>`;
+    return `<span style="display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;font-size:0.75rem;font-weight:800;background:${c.bg};color:${c.color};text-transform:capitalize"><span style="width:6px;height:6px;border-radius:50%;background:${c.dot}"></span>${status}</span>`;
   },
 
   // ==================== FORM VIEW ====================
@@ -120,22 +133,24 @@ const AdminQuotation = {
 
     container.innerHTML = `
       <div class="admin-quotation-page page-enter">
-        <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
-          <div>
-            <h3 style="font-size:1.1rem;font-weight:600;margin:0">
-              <i class="fas fa-arrow-left" style="cursor:pointer;margin-right:8px;font-size:0.9rem" onclick="AdminQuotation.render('list')"></i>
-              ${isEdit ? 'Edit Quotation' : 'New Quotation'}
-            </h3>
-            <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0">Animation billing quotation</p>
+        <div class="admin-doc-form-header">
+          <div class="admin-doc-title-row">
+            <button type="button" class="admin-doc-back" onclick="AdminQuotation.render('list')" aria-label="Back to quotations">
+              <i class="fas fa-arrow-left"></i>
+            </button>
+            <div>
+              <div class="admin-doc-kicker"><i class="fas fa-clapperboard"></i> ${isEdit ? 'Editing quotation' : 'New quotation'}</div>
+              <h3>${isEdit ? 'Edit Quotation' : 'Create Quotation'}</h3>
+              <p>Scope animation services, set validity, and prepare a professional estimate.</p>
+            </div>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="admin-doc-actions">
             <button class="btn btn-primary btn-sm" onclick="AdminQuotation.saveQuotation()">
               <i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Save'} Quotation
             </button>
-            ${isEdit ? `
-            <button class="btn btn-secondary btn-sm" onclick="AdminQuotation.exportQuotePDF(${quoteId})">
+            <button class="btn btn-secondary btn-sm" onclick="${isEdit ? `AdminQuotation.exportQuotePDF(${quoteId})` : 'AdminQuotation.exportPDF()'}">
               <i class="fas fa-file-pdf"></i> Export PDF
-            </button>` : ''}
+            </button>
           </div>
         </div>
 
@@ -248,8 +263,8 @@ const AdminQuotation = {
                 </div>
               </div>
 
-              <div style="text-align:right;padding:12px 0">
-                <button type="button" class="btn btn-secondary" onclick="AdminQuotation.render('list')" style="margin-right:8px">
+              <div class="admin-doc-actions" style="padding:12px 0">
+                <button type="button" class="btn btn-secondary" onclick="AdminQuotation.render('list')">
                   <i class="fas fa-times"></i> Cancel
                 </button>
                 <button type="submit" class="btn btn-primary">
@@ -308,7 +323,7 @@ const AdminQuotation = {
 
   generateServiceRow(index, description = '', duration = '', rate = '', amount = '') {
     return `
-      <div class="admin-quote-service-row" data-index="${index}" style="display:grid;grid-template-columns:1fr 80px 100px 80px 30px;gap:8px;align-items:end;margin-bottom:8px">
+      <div class="admin-quote-service-row" data-index="${index}">
         <div class="form-group">
           <label>Service</label>
           <input type="text" class="qt-svc-desc" value="${description}" placeholder="e.g. Explainer Video Animation">
@@ -318,13 +333,14 @@ const AdminQuotation = {
           <input type="text" class="qt-svc-duration" value="${duration}" placeholder="e.g. 2 weeks">
         </div>
         <div class="form-group">
-          <label>Rate ($)</label>                    <input type="number" class="qt-svc-rate" value="${rate || 0}" min="0" step="0.01">
+          <label>Rate ($)</label>
+          <input type="number" class="qt-svc-rate" value="${rate || 0}" min="0" step="0.01">
         </div>
         <div class="form-group">
           <label>Amount</label>
           <input type="text" class="qt-svc-amount" value="${amount ? `$${parseFloat(amount).toFixed(2)}` : '$0.00'}" readonly style="font-weight:600">
         </div>
-        <button type="button" class="btn btn-sm" style="padding:8px;color:var(--error);font-size:0.8rem;margin-bottom:0" onclick="AdminQuotation.removeService(this)" title="Remove">
+        <button type="button" class="admin-line-remove" onclick="AdminQuotation.removeService(this)" title="Remove service" aria-label="Remove service">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -400,7 +416,15 @@ const AdminQuotation = {
   },
 
   generateQuotePreview(quote, services) {
-    services = services || this.getServices();
+    if (!services && quote) {
+      services = typeof quote.services === 'string' ? JSON.parse(quote.services) : (quote.services || []);
+    }
+    services = (services || this.getServices()).map(s => ({
+      description: s.description || '',
+      duration: s.duration || '',
+      rate: parseFloat(s.rate || 0),
+      amount: parseFloat(s.amount ?? s.rate ?? 0)
+    }));
     const subtotal = services.reduce((sum, s) => sum + s.amount, 0);
     const taxRate = parseFloat(document.getElementById('qt_tax_rate')?.value || (quote?.tax_rate || 0));
     const taxAmount = subtotal * (taxRate / 100);
@@ -433,10 +457,10 @@ const AdminQuotation = {
     return `
       <div style="width:100%;height:100%;background:#fff;color:#1d1d1f;font-family:'Inter',-apple-system,sans-serif;display:flex;flex-direction:column;position:relative">
         <!-- Header -->
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:24px 28px 16px;border-bottom:3px solid #10b981">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:26px 30px 18px;border-bottom:4px solid #047857;background:#f8fafc">
           <div>
-            <div style="font-size:1.5rem;font-weight:800;color:#10b981;letter-spacing:-0.02em">QUOTATION</div>
-            <div style="font-size:11px;color:#999;margin-top:4px"># ${qtNum}</div>
+            <div style="font-size:1.65rem;font-weight:900;color:#0f172a;letter-spacing:-0.03em">QUOTATION</div>
+            <div style="font-size:11px;color:#64748b;margin-top:4px;font-weight:700"># ${qtNum}</div>
           </div>
           <div style="text-align:right">
             <div style="font-size:13px;font-weight:700">PixabAnimation Studio</div>
@@ -469,7 +493,7 @@ const AdminQuotation = {
         <div style="flex:1;padding:16px 28px">
           <table style="width:100%;border-collapse:collapse">
             <thead>
-              <tr style="background:#10b981;color:#fff">
+              <tr style="background:#064e3b;color:#fff">
                 <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Animation Service</th>
                 <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;width:80px">Duration</th>
                 <th style="padding:10px 12px;text-align:right;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;width:100px">Rate</th>
@@ -494,7 +518,7 @@ const AdminQuotation = {
               <span style="color:#666">Tax (${taxRate}%)</span>
               <span>$${taxAmount.toFixed(2)}</span>
             </div>` : ''}
-            <div style="display:flex;justify-content:space-between;padding:8px 0 0;border-top:2px solid #10b981;margin-top:4px;font-size:16px;font-weight:800;color:#10b981">
+            <div style="display:flex;justify-content:space-between;padding:9px 0 0;border-top:2px solid #047857;margin-top:4px;font-size:16px;font-weight:900;color:#047857">
               <span>Total</span>
               <span>$${total.toFixed(2)}</span>
             </div>
@@ -671,6 +695,45 @@ const AdminQuotation = {
 
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`quotation-${quote.quote_number}.pdf`);
+      Components.toast('PDF downloaded!', 'success');
+    } catch (error) {
+      console.error('Quote PDF export error:', error);
+      Components.toast('Failed to export PDF: ' + error.message, 'error');
+    }
+  },
+
+  async exportPDF() {
+    const services = this.getServices();
+    this.updateSummary(services);
+    this.updateQuotePreview(services);
+    const preview = document.getElementById('quotePreview');
+    if (!preview) return;
+
+    try {
+      Components.toast('Generating PDF...', 'info');
+
+      const canvas = await html2canvas(preview, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#ffffff',
+        width: preview.scrollWidth,
+        height: preview.scrollHeight
+      });
+
+      const { jsPDF } = window.jspdf;
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width / 2, canvas.height / 2]
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height / canvas.width) * pdfWidth;
+
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`quotation-${document.getElementById('qt_number')?.value || 'export'}.pdf`);
       Components.toast('PDF downloaded!', 'success');
     } catch (error) {
       console.error('Quote PDF export error:', error);

@@ -22,17 +22,30 @@ const AdminInvoice = {
     const container = document.getElementById('adminContent');
     try {
       const invoices = await DB.getAllInvoices();
+      const totalValue = invoices.reduce((sum, inv) => sum + (parseFloat(inv.total) || 0), 0);
+      const paidCount = invoices.filter(inv => inv.status === 'paid').length;
+      const openCount = invoices.filter(inv => ['draft', 'sent', 'overdue'].includes(inv.status)).length;
 
       container.innerHTML = `
         <div class="admin-invoice-page page-enter">
-          <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+          <div class="admin-doc-hero">
             <div>
-              <h3 style="font-size:1.1rem;font-weight:600;margin:0">Invoice Generator</h3>
-              <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0">${invoices.length} invoice${invoices.length !== 1 ? 's' : ''}</p>
+              <div class="admin-doc-kicker"><i class="fas fa-file-invoice-dollar"></i> Billing workspace</div>
+              <h3>Invoice Generator</h3>
+              <p>Create polished invoices, track payment state, and export client-ready PDF or JPG files.</p>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="AdminInvoice.render('form', null)">
-              <i class="fas fa-plus"></i> New Invoice
-            </button>
+            <div class="admin-doc-actions">
+              <button class="btn btn-primary btn-sm" onclick="AdminInvoice.render('form', null)">
+                <i class="fas fa-plus"></i> New Invoice
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-doc-stats">
+            <div class="admin-doc-stat"><span>Total invoices</span><strong>${invoices.length}</strong></div>
+            <div class="admin-doc-stat"><span>Open documents</span><strong>${openCount}</strong></div>
+            <div class="admin-doc-stat"><span>Paid invoices</span><strong>${paidCount}</strong></div>
+            <div class="admin-doc-stat"><span>Total value</span><strong>$${totalValue.toFixed(2)}</strong></div>
           </div>
 
           <div class="admin-table-container">
@@ -50,14 +63,14 @@ const AdminInvoice = {
               </thead>
               <tbody>
                 ${invoices.length === 0 ?
-                  '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No invoices yet. Create your first invoice!</td></tr>' :
+                  '<tr><td colspan="7"><div class="admin-doc-empty"><i class="fas fa-file-invoice-dollar"></i><strong>No invoices yet</strong><span>Create your first client invoice to start tracking billing.</span></div></td></tr>' :
                   invoices.map(inv => `
                     <tr>
                       <td><span style="font-weight:700;font-size:0.85rem">${inv.invoice_number}</span></td>
                       <td><span style="font-weight:600">${inv.to_name}</span></td>
                       <td style="font-size:0.85rem;color:var(--text-muted)">${inv.date ? new Date(inv.date + 'T00:00:00').toLocaleDateString() : '—'}</td>
                       <td style="font-size:0.85rem;color:var(--text-muted)">${inv.due_date ? new Date(inv.due_date + 'T00:00:00').toLocaleDateString() : '—'}</td>
-                      <td style="font-weight:700;color:var(--accent-1)">$${parseFloat(inv.total).toFixed(2)}</td>
+                      <td style="font-weight:800;color:var(--doc-blue)">$${parseFloat(inv.total).toFixed(2)}</td>
                       <td>${this.statusBadge(inv.status)}</td>
                       <td>
                         <div style="display:flex;gap:6px">
@@ -91,14 +104,14 @@ const AdminInvoice = {
 
   statusBadge(status) {
     const colors = {
-      'draft': { bg: 'rgba(0,0,0,0.06)', color: 'var(--text-muted)' },
-      'sent': { bg: 'rgba(0,102,204,0.15)', color: 'var(--accent-1)' },
-      'paid': { bg: 'rgba(16,185,129,0.15)', color: 'var(--success)' },
-      'overdue': { bg: 'rgba(239,68,68,0.15)', color: 'var(--error)' },
-      'cancelled': { bg: 'rgba(0,0,0,0.06)', color: 'var(--text-muted)' }
+      'draft': { bg: 'rgba(100,116,139,0.12)', color: '#475569', dot: '#94a3b8' },
+      'sent': { bg: 'rgba(37,99,235,0.12)', color: '#1d4ed8', dot: '#2563eb' },
+      'paid': { bg: 'rgba(5,150,105,0.12)', color: '#047857', dot: '#059669' },
+      'overdue': { bg: 'rgba(220,38,38,0.12)', color: '#b91c1c', dot: '#dc2626' },
+      'cancelled': { bg: 'rgba(100,116,139,0.12)', color: '#475569', dot: '#94a3b8' }
     };
     const c = colors[status] || colors.draft;
-    return `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:${c.bg};color:${c.color};text-transform:capitalize">${status}</span>`;
+    return `<span style="display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;font-size:0.75rem;font-weight:800;background:${c.bg};color:${c.color};text-transform:capitalize"><span style="width:6px;height:6px;border-radius:50%;background:${c.dot}"></span>${status}</span>`;
   },
 
   // ==================== FORM VIEW ====================
@@ -118,15 +131,18 @@ const AdminInvoice = {
 
     container.innerHTML = `
       <div class="admin-invoice-page page-enter">
-        <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
-          <div>
-            <h3 style="font-size:1.1rem;font-weight:600;margin:0">
-              <i class="fas fa-arrow-left" style="cursor:pointer;margin-right:8px;font-size:0.9rem" onclick="AdminInvoice.render('list')"></i>
-              ${isEdit ? 'Edit Invoice' : 'New Invoice'}
-            </h3>
-            <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0">Create professional invoices with PDF & JPG export</p>
+        <div class="admin-doc-form-header">
+          <div class="admin-doc-title-row">
+            <button type="button" class="admin-doc-back" onclick="AdminInvoice.render('list')" aria-label="Back to invoices">
+              <i class="fas fa-arrow-left"></i>
+            </button>
+            <div>
+              <div class="admin-doc-kicker"><i class="fas fa-receipt"></i> ${isEdit ? 'Editing invoice' : 'New invoice'}</div>
+              <h3>${isEdit ? 'Edit Invoice' : 'Create Invoice'}</h3>
+              <p>Fill client details, itemize work, and export a client-ready document.</p>
+            </div>
           </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="admin-doc-actions">
             <button class="btn btn-primary btn-sm" onclick="AdminInvoice.saveInvoice()">
               <i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Save'} Invoice
             </button>
@@ -280,7 +296,7 @@ const AdminInvoice = {
                 </div>
               </div>
 
-              <div style="text-align:right;padding:12px 0;display:flex;gap:8px;justify-content:flex-end">
+              <div class="admin-doc-actions" style="padding:12px 0">
                 <button type="button" class="btn btn-secondary" onclick="AdminInvoice.render('list')">
                   <i class="fas fa-times"></i> Cancel
                 </button>
@@ -344,7 +360,7 @@ const AdminInvoice = {
 
   generateItemRow(index, description = '', quantity = 1, rate = 0) {
     return `
-      <div class="admin-invoice-item-row" data-index="${index}" style="display:grid;grid-template-columns:1fr 80px 100px 80px 30px;gap:8px;align-items:end;margin-bottom:8px">
+      <div class="admin-invoice-item-row" data-index="${index}">
         <div class="form-group">
           <label>Description</label>
           <input type="text" class="inv-item-desc" value="${description}" placeholder="Service / product">
@@ -361,7 +377,7 @@ const AdminInvoice = {
           <label>Amount</label>
           <input type="text" class="inv-item-amount" readonly style="font-weight:600">
         </div>
-        <button type="button" class="btn btn-sm" style="padding:8px;color:var(--error);font-size:0.8rem;margin-bottom:0" onclick="AdminInvoice.removeItem(this)" title="Remove item">
+        <button type="button" class="admin-line-remove" onclick="AdminInvoice.removeItem(this)" title="Remove item" aria-label="Remove item">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -483,10 +499,10 @@ const AdminInvoice = {
     return `
       <div style="width:100%;height:100%;background:#fff;color:#1d1d1f;font-family:'Inter',-apple-system,sans-serif;display:flex;flex-direction:column;position:relative">
         <!-- Header -->
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:24px 28px 16px;border-bottom:3px solid #0066cc">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:26px 30px 18px;border-bottom:4px solid #1e3a8a;background:#f8fafc">
           <div>
-            <div style="font-size:1.5rem;font-weight:800;color:#0066cc;letter-spacing:-0.02em">INVOICE</div>
-            <div style="font-size:11px;color:#999;margin-top:4px"># ${invNum}</div>
+            <div style="font-size:1.65rem;font-weight:900;color:#0f172a;letter-spacing:-0.03em">INVOICE</div>
+            <div style="font-size:11px;color:#64748b;margin-top:4px;font-weight:700"># ${invNum}</div>
           </div>
           <div style="text-align:right">
             <div style="font-size:14px;font-weight:700">${fromName}</div>
@@ -520,7 +536,7 @@ const AdminInvoice = {
         <div style="flex:1;padding:16px 28px">
           <table style="width:100%;border-collapse:collapse">
             <thead>
-              <tr style="background:#0066cc;color:#fff">
+              <tr style="background:#0f172a;color:#fff">
                 <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Description</th>
                 <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;width:60px">Qty</th>
                 <th style="padding:10px 12px;text-align:right;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;width:100px">Rate</th>
@@ -550,7 +566,7 @@ const AdminInvoice = {
               <span style="color:#666">Tax (${taxRate}%)</span>
               <span>$${taxAmount.toFixed(2)}</span>
             </div>` : ''}
-            <div style="display:flex;justify-content:space-between;padding:8px 0 0;border-top:2px solid #0066cc;margin-top:4px;font-size:16px;font-weight:800;color:#0066cc">
+            <div style="display:flex;justify-content:space-between;padding:9px 0 0;border-top:2px solid #1e3a8a;margin-top:4px;font-size:16px;font-weight:900;color:#1e3a8a">
               <span>Total</span>
               <span>$${total.toFixed(2)}</span>
             </div>
@@ -774,10 +790,10 @@ const AdminInvoice = {
 
     return `
       <div style="width:1100px;height:auto;background:#fff;color:#1d1d1f;font-family:'Inter',-apple-system,sans-serif;display:flex;flex-direction:column">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:24px 28px 16px;border-bottom:3px solid #0066cc">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:26px 30px 18px;border-bottom:4px solid #1e3a8a;background:#f8fafc">
           <div>
-            <div style="font-size:1.5rem;font-weight:800;color:#0066cc;letter-spacing:-0.02em">INVOICE</div>
-            <div style="font-size:11px;color:#999;margin-top:4px"># ${invoice.invoice_number}</div>
+            <div style="font-size:1.65rem;font-weight:900;color:#0f172a;letter-spacing:-0.03em">INVOICE</div>
+            <div style="font-size:11px;color:#64748b;margin-top:4px;font-weight:700"># ${invoice.invoice_number}</div>
           </div>
           <div style="text-align:right">
             <div style="font-size:14px;font-weight:700">${invoice.from_name}</div>
@@ -807,7 +823,7 @@ const AdminInvoice = {
         <div style="flex:1;padding:16px 28px">
           <table style="width:100%;border-collapse:collapse">
             <thead>
-              <tr style="background:#0066cc;color:#fff">
+              <tr style="background:#0f172a;color:#fff">
                 <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Description</th>
                 <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;width:60px">Qty</th>
                 <th style="padding:10px 12px;text-align:right;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;width:100px">Rate</th>
@@ -825,7 +841,7 @@ const AdminInvoice = {
             </div>
             ${discount > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px"><span style="color:#666">Discount (${discount}%)</span><span style="color:#ef4444">−$${discountAmount.toFixed(2)}</span></div>` : ''}
             ${taxRate > 0 ? `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px"><span style="color:#666">Tax (${taxRate}%)</span><span>$${taxAmount.toFixed(2)}</span></div>` : ''}
-            <div style="display:flex;justify-content:space-between;padding:8px 0 0;border-top:2px solid #0066cc;margin-top:4px;font-size:16px;font-weight:800;color:#0066cc">
+            <div style="display:flex;justify-content:space-between;padding:9px 0 0;border-top:2px solid #1e3a8a;margin-top:4px;font-size:16px;font-weight:900;color:#1e3a8a">
               <span>Total</span>
               <span>$${total.toFixed(2)}</span>
             </div>
