@@ -1,23 +1,47 @@
 // ============================================
-// PixabAnimation — Checkout Page
+// PixabAnimation — Checkout Page (Redesigned)
 // ============================================
 
 const CheckoutPage = {
+  cartItems: [],
+  subtotal: 0,
+  tax: 0,
+  grandTotal: 0,
+
   async render() {
     const content = document.getElementById('pageContent');
 
     content.innerHTML = `
       <div class="checkout-page page-enter">
-        <div style="text-align:center;margin-bottom:40px">
-          <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(0,102,204,0.1);border:1px solid rgba(0,102,204,0.15);border-radius:9999px;margin-bottom:16px">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--ds-primary)"></span>
-            <span class="ds-caption" style="font-weight:500;color:var(--ds-primary)">Secure Checkout</span>
+        <div class="checkout-hero">
+          <div class="checkout-hero-badge">
+            <span class="pulse-dot"></span>
+            Secure Checkout
           </div>
-          <h1 class="ds-display-lg" style="color:#1d1d1f;margin-bottom:10px">Complete Your <span class="text-gradient">Order</span></h1>
-          <p class="ds-body" style="color:rgba(0,0,0,0.56);max-width:480px;margin:0 auto">Fill in your details and submit your payment to complete the purchase.</p>
+          <h1>Complete Your <span class="text-gradient">Order</span></h1>
+          <p>Fill in your details below to finish your purchase.</p>
         </div>
+
+        <!-- Step Indicator -->
+        <div class="checkout-steps">
+          <div class="checkout-step active" id="step1">
+            <span class="step-num">1</span>
+            <span class="step-label">Details</span>
+          </div>
+          <div class="checkout-step-line" id="stepLine1"></div>
+          <div class="checkout-step" id="step2">
+            <span class="step-num">2</span>
+            <span class="step-label">Payment</span>
+          </div>
+          <div class="checkout-step-line" id="stepLine2"></div>
+          <div class="checkout-step" id="step3">
+            <span class="step-num">3</span>
+            <span class="step-label">Confirm</span>
+          </div>
+        </div>
+
         <div id="checkoutContent">
-          <div style="text-align:center;padding:40px">
+          <div style="text-align:center;padding:60px 0">
             <div class="loader-spinner"></div>
           </div>
         </div>
@@ -26,8 +50,6 @@ const CheckoutPage = {
 
     await this.loadCheckout();
   },
-
-
 
   async loadCheckout() {
     const container = document.getElementById('checkoutContent');
@@ -42,141 +64,192 @@ const CheckoutPage = {
         return;
       }
 
-      const subtotal = cartItems.reduce((sum, item) => sum + parseFloat(item.price) * item.quantity, 0);
-      const tax = subtotal * 0.08;
-      const grandTotal = subtotal + tax;
+      this.cartItems = cartItems;
+      this.subtotal = cartItems.reduce((sum, item) => sum + parseFloat(item.price) * item.quantity, 0);
+      this.tax = this.subtotal * 0.08;
+      this.grandTotal = this.subtotal + this.tax;
 
       container.innerHTML = `
-        <form class="checkout-form" onsubmit="CheckoutPage.placeOrder(event)">
-          <!-- Customer Information -->
-          <div style="border:1px solid rgba(0,0,0,0.06);border-radius:14px;padding:28px">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--ds-primary);flex-shrink:0;background:rgba(0,102,204,0.06);border-radius:8px"><i class="fas fa-user"></i></div>
-              <h3 class="ds-body-strong" style="color:#1d1d1f;margin:0">Customer Information</h3>
-            </div>
-            <div class="checkout-grid">
-              <div class="form-group full-width">
-                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Full Name</label>
-                <input type="text" id="shipName" placeholder="John Doe" required>
-              </div>
-              <div class="form-group full-width">
-                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Email</label>
-                <input type="email" id="shipEmail" placeholder="john@example.com" required>
-              </div>
-              <div class="form-group full-width">
-                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Phone Number</label>
-                <input type="tel" id="shipPhone" placeholder="+1 (555) 123-4567" required>
-              </div>
-              <div class="form-group full-width">
-                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">Country</label>
-                <select id="shipCountry" onchange="CheckoutPage.onCountryChange()" required style="padding:12px 16px;border:1px solid rgba(0,0,0,0.1);border-radius:12px;font-size:0.9rem;background:white;color:#1d1d1f;width:100%;appearance:none;-webkit-appearance:none">
-                  <option value="">Select your country</option>
-                  ${Countries.renderOptions()}
-                </select>
-              </div>
-              <div class="form-group full-width" id="stateField" style="display:none">
-                <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">State / Province</label>
-                <select id="shipState" style="padding:12px 16px;border:1px solid rgba(0,0,0,0.1);border-radius:12px;font-size:0.9rem;background:white;color:#1d1d1f;width:100%;appearance:none;-webkit-appearance:none">
-                  <option value="">Select state/province</option>
-                </select>
-              </div>
-            </div>
-          </div>
+        <div class="checkout-grid-layout">
+          <!-- Form Column -->
+          <div class="checkout-form-col">
+            <form class="checkout-form" onsubmit="CheckoutPage.placeOrder(event)">
 
-          <!-- Payment Method -->
-          <div style="border:1px solid rgba(0,0,0,0.06);border-radius:14px;padding:28px">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--ds-primary);flex-shrink:0;background:rgba(0,102,204,0.06);border-radius:8px"><i class="fas fa-credit-card"></i></div>
-              <h3 class="ds-body-strong" style="color:#1d1d1f;margin:0">Payment Method</h3>
-            </div>
-            <p class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:16px">
-              Make your payment via <strong>Payoneer</strong> or <strong>Skrill</strong>, then enter the Transaction ID below to complete your order.
-            </p>
-            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px" id="paymentOptions">
-              <label class="payment-option-label" style="display:flex;align-items:center;gap:14px;padding:18px 20px;border:2px solid var(--ds-primary);border-radius:12px;cursor:pointer;background:rgba(0,102,204,0.03)" onclick="document.querySelectorAll('.payment-option-label').forEach(l=>{l.style.border='2px solid rgba(0,0,0,0.06)';l.style.background='transparent'});this.style.border='2px solid var(--ds-primary)';this.style.background='rgba(0,102,204,0.03)';this.querySelector('input').checked=true">
-                <input type="radio" name="payment" value="skrill" checked style="width:auto;flex-shrink:0">
-                <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#942B8B;color:white;font-size:1.1rem;flex-shrink:0"><i class="fas fa-money-bill-wave"></i></div>
-                <div style="flex:1">
-                  <div style="font-weight:600;font-size:0.95rem;color:#1d1d1f">Skrill <span style="font-size:0.7rem;font-weight:400;color:var(--ds-primary);background:rgba(0,102,204,0.08);padding:1px 8px;border-radius:9999px">Recommended</span></div>
-                  <div class="ds-caption" style="color:rgba(0,0,0,0.50);margin-top:2px">
-                    Send to: <strong style="color:#942B8B;background:rgba(148,43,139,0.08);padding:2px 8px;border-radius:4px">spurno@icloud.com</strong>
+              <!-- Customer Information -->
+              <div class="checkout-section-card" id="sectionCustomer">
+                <div class="checkout-section-header">
+                  <div class="checkout-section-icon"><i class="fas fa-user"></i></div>
+                  <h3>Customer Information</h3>
+                  <span class="section-step-num">Step 1</span>
+                </div>
+                <div class="checkout-form-grid">
+                  <div class="checkout-field full-width">
+                    <label for="shipName">Full Name</label>
+                    <input type="text" id="shipName" placeholder="John Doe" required autocomplete="name">
+                  </div>
+                  <div class="checkout-field full-width">
+                    <label for="shipEmail">Email Address</label>
+                    <input type="email" id="shipEmail" placeholder="john@example.com" required autocomplete="email">
+                  </div>
+                  <div class="checkout-field full-width">
+                    <label for="shipPhone">Phone Number</label>
+                    <input type="tel" id="shipPhone" placeholder="+1 (555) 123-4567" required autocomplete="tel">
+                  </div>
+                  <div class="checkout-field full-width">
+                    <label for="shipCountry">Country</label>
+                    <select id="shipCountry" onchange="CheckoutPage.onCountryChange()" required>
+                      <option value="">Select your country</option>
+                      ${Countries.renderOptions()}
+                    </select>
+                  </div>
+                  <div class="checkout-field full-width" id="stateField" style="display:none">
+                    <label for="shipState">State / Province</label>
+                    <select id="shipState">
+                      <option value="">Select state/province</option>
+                    </select>
                   </div>
                 </div>
-              </label>
-              <label class="payment-option-label" style="display:flex;align-items:center;gap:14px;padding:18px 20px;border:2px solid rgba(0,0,0,0.06);border-radius:12px;cursor:pointer;background:transparent" onclick="document.querySelectorAll('.payment-option-label').forEach(l=>{l.style.border='2px solid rgba(0,0,0,0.06)';l.style.background='transparent'});this.style.border='2px solid var(--ds-primary)';this.style.background='rgba(0,102,204,0.03)';this.querySelector('input').checked=true">
-                <input type="radio" name="payment" value="payoneer" style="width:auto;flex-shrink:0">
-                <div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#FF6B35;color:white;font-size:1.1rem;flex-shrink:0"><i class="fas fa-university"></i></div>
-                <div style="flex:1">
-                  <div style="font-weight:600;font-size:0.95rem;color:#1d1d1f">Payoneer</div>
-                  <div class="ds-caption" style="color:rgba(0,0,0,0.50);margin-top:2px">
-                    Send to: <strong style="color:var(--ds-primary);background:rgba(0,102,204,0.08);padding:2px 8px;border-radius:4px">any_dj@live.com</strong>
-                  </div>
-                </div>
-              </label>
-            </div>
-
-            <div style="padding:16px 20px;background:rgba(0,102,204,0.04);border:1px solid rgba(0,102,204,0.1);border-radius:12px;margin-bottom:16px">
-              <div class="ds-caption-strong" style="color:var(--ds-primary);margin-bottom:8px">
-                <i class="fas fa-info-circle"></i> How to pay
               </div>
-              <ol style="font-size:0.82rem;color:rgba(0,0,0,0.56);padding-left:16px;display:flex;flex-direction:column;gap:5px">
-                <li>Transfer the total amount via <strong>Payoneer</strong> or <strong>Skrill</strong> to our account.</li>
-                <li>After payment, copy the <strong>Transaction ID</strong> from your payment receipt.</li>
-                <li>Paste the Transaction ID below and submit your order.</li>
-                <li>Admin will verify the transaction and send your download link (for digital/video items).</li>
-              </ol>
-            </div>
 
-            <div class="form-group">
-              <label class="ds-caption" style="color:rgba(0,0,0,0.50);margin-bottom:4px;display:block">
-                <i class="fas fa-hashtag" style="color:var(--ds-primary)"></i> Transaction ID
-              </label>
-              <input type="text" id="transactionId" placeholder="Enter your Payoneer or Skrill Transaction ID" required>
-              <span class="ds-caption" style="color:rgba(0,0,0,0.40);margin-top:2px">
-                Enter the Transaction ID from your payment receipt. Your order will be verified by admin.
-              </span>
-            </div>
-          </div>
+              <!-- Payment Method -->
+              <div class="checkout-section-card" id="sectionPayment">
+                <div class="checkout-section-header">
+                  <div class="checkout-section-icon"><i class="fas fa-credit-card"></i></div>
+                  <h3>Payment Method</h3>
+                  <span class="section-step-num">Step 2</span>
+                </div>
+                <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:18px">
+                  Make your payment via <strong style="color:var(--text-primary)">Payoneer</strong> or <strong style="color:var(--text-primary)">Skrill</strong>, then enter the Transaction ID below.
+                </p>
 
-          <!-- Order Summary -->
-          <div style="border:1px solid rgba(0,0,0,0.06);border-radius:14px;padding:28px">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-              <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--ds-primary);flex-shrink:0;background:rgba(0,102,204,0.06);border-radius:8px"><i class="fas fa-shopping-bag"></i></div>
-              <h3 class="ds-body-strong" style="color:#1d1d1f;margin:0">Order Summary</h3>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:10px">
-              ${cartItems.map(item => `
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.06)">
-                  <div style="display:flex;align-items:center;gap:12px">
-                    <img src="${item.image_url}" alt="${item.name}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;border:1px solid rgba(0,0,0,0.04)">
-                    <div>
-                      <div style="font-weight:500;font-size:0.9rem;color:#1d1d1f">${item.name}</div>
-                      <div class="ds-caption" style="color:rgba(0,0,0,0.40)">Qty: ${item.quantity}</div>
+                <div class="checkout-payment-options" id="paymentOptions">
+                  <label class="checkout-payment-card selected" onclick="CheckoutPage.selectPayment(this, 'skrill')">
+                    <input type="radio" name="payment" value="skrill" checked>
+                    <div class="checkout-payment-icon" style="background:#942B8B"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="checkout-payment-info">
+                      <div class="checkout-payment-name">
+                        Skrill
+                        <span class="recommended-tag">Recommended</span>
+                      </div>
+                      <div class="checkout-payment-email">Send to: <strong>spurno@icloud.com</strong></div>
                     </div>
-                  </div>
-                  <div style="font-weight:600;color:var(--ds-primary)">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
+                  </label>
+                  <label class="checkout-payment-card" onclick="CheckoutPage.selectPayment(this, 'payoneer')">
+                    <input type="radio" name="payment" value="payoneer">
+                    <div class="checkout-payment-icon" style="background:#FF6B35"><i class="fas fa-university"></i></div>
+                    <div class="checkout-payment-info">
+                      <div class="checkout-payment-name">Payoneer</div>
+                      <div class="checkout-payment-email">Send to: <strong>any_dj@live.com</strong></div>
+                    </div>
+                  </label>
                 </div>
-              `).join('')}
-            </div>
-            <div style="margin-top:12px">
-              <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
-              <div class="summary-row" style="color:rgba(0,0,0,0.64)"><span>Tax (8%)</span><span>$${tax.toFixed(2)}</span></div>
-              <div class="summary-row total"><span>Total</span><span class="amount">$${grandTotal.toFixed(2)}</span></div>
-            </div>
+
+                <div class="checkout-howto">
+                  <div class="checkout-howto-title"><i class="fas fa-info-circle"></i> How to pay</div>
+                  <ol>
+                    <li>Transfer the total amount via <strong>Payoneer</strong> or <strong>Skrill</strong> to our account.</li>
+                    <li>After payment, copy the <strong>Transaction ID</strong> from your payment receipt.</li>
+                    <li>Paste the Transaction ID below and submit your order.</li>
+                    <li>Admin will verify the transaction and send your download link.</li>
+                  </ol>
+                </div>
+
+                <div class="checkout-field">
+                  <label for="transactionId">Transaction ID</label>
+                  <div class="checkout-tx-field">
+                    <i class="fas fa-hashtag tx-icon"></i>
+                    <input type="text" id="transactionId" placeholder="Enter your Payoneer or Skrill Transaction ID" required>
+                  </div>
+                  <div class="field-hint">Enter the Transaction ID from your payment receipt. Your order will be verified by admin.</div>
+                </div>
+              </div>
+
+              <!-- Submit (mobile: inside form, desktop: hidden via summary) -->
+              <button type="submit" class="checkout-submit-btn checkout-submit-mobile" style="display:none">
+                <i class="fas fa-lock"></i> Place Order — $${this.grandTotal.toFixed(2)}
+              </button>
+            </form>
           </div>
 
-          <button type="submit" class="ds-pill-cta" style="justify-content:center;padding:16px 28px;font-size:17px;width:100%">
-            <i class="fas fa-lock"></i> Place Order — $${grandTotal.toFixed(2)}
-          </button>
-        </form>
+          <!-- Order Summary Sidebar -->
+          <div class="checkout-summary-col">
+            <div class="checkout-summary-card">
+              <div class="checkout-summary-title">
+                <i class="fas fa-receipt" style="color:var(--accent-1)"></i>
+                <h3>Order Summary</h3>
+                <span class="item-count">${cartItems.length} item${cartItems.length !== 1 ? 's' : ''}</span>
+              </div>
+
+              <div class="checkout-summary-items">
+                ${cartItems.map(item => `
+                  <div class="checkout-summary-item">
+                    <div class="checkout-summary-item-img">
+                      <img src="${item.image_url}" alt="${item.name}" loading="lazy">
+                    </div>
+                    <div class="checkout-summary-item-info">
+                      <div class="checkout-summary-item-name">${item.name}</div>
+                      <div class="checkout-summary-item-meta">Qty: ${item.quantity}</div>
+                    </div>
+                    <div class="checkout-summary-item-price">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div class="checkout-summary-totals">
+                <div class="checkout-summary-row">
+                  <span>Subtotal</span>
+                  <span>$${this.subtotal.toFixed(2)}</span>
+                </div>
+                <div class="checkout-summary-row">
+                  <span>Tax (8%)</span>
+                  <span>$${this.tax.toFixed(2)}</span>
+                </div>
+                <div class="checkout-summary-row total">
+                  <span>Total</span>
+                  <span class="total-amount">$${this.grandTotal.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <button type="submit" class="checkout-submit-btn" style="margin-top:24px" onclick="document.querySelector('.checkout-form').requestSubmit()">
+                <i class="fas fa-lock"></i> Place Order — $${this.grandTotal.toFixed(2)}
+              </button>
+
+              <div class="checkout-trust-strip">
+                <div class="checkout-trust-item">
+                  <i class="fas fa-lock"></i>
+                  <strong>SSL</strong>
+                  Encrypted
+                </div>
+                <div class="checkout-trust-item">
+                  <i class="fas fa-shield-alt"></i>
+                  <strong>Secure</strong>
+                  Payment
+                </div>
+                <div class="checkout-trust-item">
+                  <i class="fas fa-headset"></i>
+                  <strong>Support</strong>
+                  24/7 Help
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       `;
+
+      // Submit buttons: CSS media queries handle mobile vs desktop visibility
+      // (.checkout-submit-mobile shown on mobile, .checkout-summary-col button shown on desktop)
+
     } catch (error) {
       console.error('Checkout error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load checkout', error.message);
     }
   },
 
-
+  selectPayment(card, method) {
+    document.querySelectorAll('.checkout-payment-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    card.querySelector('input[type="radio"]').checked = true;
+  },
 
   onCountryChange() {
     const countryCode = document.getElementById('shipCountry').value;
@@ -194,22 +267,23 @@ const CheckoutPage = {
 
   async placeOrder(event) {
     event.preventDefault();
-    const btn = event.target.querySelector('button[type="submit"]');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    const allBtns = document.querySelectorAll('.checkout-submit-btn');
+    allBtns.forEach(b => {
+      b.disabled = true;
+      b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    });
 
     try {
       const cartItems = await DB.getCart();
       if (cartItems.length === 0) {
         Components.toast('Your cart is empty', 'error');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-lock"></i> Place Order';
+        this._resetButtons();
         return;
       }
 
-      const name = document.getElementById('shipName').value;
-      const email = document.getElementById('shipEmail').value;
-      const phone = document.getElementById('shipPhone').value;
+      const name = document.getElementById('shipName').value.trim();
+      const email = document.getElementById('shipEmail').value.trim();
+      const phone = document.getElementById('shipPhone').value.trim();
       const countryCode = document.getElementById('shipCountry').value;
       const countryName = countryCode ? Countries.getName(countryCode) : '';
       const state = document.getElementById('shipState') ? document.getElementById('shipState').value : '';
@@ -218,21 +292,29 @@ const CheckoutPage = {
 
       if (!transactionId) {
         Components.toast('Please enter your Transaction ID from your payment receipt', 'error');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-lock"></i> Place Order';
+        this._resetButtons();
+        document.getElementById('transactionId').focus();
         return;
       }
 
       if (!countryCode) {
         Components.toast('Please select your country', 'error');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-lock"></i> Place Order';
+        this._resetButtons();
+        return;
+      }
+
+      if (!name || !email || !phone) {
+        Components.toast('Please fill in all customer information', 'error');
+        this._resetButtons();
         return;
       }
 
       const subtotal = cartItems.reduce((sum, item) => sum + parseFloat(item.price) * item.quantity, 0);
       const tax = subtotal * 0.08;
       const total = subtotal + tax;
+
+      // Mark all steps completed
+      this._setStepsCompleted();
 
       const orderId = await DB.createOrder({
         total,
@@ -252,55 +334,90 @@ const CheckoutPage = {
       });
 
       Components.toast(`Order #${orderId} submitted for verification!`, 'success');
-      
-      // Show success page
-      const container = document.getElementById('checkoutContent');
-      container.innerHTML = `
-        <div style="max-width:540px;margin:0 auto;text-align:center;padding:60px 24px" class="page-enter">
-          <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.15);border-radius:9999px;margin-bottom:16px">
-            <span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span>
-            <span class="ds-caption" style="font-weight:500;color:var(--success)">Order Submitted</span>
-          </div>
-          <div style="font-size:4rem;margin-bottom:20px">📋</div>
-          <h2 class="ds-display-lg" style="color:#1d1d1f;margin-bottom:8px">Order <span class="text-gradient">Submitted</span>!</h2>
-          <p class="ds-body" style="color:rgba(0,0,0,0.56);margin-bottom:4px">Order #${orderId} — awaiting verification</p>
-          <div style="padding:24px;border:1px solid rgba(0,0,0,0.06);border-radius:14px;margin:24px 0;text-align:left">
-            <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
-              <span style="font-weight:600;color:#1d1d1f">Payment:</span> $${total.toFixed(2)} via ${paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)}
-            </p>
-            <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
-              <span style="font-weight:600;color:#1d1d1f">Transaction:</span> ${transactionId}
-            </p>
-            <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
-              <span style="font-weight:600;color:#1d1d1f">Email:</span> ${email}
-            </p>
-            <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
-              <span style="font-weight:600;color:#1d1d1f">Phone:</span> ${phone}
-            </p>
-            <p class="ds-caption" style="color:rgba(0,0,0,0.64);margin-bottom:12px">
-              <span style="font-weight:600;color:#1d1d1f">Country:</span> ${countryName}${state ? `, ${state}` : ''}
-            </p>
-            <p class="ds-caption" style="color:rgba(0,0,0,0.50)">
-              You will receive the download link once admin approves the transaction.
-            </p>
-          </div>
-          <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-            <a href="#/profile" class="ds-pill-cta" style="padding:12px 24px;font-size:15px">
-              <i class="fas fa-user"></i> View Orders
-            </a>
-            <a href="#/" class="ds-pill-cta-secondary" style="padding:12px 24px;font-size:15px">
-              <i class="fas fa-home"></i> Continue Shopping
-            </a>
-          </div>
-        </div>
-      `;
+      this._showSuccess(orderId, total, paymentMethod, transactionId, email, phone, countryName, state);
 
       App.updateCartBadge();
     } catch (error) {
       console.error('Order placement error:', error);
       Components.toast('Failed to place order. Please try again.', 'error');
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-lock"></i> Place Order';
+      this._resetButtons();
     }
+  },
+
+  _resetButtons() {
+    document.querySelectorAll('.checkout-submit-btn').forEach(b => {
+      b.disabled = false;
+      b.innerHTML = `<i class="fas fa-lock"></i> Place Order — $${this.grandTotal.toFixed(2)}`;
+    });
+  },
+
+  _setStepsCompleted() {
+    ['step1', 'step2', 'step3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.classList.add('completed'); el.classList.remove('active'); }
+    });
+    ['stepLine1', 'stepLine2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('completed');
+    });
+  },
+
+  _showSuccess(orderId, total, paymentMethod, transactionId, email, phone, countryName, state) {
+    const container = document.getElementById('checkoutContent');
+    container.innerHTML = `
+      <div class="checkout-success page-enter">
+        <div class="checkout-success-check">
+          <i class="fas fa-check"></i>
+        </div>
+        <h2>Order <span class="text-gradient">Submitted</span>!</h2>
+        <p class="success-subtitle">Your order has been received and is being reviewed.</p>
+        <p class="success-order-id">Order #${orderId}</p>
+
+        <div class="checkout-success-details">
+          <div class="detail-row">
+            <span class="detail-label">Payment</span>
+            <span class="detail-value">$${total.toFixed(2)} via ${paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Transaction ID</span>
+            <span class="detail-value">${transactionId}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">${email}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Phone</span>
+            <span class="detail-value">${phone}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Location</span>
+            <span class="detail-value">${countryName}${state ? `, ${state}` : ''}</span>
+          </div>
+        </div>
+
+        <div class="checkout-success-note">
+          <i class="fas fa-info-circle"></i>
+          <span>You will receive the download link once admin approves the transaction. Check your email for updates.</span>
+        </div>
+
+        <div class="checkout-success-actions">
+          <a href="#/profile" class="ds-pill-cta" style="padding:14px 28px;font-size:0.9rem">
+            <i class="fas fa-user"></i> View My Orders
+          </a>
+          <a href="#/" class="ds-pill-cta-secondary" style="padding:14px 28px;font-size:0.9rem">
+            <i class="fas fa-home"></i> Continue Shopping
+          </a>
+        </div>
+      </div>
+    `;
+  },
+
+  cleanup() {
+    // No dynamic listeners to clean up — CSS handles mobile/desktop layout
   }
 };
+
+Router.beforeEach(() => {
+  CheckoutPage.cleanup();
+});
