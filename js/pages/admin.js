@@ -2133,59 +2133,115 @@ const AdminPage = {
         'visual-storytelling-data-animation.html', 'web-animation-css-javascript.html'
       ];
 
+      const activeCount = ads.filter(a => a.is_active).length;
+      const ad1Count = ads.filter(a => a.ad_type === 'ad1').length;
+      const ad2Count = ads.filter(a => a.ad_type === 'ad2').length;
+      const ad3Count = ads.filter(a => a.ad_type === 'ad3').length;
+
       container.innerHTML = `
         <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
           <div>
             <h3 style="font-size:1rem;font-weight:600;margin:0">Blog Advertisements</h3>
-            <p style="font-size:0.8rem;color:rgba(0,0,0,0.55);margin:4px 0 0">Manage ads displayed across all 40 blog pages. ${ads.filter(a => a.is_active).length} active of ${ads.length} total.</p>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0">Manage ads displayed across all 40 blog pages.</p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="AdminPage.showAdForm(null, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})">
             <i class="fas fa-plus"></i> Create Ad
           </button>
         </div>
+
+        <!-- Stats Bar -->
+        <div class="admin-ads-stats">
+          <div class="admin-ads-stat">
+            <div class="stat-icon" style="background:rgba(0,113,227,0.08);color:var(--accent-1)"><i class="fas fa-bullhorn"></i></div>
+            <div class="stat-value">${ads.length}</div>
+            <div class="stat-label">Total Ads</div>
+          </div>
+          <div class="admin-ads-stat">
+            <div class="stat-icon" style="background:rgba(36,138,61,0.08);color:var(--success)"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-value">${activeCount}</div>
+            <div class="stat-label">Active</div>
+          </div>
+          <div class="admin-ads-stat">
+            <div class="stat-icon" style="background:rgba(255,193,7,0.1);color:#b25000"><i class="fas fa-layer-group"></i></div>
+            <div class="stat-value">${ad1Count + ad2Count + ad3Count}</div>
+            <div class="stat-label">Positions Used</div>
+          </div>
+          <div class="admin-ads-stat">
+            <div class="stat-icon" style="background:rgba(108,99,255,0.08);color:#6c63ff"><i class="fas fa-file-alt"></i></div>
+            <div class="stat-value">40</div>
+            <div class="stat-label">Blog Pages</div>
+          </div>
+        </div>
+
         ${ads.length === 0 ? `
-        <div style="text-align:center;padding:60px;border:2px dashed var(--border-light);border-radius:var(--radius-lg)">
-          <i class="fas fa-bullhorn" style="font-size:3rem;color:rgba(0,0,0,0.3);margin-bottom:16px;display:block"></i>
-          <h3 style="margin-bottom:8px">No ads yet</h3>
-          <p style="color:rgba(0,0,0,0.5);margin-bottom:20px">Create your first blog advertisement to display across your blog pages.</p>
+        <div style="text-align:center;padding:60px;border:2px dashed var(--border-light);border-radius:var(--radius-xl);background:var(--bg-card)">
+          <div style="width:72px;height:72px;margin:0 auto 20px;border-radius:50%;background:linear-gradient(135deg,rgba(0,113,227,0.08),rgba(108,99,255,0.08));display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-bullhorn" style="font-size:1.8rem;color:var(--accent-1);opacity:0.6"></i>
+          </div>
+          <h3 style="margin-bottom:8px;font-size:1.1rem">No ads yet</h3>
+          <p style="color:var(--text-muted);margin-bottom:24px;font-size:0.9rem;max-width:400px;margin-left:auto;margin-right:auto">Create your first blog advertisement to display across your blog pages with live preview.</p>
           <button class="btn btn-primary" onclick="AdminPage.showAdForm(null, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})">
             <i class="fas fa-plus"></i> Create Your First Ad
           </button>
         </div>
         ` : `
         <div style="display:flex;flex-direction:column;gap:16px">
-          ${ads.map(ad => `
-            <div class="admin-card" style="padding:20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;opacity:${ad.is_active ? '1' : '0.5'}">
-              <div>
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-                  <span style="font-size:1.2rem;color:rgba(0,0,0,0.6);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-cube'}"></i></span>
-                  <div>
-                    <span style="font-weight:600;font-size:0.95rem">${ad.name}</span>
-                    <span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(0,102,204,0.1);color:rgba(0,0,0,0.6);margin-left:8px;text-transform:uppercase;letter-spacing:0.5px">${ad.ad_type}</span>
-                    ${ad.is_active ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(16,185,129,0.15);color:var(--success);margin-left:4px">Active</span>' : '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(255,255,255,0.05);color:rgba(0,0,0,0.45);margin-left:4px">Inactive</span>'}
+          ${ads.map(ad => {
+            const positions = { ad1: 'After Intro', ad2: 'Mid-Article', ad3: 'Before Tags' };
+            const targetPages = ad.target_pages === 'all' ? 40 : (() => { try { return JSON.parse(ad.target_pages || '[]').length; } catch { return 0; } })();
+            return `
+            <div class="admin-ad-card ${ad.is_active ? '' : 'inactive'}">
+              <div class="admin-ad-card-body">
+                <!-- Live Preview -->
+                <div class="admin-ad-preview">
+                  <div class="admin-ad-preview-mockup">
+                    <div class="admin-ad-preview-header"></div>
+                    <div class="admin-ad-preview-body">
+                      <div class="admin-ad-preview-icon" style="background:${ad.ad_type === 'ad1' ? 'linear-gradient(135deg,#0071e3,#42a5f5)' : ad.ad_type === 'ad2' ? 'linear-gradient(135deg,#6c63ff,#9c88ff)' : 'linear-gradient(135deg,#248a3d,#34d058)'}">
+                        <i class="fas ${ad.icon || 'fa-cube'}"></i>
+                      </div>
+                      <div class="admin-ad-preview-text">
+                        <div class="admin-ad-preview-title">${ad.title}</div>
+                        <div class="admin-ad-preview-desc">${ad.description || ''}</div>
+                        <span class="admin-ad-preview-cta" style="background:${ad.ad_type === 'ad1' ? '#0071e3' : ad.ad_type === 'ad2' ? '#6c63ff' : '#248a3d'}">${ad.cta_text || 'Learn More'}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div style="font-size:0.85rem;font-weight:600;color:#1d1d1f;margin-bottom:2px">${ad.title}</div>
-                <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;line-height:1.4">${ad.description}</div>
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.75rem;color:rgba(0,0,0,0.5)">
-                  <span><i class="fas fa-bullseye"></i> ${ad.cta_text} → ${ad.cta_url.substring(0, 40)}${ad.cta_url.length > 40 ? '...' : ''}</span>
-                  <span><i class="fas fa-file"></i> Pages: ${ad.target_pages === 'all' ? 'All (40)' : JSON.parse(ad.target_pages || '[]').length + ' selected'}</span>
-                  <span><i class="fas fa-sort"></i> Order: ${ad.sort_order || 0}</span>
+
+                <!-- Info -->
+                <div class="admin-ad-info">
+                  <div class="admin-ad-info-row">
+                    <span class="admin-ad-name">${ad.name}</span>
+                    <span class="admin-ad-badge type-badge"><i class="fas fa-layer-group"></i> ${positions[ad.ad_type] || ad.ad_type}</span>
+                    <span class="admin-ad-badge ${ad.is_active ? 'active' : 'inactive'}"><i class="fas fa-${ad.is_active ? 'check-circle' : 'pause-circle'}"></i> ${ad.is_active ? 'Active' : 'Inactive'}</span>
+                  </div>
+                  <div class="admin-ad-headline">${ad.title}</div>
+                  <div class="admin-ad-desc">${ad.description || ''}</div>
+                  <div class="admin-ad-meta">
+                    <span><i class="fas fa-bullseye"></i> ${ad.cta_text || 'Learn More'}</span>
+                    <span class="meta-dot"></span>
+                    <span><i class="fas fa-file"></i> ${targetPages === 40 ? 'All pages' : targetPages + ' pages'}</span>
+                    <span class="meta-dot"></span>
+                    <span><i class="fas fa-sort"></i> Order: ${ad.sort_order || 0}</span>
+                  </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="admin-ad-actions">
+                  <button class="admin-toggle ${ad.is_active ? 'active' : ''}" onclick="AdminPage.toggleAd(${ad.id}, ${!ad.is_active})" title="${ad.is_active ? 'Deactivate' : 'Activate'}">
+                    <div class="admin-toggle-knob"></div>
+                  </button>
+                  <button class="admin-action-btn" onclick="AdminPage.showAdForm(${ad.id}, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})" title="Edit">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteAd(${ad.id}, '${ad.name.replace(/'/g, "\\'")}')" title="Delete">
+                    <i class="fas fa-trash"></i>
+                  </button>
                 </div>
               </div>
-              <div style="display:flex;gap:8px;flex-shrink:0">
-                <button class="admin-action-btn" onclick="AdminPage.toggleAd(${ad.id}, ${!ad.is_active})" title="${ad.is_active ? 'Deactivate' : 'Activate'}" style="color:${ad.is_active ? 'var(--warning)' : 'var(--success)'}">
-                  <i class="fas fa-${ad.is_active ? 'pause' : 'play'}"></i>
-                </button>
-                <button class="admin-action-btn" onclick="AdminPage.showAdForm(${ad.id}, ${JSON.stringify(blogPageFiles).replace(/"/g, "'" )})" title="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteAd(${ad.id}, '${ad.name.replace(/'/g, "\\'")}')" title="Delete">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
             </div>
-          `).join('')}
+          `;}).join('')}
         </div>
         `}
       `;

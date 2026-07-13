@@ -1,5 +1,5 @@
 // ============================================
-// pixabanimation — Admin Popup Ads Manager
+// pixabanimation — Admin Popup Ads Manager (Redesigned)
 // ============================================
 
 const AdminPopupAds = {
@@ -7,60 +7,115 @@ const AdminPopupAds = {
     const container = document.getElementById('adminContent');
     try {
       const ads = await DB.getPopupAds();
+      const activeCount = ads.filter(a => a.is_active).length;
+      const animatedCount = ads.filter(a => a.is_animated).length;
 
       container.innerHTML = `
         <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
           <div>
-            <h3 style="font-size:1rem;font-weight:600;margin:0; color:rgba(0,0,0,0.55)">Popup Advertisements</h3>
-            <p style="font-size:0.8rem;color:rgba(0,0,0,0.55);margin:4px 0 0">Manage popup ads shown site-wide. Visitors see 2 popups per visit, alternating between 2 groups of ads.</p>
+            <h3 style="font-size:1rem;font-weight:600;margin:0">Popup Advertisements</h3>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin:4px 0 0">Manage popup ads shown site-wide. Visitors see 2 popups per visit.</p>
           </div>
           <button class="btn btn-primary btn-sm" onclick="AdminPopupAds.showForm(null)">
             <i class="fas fa-plus"></i> Create Popup Ad
           </button>
         </div>
+
+        <!-- Stats Bar -->
+        <div class="admin-ads-stats" style="grid-template-columns:repeat(3,1fr)">
+          <div class="admin-ads-stat">
+            <div class="stat-icon" style="background:rgba(0,113,227,0.08);color:var(--accent-1)"><i class="fas fa-window-restore"></i></div>
+            <div class="stat-value">${ads.length}</div>
+            <div class="stat-label">Total Popups</div>
+          </div>
+          <div class="admin-ads-stat">
+            <div class="stat-icon" style="background:rgba(36,138,61,0.08);color:var(--success)"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-value">${activeCount}</div>
+            <div class="stat-label">Active</div>
+          </div>
+          <div class="admin-ads-stat">
+            <div class="stat-icon" style="background:rgba(255,193,7,0.1);color:#b25000"><i class="fas fa-bolt"></i></div>
+            <div class="stat-value">${animatedCount}</div>
+            <div class="stat-label">Animated</div>
+          </div>
+        </div>
+
         ${ads.length === 0 ? `
-        <div style="text-align:center;padding:60px;border:2px dashed var(--border-light);border-radius:var(--radius-lg)">
-          <i class="fas fa-window-restore" style="font-size:3rem;color:rgba(0,0,0,0.3);margin-bottom:16px;display:block"></i>
-          <h3 style="margin-bottom:8px">No popup ads yet</h3>
-          <p style="color:rgba(0,0,0,0.5);margin-bottom:20px">Create popup ads that appear to visitors with alternating groups.</p>
+        <div style="text-align:center;padding:60px;border:2px dashed var(--border-light);border-radius:var(--radius-xl);background:var(--bg-card)">
+          <div style="width:72px;height:72px;margin:0 auto 20px;border-radius:50%;background:linear-gradient(135deg,rgba(0,113,227,0.08),rgba(108,99,255,0.08));display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-window-restore" style="font-size:1.8rem;color:var(--accent-1);opacity:0.6"></i>
+          </div>
+          <h3 style="margin-bottom:8px;font-size:1.1rem">No popup ads yet</h3>
+          <p style="color:var(--text-muted);margin-bottom:24px;font-size:0.9rem;max-width:400px;margin-left:auto;margin-right:auto">Create popup ads that appear to visitors with alternating groups and live preview.</p>
           <button class="btn btn-primary" onclick="AdminPopupAds.showForm(null)">
             <i class="fas fa-plus"></i> Create Your First Popup Ad
           </button>
         </div>
         ` : `
         <div style="display:flex;flex-direction:column;gap:16px">
-          ${ads.map(ad => `
-            <div class="admin-card" style="padding:20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;opacity:${ad.is_active ? '1' : '0.5'}">
-              <div>
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-                  <span style="font-size:1.2rem;color:rgba(0,0,0,0.6);width:28px;text-align:center"><i class="fas ${ad.icon || 'fa-bullhorn'}"></i></span>
-                  <div>
-                    <span style="font-weight:600;font-size:0.95rem">${ad.name}</span>
-                    ${ad.is_animated ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(255,215,64,0.15);color:var(--warning);margin-left:8px">Animated</span>' : ''}
-                    ${ad.is_active ? '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(16,185,129,0.15);color:var(--success);margin-left:4px">Active</span>' : '<span style="font-size:0.75rem;padding:2px 8px;border-radius:9999px;background:rgba(255,255,255,0.05);color:rgba(0,0,0,0.45);margin-left:4px">Inactive</span>'}
+          ${ads.map(ad => {
+            const words = (ad.title || '').split(' ');
+            const animatedTitle = ad.is_animated
+              ? words.map(w => `<span class="animated-word">${w}</span>`).join(' ')
+              : ad.title;
+            return `
+            <div class="admin-popup-card ${ad.is_active ? '' : 'inactive'}">
+              <div class="admin-popup-card-body">
+                <!-- Live Popup Preview -->
+                <div class="admin-popup-preview">
+                  <div class="admin-popup-preview-mockup">
+                    <div class="admin-popup-preview-banner" style="background:${ad.bg_color || '#0066cc'}">
+                      <div class="admin-popup-preview-icon">
+                        ${ad.image_url
+                          ? `<img src="${ad.image_url}" alt="" style="width:32px;height:32px;border-radius:8px;object-fit:cover">`
+                          : `<i class="fas ${ad.icon || 'fa-bullhorn'}"></i>`}
+                      </div>
+                      <div class="admin-popup-preview-title">${animatedTitle}</div>
+                      <div class="admin-popup-preview-desc">${ad.description || ''}</div>
+                      <span class="admin-popup-preview-cta" style="color:${ad.bg_color || '#0066cc'}">${ad.cta_text || 'Learn More'}</span>
+                    </div>
                   </div>
                 </div>
-                <div style="font-size:0.85rem;font-weight:600;color:rgba(0,0,0,0.85);margin-bottom:2px">${ad.title}</div>
-                <div style="font-size:0.8rem;color:rgba(0,0,0,0.85);margin-bottom:6px;line-height:1.4">${ad.description}</div>
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:0.75rem;color:rgba(0,0,0,0.5)">
-                  <span><i class="fas fa-${ad.is_animated ? 'bolt' : 'pause'}"></i> ${ad.is_animated ? 'Auto-advance (10s)' : 'Manual (15s)'}</span>
-                  <span><i class="fas fa-palette"></i> <span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${ad.bg_color || '#0066cc'};vertical-align:middle;margin-right:2px"></span> ${ad.bg_color || '#0066cc'}</span>
-                  ${ad.cta_url ? `<span><i class="fas fa-link"></i> ${ad.cta_url.substring(0, 30)}${ad.cta_url.length > 30 ? '...' : ''}</span>` : ''}
+
+                <!-- Info -->
+                <div class="admin-popup-info">
+                  <div class="admin-ad-info-row">
+                    <span class="admin-ad-name">${ad.name}</span>
+                    ${ad.is_animated ? '<span class="admin-ad-badge animated"><i class="fas fa-bolt"></i> Animated</span>' : ''}
+                    <span class="admin-ad-badge ${ad.is_active ? 'active' : 'inactive'}"><i class="fas fa-${ad.is_active ? 'check-circle' : 'pause-circle'}"></i> ${ad.is_active ? 'Active' : 'Inactive'}</span>
+                  </div>
+                  <div class="admin-ad-headline">${ad.title}</div>
+                  <div class="admin-ad-desc">${ad.description || ''}</div>
+                  <div class="admin-ad-meta">
+                    <span><i class="fas fa-${ad.is_animated ? 'bolt' : 'pause'}"></i> ${ad.is_animated ? 'Auto-advance (10s)' : 'Manual (15s)'}</span>
+                    <span class="meta-dot"></span>
+                    <span>
+                      <i class="fas fa-palette"></i>
+                      <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${ad.bg_color || '#0066cc'};vertical-align:middle;margin-right:3px"></span>
+                      ${ad.bg_color || '#0066cc'}
+                    </span>
+                    ${ad.cta_url ? `
+                      <span class="meta-dot"></span>
+                      <span><i class="fas fa-link"></i> ${ad.cta_url.substring(0, 30)}${ad.cta_url.length > 30 ? '...' : ''}</span>
+                    ` : ''}
+                  </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="admin-ad-actions">
+                  <button class="admin-toggle ${ad.is_active ? 'active' : ''}" onclick="AdminPopupAds.toggleActive(${ad.id}, ${!ad.is_active})" title="${ad.is_active ? 'Deactivate' : 'Activate'}">
+                    <div class="admin-toggle-knob"></div>
+                  </button>
+                  <button class="admin-action-btn" onclick="AdminPopupAds.showForm(${ad.id})" title="Edit">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="admin-action-btn delete" onclick="AdminPopupAds.confirmDelete(${ad.id}, '${ad.name.replace(/'/g, "\\'")}')" title="Delete">
+                    <i class="fas fa-trash"></i>
+                  </button>
                 </div>
               </div>
-              <div style="display:flex;gap:6px;align-items:center">
-                <button class="admin-toggle ${ad.is_active ? 'active' : ''}" onclick="AdminPopupAds.toggleActive(${ad.id}, ${!ad.is_active})">
-                  <div class="admin-toggle-knob"></div>
-                </button>
-                <button class="admin-action-btn" onclick="AdminPopupAds.showForm(${ad.id})" title="Edit">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="admin-action-btn delete" onclick="AdminPopupAds.confirmDelete(${ad.id}, '${ad.name.replace(/'/g, "\\'")}')" title="Delete">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
             </div>
-          `).join('')}
+          `;}).join('')}
         </div>
         `}
       `;

@@ -1,5 +1,5 @@
 // ============================================
-// pixabanimation — Popup Ad System
+// pixabanimation — Popup Ad System (Redesigned)
 // ============================================
 
 const PopupAds = {
@@ -7,8 +7,10 @@ const PopupAds = {
   ads: [],
   shownAds: [],
   isShowing: false,
+  _popupTimeout: null,
+  _dbReady: false,
 
-  // Built-in fallback popup ads (used when DB is unavailable)
+  // Built-in fallback popup ads
   defaultPopupAds: [
     {
       id: 'fallback-1',
@@ -18,7 +20,8 @@ const PopupAds = {
       cta_url: 'https://pixabanimation.github.io/#/shop',
       icon: 'fa-cube',
       bg_color: '#0066cc',
-      is_animated: true
+      is_animated: 1,
+      is_active: 1
     },
     {
       id: 'fallback-2',
@@ -28,7 +31,8 @@ const PopupAds = {
       cta_url: 'https://pixabanimation.github.io/#/about',
       icon: 'fa-star',
       bg_color: '#5856d6',
-      is_animated: true
+      is_animated: 1,
+      is_active: 1
     }
   ],
 
@@ -39,8 +43,24 @@ const PopupAds = {
     // Don't show popups on admin pages
     if (window.location.hash && window.location.hash.startsWith('#/admin')) return;
 
-    // Wait a bit for the page to fully load before showing popups
-    setTimeout(() => this.showPopups(), 2000);
+    // Wait for DB to be ready (the <script type="module"> loads async)
+    await this._waitForDB();
+
+    // Show popups after page loads
+    setTimeout(() => this.showPopups(), 2500);
+  },
+
+  // Wait for DB client to be initialized (handles async module loading)
+  async _waitForDB(maxWait = 5000) {
+    const start = Date.now();
+    while (Date.now() - start < maxWait) {
+      if (typeof DB !== 'undefined' && DB.client) {
+        this._dbReady = true;
+        return;
+      }
+      await new Promise(r => setTimeout(r, 100));
+    }
+    console.warn('PopupAds: DB not ready after waiting, will use fallback ads');
   },
 
   // Fisher-Yates shuffle
@@ -55,16 +75,10 @@ const PopupAds = {
 
   async loadAds() {
     try {
-      // Try loading from DB if available
-      if (typeof DB !== 'undefined' && DB.init && DB.client) {
+      if (this._dbReady && typeof DB !== 'undefined' && DB.client) {
         const allAds = await DB.getPopupAds(true);
-        if (allAds && allAds.length >= 2) {
-          // Shuffle 4 times (randomize order)
-          let shuffled = this.shuffleArray(allAds);
-          shuffled = this.shuffleArray(shuffled);
-          shuffled = this.shuffleArray(shuffled);
-          shuffled = this.shuffleArray(shuffled);
-          this.ads = shuffled;
+        if (allAds && allAds.length > 0) {
+          this.ads = this.shuffleArray(allAds);
           return this.ads;
         }
       }
@@ -80,12 +94,10 @@ const PopupAds = {
   },
 
   getVisitGroup() {
-    // Use localStorage to track visit groups
     const key = 'pixab_popup_visit';
     let visitData = localStorage.getItem(key);
 
     if (!visitData) {
-      // First visit ever -> show group A (first 2 ads)
       const data = { group: 'A', count: 1 };
       localStorage.setItem(key, JSON.stringify(data));
       return 'A';
@@ -96,59 +108,50 @@ const PopupAds = {
       const newCount = data.count + 1;
 
       if (data.group === 'A') {
-        // Next visit -> show group B (other 2 ads)
-        const newData = { group: 'B', count: newCount };
-        localStorage.setItem(key, JSON.stringify(newData));
+        localStorage.setItem(key, JSON.stringify({ group: 'B', count: newCount }));
         return 'B';
       } else {
-        // After group B -> reset to group A for the next round
-        const newData = { group: 'A', count: newCount };
-        localStorage.setItem(key, JSON.stringify(newData));
+        localStorage.setItem(key, JSON.stringify({ group: 'A', count: newCount }));
         return 'A';
       }
     } catch (e) {
-      // Fallback
-      const data = { group: 'A', count: 1 };
-      localStorage.setItem(key, JSON.stringify(data));
+      localStorage.setItem(key, JSON.stringify({ group: 'A', count: 1 }));
       return 'A';
     }
   },
 
   async showPopups() {
-    // Guard against concurrent calls — set isShowing BEFORE the await
     if (this.isShowing) return;
     this.isShowing = true;
 
     const ads = await this.loadAds();
-    if (ads.length < 2) {
-      console.warn('PopupAds: Need at least 2 active ads');
+    if (ads.length === 0) {
       this.isShowing = false;
       return;
     }
 
-    // Assign ads to groups without duplicates
-    const shuffled = [...ads];
-    const groupA = shuffled.slice(0, Math.min(2, shuffled.length));
-
-    // Build groupB from remaining ads, avoiding duplicates with groupA
-    const remaining = shuffled.filter(ad => !groupA.find(a => a.id === ad.id));
-    let groupB = [];
-    if (remaining.length >= 2) {
-      groupB = remaining.slice(0, 2);
+    // Split into groups for alternating visits
+    let groupA, groupB;
+    if (ads.length === 1) {
+      // Single ad: show it every visit
+      groupA = [ads[0]];
+      groupB = [ads[0]];
+    } else if (ads.length === 2) {
+      groupA = [ads[0]];
+      groupB = [ads[1]];
     } else {
-      // Not enough unique ads for groupB — reuse groupA's ads
-      groupB = [...groupA];
+      const mid = Math.ceil(ads.length / 2);
+      groupA = ads.slice(0, mid);
+      groupB = ads.slice(mid);
     }
 
     const visitGroup = this.getVisitGroup();
-    const popupsToShow = visitGroup === 'A' ? groupA : groupB;
+    this.shownAds = visitGroup === 'A' ? groupA : groupB;
 
-    if (popupsToShow.length === 0) {
+    if (this.shownAds.length === 0) {
       this.isShowing = false;
       return;
     }
-
-    this.shownAds = popupsToShow;
 
     // Show first popup after a delay
     setTimeout(() => {
@@ -164,28 +167,40 @@ const PopupAds = {
 
     const ad = this.shownAds[index];
     const container = document.getElementById('popupAdContainer');
-    if (!container) return;
+    if (!container) {
+      this.isShowing = false;
+      return;
+    }
 
     const isAnimated = ad.is_animated;
     const bgColor = ad.bg_color || '#0066cc';
     const icon = ad.icon || 'fa-bullhorn';
     const imageUrl = ad.image_url;
 
-    // 900x300 horizontal banner layout at the bottom
+    // Build animated title words
+    const titleWords = (ad.title || 'Special Offer').split(' ');
+    const animatedTitle = titleWords.map((w, i) =>
+      `<span class="popup-ad-word" style="animation-delay:${i * 0.12}s">${this.escapeHtml(w)}</span>`
+    ).join(' ');
+
     const popupContent = `
       <div class="popup-ad-inner" style="background:${bgColor}">
         <div class="popup-ad-bg-pattern"></div>
+        <div class="popup-ad-glow"></div>
         <button class="popup-ad-close" onclick="PopupAds.closePopup(${index})" aria-label="Close">
           <i class="fas fa-times"></i>
         </button>
         <div class="popup-ad-body">
-          ${imageUrl ? `<img src="${imageUrl}" alt="" class="popup-ad-image" onerror="this.style.display='none'">` : `<div class="popup-ad-icon-circle"><i class="fas ${icon}"></i></div>`}
+          ${imageUrl
+            ? `<img src="${this.escapeHtml(imageUrl)}" alt="" class="popup-ad-image" onerror="this.style.display='none'">`
+            : `<div class="popup-ad-icon-circle"><i class="fas ${this.escapeHtml(icon)}"></i></div>`
+          }
           <div class="popup-ad-content">
-            <div class="popup-ad-badge">${ad.is_animated ? '⚡ Limited Offer' : '🎯 Promotion'}</div>
-            <h3 class="popup-ad-title">${this.escapeHtml(ad.title)}</h3>
+            <div class="popup-ad-badge">${isAnimated ? '<i class="fas fa-bolt"></i> Limited Offer' : '<i class="fas fa-tag"></i> Promotion'}</div>
+            <h3 class="popup-ad-title">${animatedTitle}</h3>
             <p class="popup-ad-desc">${this.escapeHtml(ad.description || '')}</p>
           </div>
-          <a href="${this.escapeHtml(ad.cta_url)}" class="popup-ad-cta" onclick="PopupAds.closePopup(${index})" rel="noopener">
+          <a href="${this.escapeHtml(ad.cta_url || '#/shop')}" class="popup-ad-cta" onclick="PopupAds.closePopup(${index})" rel="noopener">
             ${this.escapeHtml(ad.cta_text || 'Learn More')} <i class="fas fa-arrow-right"></i>
           </a>
         </div>
@@ -202,16 +217,13 @@ const PopupAds = {
     container.classList.add('popup-ad-active');
 
     // Animate countdown timer
-    if (isAnimated) {
-      this.animateCountdown(index, 10); // 10 seconds auto-close
-    } else {
-      this.animateCountdown(index, 15); // 15 seconds for non-animated
-    }
+    const duration = isAnimated ? 10 : 15;
+    this.animateCountdown(index, duration);
 
-    // Auto advance to next popup after timing out
+    // Auto advance to next popup
     this._popupTimeout = setTimeout(() => {
       this.closePopup(index, true);
-    }, isAnimated ? 10000 : 15000);
+    }, duration * 1000);
   },
 
   animateCountdown(index, duration) {
@@ -220,10 +232,7 @@ const PopupAds = {
 
     progressBar.style.transition = 'none';
     progressBar.style.width = '100%';
-
-    // Force reflow
     void progressBar.offsetWidth;
-
     progressBar.style.transition = `width ${duration}s linear`;
     progressBar.style.width = '0%';
   },
@@ -232,7 +241,6 @@ const PopupAds = {
     const container = document.getElementById('popupAdContainer');
     if (!container) return;
 
-    // Clear the auto-advance timeout
     if (this._popupTimeout) {
       clearTimeout(this._popupTimeout);
       this._popupTimeout = null;
@@ -249,7 +257,7 @@ const PopupAds = {
       if (nextIndex < this.shownAds.length) {
         setTimeout(() => {
           this.showPopup(nextIndex);
-        }, 500);
+        }, 600);
       } else {
         this.isShowing = false;
       }
@@ -269,4 +277,3 @@ if (document.readyState === 'loading') {
 } else {
   PopupAds.init();
 }
-
