@@ -3969,6 +3969,113 @@ select:focus option:checked {
   font-size: 0.95rem;
 }
 
+.product-description p {
+  margin-bottom: 12px;
+}
+
+.product-description p:last-child {
+  margin-bottom: 0;
+}
+
+.product-read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: var(--accent-1);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 4px;
+  transition: gap var(--transition-fast);
+}
+
+.product-read-more:hover {
+  gap: 8px;
+}
+
+.product-read-more i {
+  font-size: 0.7rem;
+}
+
+.product-description-expanded {
+  max-height: none !important;
+}
+
+.product-description-wrap {
+  margin-bottom: 24px;
+}
+
+/* Features list in description */
+.product-desc-features-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 20px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.product-desc-features-title i {
+  color: var(--accent-1);
+  font-size: 0.85rem;
+}
+
+.product-desc-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.product-desc-features li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.product-desc-features li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-1);
+}
+
+/* Tab description panel */
+.product-tab-description {
+  max-width: 720px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+
+.product-tab-description p {
+  margin-bottom: 14px;
+}
+
+.product-tab-description p:last-child {
+  margin-bottom: 0;
+}
+
+.product-tab-description .product-desc-features-title {
+  margin-top: 28px;
+}
+
+.product-tab-description .product-desc-features li {
+  font-size: 0.88rem;
+}
+
 /* Video product info grid */
 .product-video-specs {
   display: grid;

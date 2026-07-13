@@ -9,6 +9,7 @@ const ProductPage = {
   lightboxIndex: 0,
   selectedRating: 5,
   stickyBarObserver: null,
+  _fullDescExpanded: false,
 
   async render(params) {
     const content = document.getElementById('pageContent');
@@ -56,6 +57,7 @@ const ProductPage = {
       this.currentImages = allImages;
       this.currentQty = 1;
       this.selectedRating = 5;
+      this._fullDescExpanded = false;
 
       // Remove previous schema scripts
       document.querySelectorAll('#productSchema, #breadcrumbSchema').forEach(el => el.remove());
@@ -130,8 +132,11 @@ const ProductPage = {
                   ${hasDiscount ? `<span class="discount-badge"><i class="fas fa-bolt"></i> -${discountPct}%</span>` : ''}
                 </div>
 
-                <!-- Description -->
-                <p class="product-description">${product.description || ''}</p>
+                <!-- Description (short preview) -->
+                <div class="product-description-wrap" id="productDescWrap">
+                  <div class="product-description" id="productDescShort">${this._formatDescriptionShort(product.description)}</div>
+                  ${(product.description || '').length > 220 ? `<button class="product-read-more" id="productReadMore" onclick="ProductPage.toggleFullDesc()">Read full description <i class="fas fa-arrow-down"></i></button>` : ''}
+                </div>
 
                 <!-- Video Specs -->
                 ${isVideo && product.file_size ? this._renderVideoSpecs(product, formatDuration) : ''}
@@ -244,12 +249,12 @@ const ProductPage = {
 
             <!-- Description Tab -->
             <div class="product-tab-panel active" id="tab-description" role="tabpanel">
-              <div style="max-width:720px;color:var(--text-secondary);line-height:1.8;font-size:0.95rem">
-                <p>${product.description || 'No description available for this product.'}</p>
+              <div class="product-tab-description">
+                ${this._formatDescription(product.description || 'No description available for this product.')}
                 ${isVideo && product.preview_description ? `
-                  <div style="margin-top:20px;padding:18px;background:var(--bg-secondary);border-radius:var(--radius-lg)">
-                    <strong style="color:var(--text-primary)">What's included:</strong>
-                    <p style="margin-top:8px">${product.preview_description}</p>
+                  <div class="product-preview-block" style="margin-top:20px">
+                    <div class="preview-label"><i class="fas fa-eye"></i> What's included</div>
+                    <p>${product.preview_description}</p>
                   </div>
                 ` : ''}
               </div>
@@ -458,8 +463,78 @@ const ProductPage = {
 
   // ── Helpers ──
 
+  _formatDescriptionShort(text) {
+    if (!text) return '';
+    // Get first paragraph only
+    const firstPara = text.split(/\n\n+/)[0].trim();
+    // Truncate to ~200 chars if still too long
+    if (firstPara.length > 220) {
+      return firstPara.substring(0, 220).replace(/\s+\S*$/, '') + '...';
+    }
+    return firstPara;
+  },
+
   _starsHtml(count) {
     return '★'.repeat(count) + '☆'.repeat(5 - count);
+  },
+
+  _formatDescription(text) {
+    if (!text) return '';
+    // Split into paragraphs by double newline
+    const paragraphs = text.split(/\n\n+/);
+    let html = '';
+    let inFeatures = false;
+    let featureItems = [];
+
+    const flushFeatures = () => {
+      if (featureItems.length > 0) {
+        html += '<ul class="product-desc-features">' + featureItems.map(item => {
+          // Convert • to li
+          const clean = item.replace(/^[\s•\-]+/, '').trim();
+          return `<li>${clean}</li>`;
+        }).join('') + '</ul>';
+        featureItems = [];
+      }
+      inFeatures = false;
+    };
+
+    for (const para of paragraphs) {
+      const trimmed = para.trim();
+      if (!trimmed) continue;
+
+      // Check if this is a "Key Features:" section
+      if (/^key features[:\s]/i.test(trimmed)) {
+        flushFeatures();
+        inFeatures = true;
+        const lines = trimmed.split('\n');
+        // First line might be "Key Features:" header
+        if (/^key features[:\s]/i.test(lines[0])) {
+          html += `<h4 class="product-desc-features-title"><i class="fas fa-check-circle"></i> ${lines[0].trim()}</h4>`;
+          const rest = lines.slice(1).join('\n');
+          if (rest.trim()) {
+            rest.split('\n').forEach(l => {
+              const clean = l.trim();
+              if (clean) featureItems.push(clean);
+            });
+          }
+        } else {
+          featureItems.push(...lines.map(l => l.trim()).filter(Boolean));
+        }
+      } else if (inFeatures && /^[•\-]/.test(trimmed)) {
+        // Continuation of feature list (lines starting with bullet)
+        trimmed.split('\n').forEach(l => {
+          const clean = l.trim();
+          if (clean) featureItems.push(clean);
+        });
+      } else {
+        flushFeatures();
+        // Regular paragraph — convert single newlines to <br>
+        const formatted = trimmed.replace(/\n/g, '<br>');
+        html += `<p>${formatted}</p>`;
+      }
+    }
+    flushFeatures();
+    return html;
   },
 
   _computeReviewStats(reviews) {
@@ -717,6 +792,28 @@ const ProductPage = {
       this.setReviewRating(5);
     } catch (error) {
       Components.toast('Failed to submit review', 'error');
+    }
+  },
+
+  toggleFullDesc() {
+    const shortEl = document.getElementById('productDescShort');
+    const btn = document.getElementById('productReadMore');
+    if (!shortEl || !btn) return;
+
+    if (!this._fullDescExpanded) {
+      // Expand: show full description
+      const fullHtml = this._formatDescription(this.currentProduct?.description || '');
+      shortEl.innerHTML = fullHtml;
+      shortEl.classList.add('product-description-expanded');
+      btn.innerHTML = 'Show less <i class="fas fa-arrow-up"></i>';
+      this._fullDescExpanded = true;
+    } else {
+      // Collapse: show short description
+      const shortHtml = this._formatDescriptionShort(this.currentProduct?.description || '');
+      shortEl.innerHTML = shortHtml;
+      shortEl.classList.remove('product-description-expanded');
+      btn.innerHTML = 'Read full description <i class="fas fa-arrow-down"></i>';
+      this._fullDescExpanded = false;
     }
   },
 
