@@ -11732,6 +11732,13 @@ body:has(.admin-page) .footer {
     box-shadow: 4px 0 20px rgba(0,0,0,0.08) !important;
   }
   .admin-sidebar-toggle {
+    display: flex !important;
+    position: fixed !important;
+    top: 56px;
+    left: 12px;
+    z-index: 5001;
+    width: 40px;
+    height: 40px;
     background: #ffffff !important;
     border: 1px solid rgba(0,0,0,0.06) !important;
     color: rgba(0,0,0,0.48) !important;
