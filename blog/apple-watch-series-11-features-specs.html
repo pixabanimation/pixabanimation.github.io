@@ -491,7 +491,7 @@
   // Mobile nav toggle
   document.addEventListener('click', function(e) {
     var toggle = e.target.closest('#navToggle');
-    if (toggle) { document.getElementById('navLinks').classList.toggle('open'); return; }
+    if (toggle) { toggle.classList.toggle('active'); document.getElementById('navLinks').classList.toggle('open'); return; }
     if (!e.target.closest('.blog-nav-links') && !e.target.closest('#navToggle')) {
       document.getElementById('navLinks').classList.remove('open');
     }

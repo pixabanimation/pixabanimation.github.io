@@ -2394,8 +2394,7 @@
 
   <script>
     window.addEventListener('scroll',function(){document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50)});
-    document.addEventListener('click',function(e){var t=e.target.closest('#navToggle');if(t){document.getElementById('navLinks').classList.toggle('open');return}if(!e.target.closest('.nav-links')&&!e.target.closest('#navToggle')){document.getElementById('navLinks').classList.remove('open')}});
-    document.addEventListener('click',function(e){var t=e.target.closest('#navToggle');if(t){document.getElementById('navLinks').classList.toggle('open');return}if(!e.target.closest('.nav-links')&&!e.target.closest('#navToggle')){document.getElementById('navLinks').classList.remove('open')}});
+    document.addEventListener('click',function(e){var t=e.target.closest('#navToggle');if(t){t.classList.toggle('active');document.getElementById('navLinks').classList.toggle('active');return}if(!e.target.closest('.nav-links')&&!e.target.closest('#navToggle')){document.getElementById('navToggle').classList.remove('active');document.getElementById('navLinks').classList.remove('active')}});
     var plCurrentCat='all';
     var plSearchTimer;
     var plSearchIndex=[];

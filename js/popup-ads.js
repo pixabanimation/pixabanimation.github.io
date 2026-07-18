@@ -40,8 +40,9 @@ const PopupAds = {
     if (this.initialized) return;
     this.initialized = true;
 
-    // Don't show popups on admin pages
+    // Don't show popups on admin pages or homepage
     if (window.location.hash && window.location.hash.startsWith('#/admin')) return;
+    if (window.location.pathname === '/' || window.location.pathname.endsWith('index.html') || window.location.hash === '' || window.location.hash === '#/' || window.location.hash === '#') return;
 
     // Wait for DB to be ready (the <script type="module"> loads async)
     await this._waitForDB();
