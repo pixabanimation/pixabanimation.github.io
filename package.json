@@ -3,7 +3,10 @@
     "build-blog": "node tools/generate-blog-posts.mjs && node tools/generate-blog-index.mjs && node tools/generate-sitemap.mjs",
     "build-blog-index": "node tools/generate-blog-index.mjs",
     "build-blog-posts": "node tools/generate-blog-posts.mjs",
-    "update-descriptions": "node tools/update-descriptions.mjs"
+    "update-descriptions": "node tools/update-descriptions.mjs",
+    "ai-write": "node tools/ai-blog-writer.mjs",
+    "ai-trending": "node tools/ai-blog-writer.mjs --trending 5",
+    "build-blog-index-fs": "node tools/generate-blog-index-from-fs.mjs"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",
