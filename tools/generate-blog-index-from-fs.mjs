@@ -400,7 +400,9 @@ ${sortedAll.map((p, i) => `      { "@type": "ListItem", "position": ${i + 1}, "u
       </div>
       </div>
       <div class="pl-hero-stage" aria-hidden="true">
-${featured.slice(0, 3).map(p => `        <span class="pl-hero-frame"><img src="${escAttr(coverUrl(p.cover))}" alt="" loading="eager"></span>`).join('\n')}
+        <span class="pl-hero-frame"><img src="${BASE_URL}/assets/images/blog/asus-rog-zephyrus-g14-2025-gaming-laptop.png" alt="" loading="eager"></span>
+        <span class="pl-hero-frame"><img src="${BASE_URL}/assets/images/blog/apple-watch-series-11-features-specs.png" alt="" loading="eager"></span>
+        <span class="pl-hero-frame"><img src="${BASE_URL}/assets/images/blog/apple-iphone-17-pro-max-specs-features.png" alt="" loading="eager"></span>
         <span class="pl-hero-frame pl-hero-frame-label">Field notes from the render queue</span>
       </div>
     </div>
