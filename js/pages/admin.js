@@ -23,18 +23,24 @@ const AdminPage = {
 
     content.innerHTML = `
       <div class="admin-page page-enter">
+        <button class="admin-sidebar-toggle" onclick="AdminPage.toggleSidebar()" aria-label="Toggle menu">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <line x1="3" y1="5" x2="17" y2="5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="3" y1="10" x2="17" y2="10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="3" y1="15" x2="17" y2="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
         <div class="admin-sidebar">
           <div class="admin-sidebar-header">
             <span class="brand-icon">✦</span>
             <span class="brand-text">PIXAB CMS</span>
+            <button class="admin-sidebar-close" onclick="AdminPage.closeSidebar()" aria-label="Close menu">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <line x1="4" y1="4" x2="14" y2="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="14" y1="4" x2="4" y2="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
           </div>
-          <button class="admin-sidebar-toggle" onclick="AdminPage.toggleSidebar()" aria-label="Toggle menu">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <line x1="2" y1="5" x2="16" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <line x1="2" y1="9" x2="16" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <line x1="2" y1="13" x2="16" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </button>
           <nav class="admin-sidebar-nav" id="adminSidebarNav">
             <button class="admin-nav-item active" data-tab="dashboard" onclick="AdminPage.switchTab('dashboard');AdminPage.closeSidebar()">
               <i class="fas fa-chart-pie"></i> Dashboard
@@ -115,26 +121,44 @@ const AdminPage = {
   },
 
   toggleSidebar() {
-    const nav = document.getElementById('adminSidebarNav');
+    const sidebar = document.querySelector('.admin-sidebar');
     const btn = document.querySelector('.admin-sidebar-toggle');
-    if (!nav) return;
-    nav.classList.toggle('open');
-    if (btn) btn.classList.toggle('active');
+    if (!sidebar) return;
+    const isOpen = sidebar.classList.toggle('open');
+    if (btn) btn.classList.toggle('active', isOpen);
+    if (isOpen) {
+      this.addBackdrop();
+    } else {
+      this.removeBackdrop();
+    }
   },
 
   closeSidebar() {
-    const nav = document.getElementById('adminSidebarNav');
+    const sidebar = document.querySelector('.admin-sidebar');
     const btn = document.querySelector('.admin-sidebar-toggle');
-    if (!nav) return;
-    nav.classList.remove('open');
+    if (!sidebar) return;
+    sidebar.classList.remove('open');
     if (btn) btn.classList.remove('active');
+    this.removeBackdrop();
+  },
+
+  addBackdrop() {
+    if (document.querySelector('.admin-sidebar-backdrop')) return;
+    const backdrop = document.createElement('div');
+    backdrop.className = 'admin-sidebar-backdrop';
+    backdrop.addEventListener('click', () => AdminPage.closeSidebar());
+    document.body.appendChild(backdrop);
+  },
+
+  removeBackdrop() {
+    const backdrop = document.querySelector('.admin-sidebar-backdrop');
+    if (backdrop) backdrop.remove();
   },
 
   handleOutsideClick(e) {
     const sidebar = document.querySelector('.admin-sidebar');
-    const nav = document.getElementById('adminSidebarNav');
-    if (!sidebar || !nav || !nav.classList.contains('open')) return;
-    if (!sidebar.contains(e.target)) {
+    if (!sidebar || !sidebar.classList.contains('open')) return;
+    if (!sidebar.contains(e.target) && !e.target.closest('.admin-sidebar-toggle')) {
       AdminPage.closeSidebar();
     }
   },
@@ -182,7 +206,7 @@ const AdminPage = {
         DB.getOrdersByStatus()
       ]);
 
-      // Generate sales chart bars
+      // Generate sales chart data
       const salesData = this.generateSalesData(dailySales, 7);
 
       container.innerHTML = `
@@ -242,41 +266,18 @@ const AdminPage = {
         <div class="admin-charts-row">
           <div class="admin-chart-card glass">
             <div class="admin-chart-header">
-              <h3>Sales (Last 7 Days)</h3>
+              <h3><i class="fas fa-chart-bar" style="margin-right:6px;color:var(--accent-1)"></i> Sales (Last 7 Days)</h3>
             </div>
             <div class="admin-chart-body">
-              <div class="admin-bar-chart" id="salesChart">
-                ${salesData.map((d, i) => `
-                  <div class="admin-bar-item">
-                    <div class="admin-bar-value">$${d.revenue}</div>
-                    <div class="admin-bar-track">
-                      <div class="admin-bar-fill" style="height:${d.percent}%"></div>
-                    </div>
-                    <div class="admin-bar-label">${d.label}</div>
-                  </div>
-                `).join('')}
-              </div>
+              ${this.renderSvgBarChart(salesData)}
             </div>
           </div>
           <div class="admin-chart-card glass">
             <div class="admin-chart-header">
-              <h3>Orders by Status</h3>
+              <h3><i class="fas fa-chart-pie" style="margin-right:6px;color:var(--accent-1)"></i> Orders by Status</h3>
             </div>
             <div class="admin-chart-body">
-              <div class="admin-pie-legend">
-                ${this.getStatusColorMap().map(s => {
-                  const count = ordersByStatus.find(o => o.status === s.id)?.count || 0;
-                  const total = ordersByStatus.reduce((sum, o) => sum + o.count, 0);
-                  const pct = total > 0 ? Math.round(count / total * 100) : 0;
-                  return `
-                    <div class="admin-legend-item">
-                      <span class="admin-legend-dot" style="background:${s.color}"></span>
-                      <span>${s.label}</span>
-                      <span class="admin-legend-count">${count} (${pct}%)</span>
-                    </div>
-                  `;
-                }).join('')}
-              </div>
+              ${this.renderSvgDonutChart(ordersByStatus)}
             </div>
           </div>
         </div>
@@ -285,7 +286,7 @@ const AdminPage = {
         <div class="admin-charts-row">
           <div class="admin-chart-card glass">
             <div class="admin-chart-header">
-              <h3>Top Products</h3>
+              <h3><i class="fas fa-crown" style="margin-right:6px;color:var(--accent-1)"></i> Top Products</h3>
               <a href="#/admin" onclick="AdminPage.switchTab('products');return false" class="admin-chart-link">View All</a>
             </div>
             <div class="admin-chart-body" style="padding:0">
@@ -306,7 +307,7 @@ const AdminPage = {
                           <span style="font-weight:500;font-size:0.9rem">${p.name}</span>
                         </td>
                         <td>${p.total_sold || 0}</td>
-                        <td style="font-weight:600;color:rgba(0,0,0,0.85)">$${parseFloat(p.revenue || 0).toFixed(2)}</td>
+                        <td style="font-weight:600">$${parseFloat(p.revenue || 0).toFixed(2)}</td>
                       </tr>
                     `).join('')}
                 </tbody>
@@ -315,7 +316,7 @@ const AdminPage = {
           </div>
           <div class="admin-chart-card glass">
             <div class="admin-chart-header">
-              <h3>Recent Orders</h3>
+              <h3><i class="fas fa-clock" style="margin-right:6px;color:var(--accent-1)"></i> Recent Orders</h3>
               <a href="#/admin" onclick="AdminPage.switchTab('orders');return false" class="admin-chart-link">View All</a>
             </div>
             <div class="admin-chart-body" style="padding:0">
@@ -377,12 +378,101 @@ const AdminPage = {
 
   getStatusColorMap() {
     return [
-      { id: 'pending', label: 'Pending', color: 'var(--warning)' },
-      { id: 'confirmed', label: 'Confirmed', color: 'var(--info)' },
-      { id: 'shipped', label: 'Shipped', color: 'var(--accent-1)' },
-      { id: 'delivered', label: 'Delivered', color: 'var(--success)' },
-      { id: 'cancelled', label: 'Cancelled', color: 'var(--error)' }
+      { id: 'pending', label: 'Pending', color: 'var(--warning)', hex: '#b25000' },
+      { id: 'confirmed', label: 'Confirmed', color: 'var(--info)', hex: '#0071e3' },
+      { id: 'shipped', label: 'Shipped', color: 'var(--accent-1)', hex: '#0071e3' },
+      { id: 'delivered', label: 'Delivered', color: 'var(--success)', hex: '#248a3d' },
+      { id: 'cancelled', label: 'Cancelled', color: 'var(--error)', hex: '#d70015' }
     ];
+  },
+
+  renderSvgBarChart(salesData) {
+    const w = 500, h = 180, pad = { top: 12, right: 8, bottom: 22, left: 44 };
+    const cw = w - pad.left - pad.right;
+    const ch = h - pad.top - pad.bottom;
+    const maxVal = Math.max(...salesData.map(d => parseFloat(d.revenue)), 1);
+    const steps = 4;
+    const barW = Math.max(12, (cw / salesData.length) * 0.55);
+    const gap = (cw - barW * salesData.length) / (salesData.length + 1);
+
+    const yAxis = Array.from({ length: steps + 1 }, (_, i) => {
+      const val = (maxVal / steps) * i;
+      const y = pad.top + ch - (val / maxVal) * ch;
+      return { val: Math.round(val), y };
+    });
+
+    return `
+    <div class="admin-svg-chart">
+      <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="barGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#0071e3" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#0071e3" stop-opacity="0.9"/>
+          </linearGradient>
+        </defs>
+        ${yAxis.map(({ val, y }) => `
+          <line x1="${pad.left}" y1="${y}" x2="${w - pad.right}" y2="${y}" stroke="rgba(0,0,0,0.06)" stroke-width="1"/>
+          <text x="${pad.left - 6}" y="${y + 3}" text-anchor="end" fill="var(--text-muted)" font-size="9" font-family="var(--font-mono)">$${val}</text>
+        `).join('')}
+        ${salesData.map((d, i) => {
+          const barH = (parseFloat(d.revenue) / maxVal) * ch;
+          const x = pad.left + gap + i * (barW + gap);
+          const y = pad.top + ch - barH;
+          return `
+            <rect class="admin-bar-svg" x="${x}" y="${y}" width="${barW}" height="${barH}" rx="3" fill="url(#barGrad)" data-revenue="${d.revenue}"/>
+            <text x="${x + barW / 2}" y="${y - 4}" text-anchor="middle" fill="var(--text-muted)" font-size="9" font-weight="600" font-family="var(--font-mono)">$${d.revenue}</text>
+            <text x="${x + barW / 2}" y="${h - 4}" text-anchor="middle" fill="var(--text-muted)" font-size="9">${d.label}</text>
+          `;
+        }).join('')}
+      </svg>
+    </div>`;
+  },
+
+  renderSvgDonutChart(ordersByStatus) {
+    const statusMap = this.getStatusColorMap();
+    const total = ordersByStatus.reduce((sum, o) => sum + o.count, 0);
+    const size = 160, cx = size / 2, cy = size / 2, r = 62, sw = 24;
+    const circ = 2 * Math.PI * r;
+
+    let offset = 0;
+    const segments = statusMap.map(s => {
+      const count = ordersByStatus.find(o => o.status === s.id)?.count || 0;
+      const pct = total > 0 ? count / total : 0;
+      const len = pct * circ;
+      const seg = { ...s, count, pct: Math.round(pct * 100), offset, len };
+      offset += len;
+      return seg;
+    }).filter(s => s.count > 0);
+
+    if (total === 0) {
+      return `<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.85rem">No orders yet</div>`;
+    }
+
+    return `
+    <div class="admin-svg-donut-wrap">
+      <div class="admin-svg-donut">
+        <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(0,0,0,0.04)" stroke-width="${sw}"/>
+          ${segments.map(s => `
+            <circle class="admin-donut-seg" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.hex}" stroke-width="${sw}"
+              stroke-dasharray="${s.len} ${circ - s.len}" stroke-dashoffset="${-s.offset}"
+              stroke-linecap="butt" transform="rotate(-90 ${cx} ${cy})"/>
+          `).join('')}
+          <text x="${cx}" y="${cy - 4}" text-anchor="middle" dominant-baseline="central" font-size="22" font-weight="800" fill="var(--text-primary)">${total}</text>
+          <text x="${cx}" y="${cy + 14}" text-anchor="middle" dominant-baseline="central" font-size="10" fill="var(--text-muted)" font-weight="500">Orders</text>
+        </svg>
+      </div>
+      <div class="admin-svg-donut-legend">
+        ${segments.map(s => `
+          <div class="admin-donut-legend-item">
+            <span class="admin-donut-dot" style="background:${s.hex}"></span>
+            <span class="admin-donut-label">${s.label}</span>
+            <span class="admin-donut-count">${s.count}</span>
+            <span class="admin-donut-pct">${s.pct}%</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
   },
 
   statusBadge(status) {
@@ -1041,134 +1131,114 @@ const AdminPage = {
         return;
       }
 
+      const customerParts = order.customer_info ? order.customer_info.split(',').map(s => s.trim()) : [];
+      const custName = customerParts[0] || '';
+      const custEmail = customerParts[1] || '';
+      const custPhone = customerParts[2] || '';
+      const countryCode = customerParts[3] || '';
+      const custState = customerParts[4] || '';
+      const countryName = countryCode ? (Countries.getName ? Countries.getName(countryCode) : countryCode) : '';
+
       Components.showModal(`Order #${order.id}`, `
-        <div style="display:flex;flex-direction:column;gap:16px">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div style="font-size:0.8rem;color:var(--text-muted)">Date</div>
-              <div>${new Date(order.created_at).toLocaleString()}</div>
+        <div class="order-view-horizontal">
+          <!-- Header Row -->
+          <div class="order-view-header">
+            <div class="order-view-header-left">
+              <span class="order-view-label">Date</span>
+              <span class="order-view-value">${new Date(order.created_at).toLocaleString()}</span>
             </div>
-            <div style="text-align:right">
-              <div style="font-size:0.8rem;color:var(--text-muted)">Status</div>
+            <div class="order-view-header-right">
+              <span class="order-view-label">Status</span>
               ${this.statusBadge(order.status)}
             </div>
           </div>
-          ${order.customer_info ? (() => {
-            const parts = order.customer_info.split(',').map(s => s.trim());
-            const name = parts[0] || '';
-            const email = parts[1] || '';
-            const phone = parts[2] || '';
-            const countryCode = parts[3] || '';
-            const state = parts[4] || '';
-            const countryName = countryCode ? (Countries.getName ? Countries.getName(countryCode) : countryCode) : '';
-            return `
-            <div style="padding:12px;background:rgba(255,255,255,0.06);border-radius:var(--radius-sm)">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                <div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px">Customer</div>
-                  <div style="font-size:0.9rem;font-weight:600">${name}</div>
-                </div>
-                <div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px">Email</div>
-                  <div style="font-size:0.9rem">${email || '—'}</div>
-                </div>
-                <div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px">Phone</div>
-                  <div style="font-size:0.9rem">${phone || '—'}</div>
-                </div>
-                <div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px">Country</div>
-                  <div style="font-size:0.9rem">${countryName || (countryCode || '—')}${state ? `, ${state}` : ''}</div>
-                </div>
-              </div>
-            </div>`;
-          })() : ''}
-          ${order.transaction_id ? `
-          <div style="padding:12px;background:rgba(0,102,204,0.06);border:1px solid rgba(0,102,204,0.1);border-radius:var(--radius-sm)">
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <div style="display:flex;justify-content:space-between">
-                <span style="font-size:0.8rem;color:var(--text-muted)">Payment Provider</span>
-                <span style="font-weight:600;font-size:0.9rem;text-transform:capitalize">${order.payment_provider || order.payment_method}</span>
-              </div>
-              <div style="display:flex;justify-content:space-between">
-                <span style="font-size:0.8rem;color:var(--text-muted)">Transaction ID</span>
-                <span style="font-family:monospace;font-weight:600;font-size:0.85rem">${order.transaction_id}</span>
-              </div>
-              <div style="display:flex;justify-content:space-between">
-                <span style="font-size:0.8rem;color:var(--text-muted)">Approved</span>
-                <span style="color:${order.transaction_approved ? 'var(--success)' : 'var(--warning)'}">
-                  ${order.transaction_approved ? '✅ Yes' : '⏳ Pending'}
-                </span>
-              </div>
-              ${order.download_link ? `
-              <div style="display:flex;justify-content:space-between">
-                <span style="font-size:0.8rem;color:var(--text-muted)">Download Link</span>
-                <a href="${order.download_link}" target="_blank" style="color:rgba(0,0,0,0.85);font-size:0.85rem">
-                  <i class="fas fa-external-link-alt"></i> Open
-                </a>
-              </div>` : ''}
+
+          <!-- Main Two-Column Layout -->
+          <div class="order-view-columns">
+            <!-- Left Column: Customer Info -->
+            <div class="order-view-card">
+              <div class="order-view-card-title"><i class="fas fa-user"></i> Customer</div>
+              ${order.customer_info ? `
+              <div class="order-view-info-grid">
+                <div><span class="order-view-label">Name</span><span class="order-view-value">${custName}</span></div>
+                <div><span class="order-view-label">Email</span><span class="order-view-value">${custEmail || '—'}</span></div>
+                <div><span class="order-view-label">Phone</span><span class="order-view-value">${custPhone || '—'}</span></div>
+                <div><span class="order-view-label">Location</span><span class="order-view-value">${countryName || (countryCode || '—')}${custState ? `, ${custState}` : ''}</span></div>
+              </div>` : '<div style="color:var(--text-muted);font-size:0.85rem">No customer info</div>'}
             </div>
-          </div>` : ''}
-          <div>
-            <div style="font-size:0.85rem;font-weight:600;margin-bottom:8px">Items (${order.items?.length || 0})</div>
-            ${(order.items || []).map(item => `
-              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light)">
-                <img src="${item.product_image}" alt="${item.product_name}" style="width:40px;height:40px;border-radius:6px;object-fit:cover">
-                <div style="flex:1;font-size:0.85rem">${item.product_name} × ${item.quantity}</div>
-                <div style="font-weight:600;font-size:0.9rem">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
-              </div>
-            `).join('')}
+
+            <!-- Right Column: Payment Info -->
+            <div class="order-view-card">
+              <div class="order-view-card-title"><i class="fas fa-credit-card"></i> Payment</div>
+              ${order.transaction_id ? `
+              <div class="order-view-info-grid">
+                <div><span class="order-view-label">Provider</span><span class="order-view-value" style="text-transform:capitalize">${order.payment_provider || order.payment_method}</span></div>
+                <div><span class="order-view-label">TX ID</span><span class="order-view-value" style="font-family:monospace;font-size:0.8rem">${order.transaction_id}</span></div>
+                <div><span class="order-view-label">Approved</span><span style="color:${order.transaction_approved ? 'var(--success)' : 'var(--warning)'};font-weight:600;font-size:0.85rem">${order.transaction_approved ? '✅ Yes' : '⏳ Pending'}</span></div>
+                <div><span class="order-view-label">Method</span><span class="order-view-value" style="text-transform:capitalize">${order.payment_method || '—'}</span></div>
+              </div>` : '<div style="color:var(--text-muted);font-size:0.85rem">No payment info</div>'}
+            </div>
           </div>
-          <div style="border-top:1px solid var(--border-light);padding-top:12px">
-            <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.85rem">
+
+          <!-- Items Section -->
+          <div class="order-view-card">
+            <div class="order-view-card-title"><i class="fas fa-shopping-bag"></i> Items (${order.items?.length || 0})</div>
+            <div class="order-view-items">
+              ${(order.items || []).map(item => `
+                <div class="order-view-item-row">
+                  <img src="${item.product_image}" alt="${item.product_name}">
+                  <span class="order-view-item-name">${item.product_name} × ${item.quantity}</span>
+                  <span class="order-view-item-price">$${(parseFloat(item.price) * item.quantity).toFixed(2)}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Summary Row -->
+          <div class="order-view-summary">
+            <div class="order-view-summary-row">
               <span>Subtotal</span>
               <span>$${parseFloat(order.subtotal || 0).toFixed(2)}</span>
             </div>
-
-            <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.85rem">
+            <div class="order-view-summary-row">
               <span>Tax</span>
               <span>$${parseFloat(order.tax || 0).toFixed(2)}</span>
             </div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:1.1rem;font-weight:700;color:rgba(0,0,0,0.85)">
+            <div class="order-view-summary-row order-view-summary-total">
               <span>Total</span>
               <span>$${parseFloat(order.total).toFixed(2)}</span>
             </div>
           </div>
-          
+
+          <!-- Actions & Delivery -->
           ${order.transaction_id && !order.transaction_approved ? `
-          <div style="display:flex;gap:8px;padding-top:8px;border-top:1px solid var(--border-light)">
-            <button class="btn btn-primary btn-sm" style="flex:1" onclick="AdminPage.approveTransaction(${order.id});document.querySelector('.modal-overlay')?.remove()">
+          <div class="order-view-actions">
+            <button class="btn btn-primary btn-sm" onclick="AdminPage.approveTransaction(${order.id});document.querySelector('.modal-overlay')?.remove()">
               <i class="fas fa-check"></i> Approve Transaction
             </button>
-            <button class="btn btn-sm btn-secondary" style="flex:1;border-color:var(--error);color:var(--error)" onclick="AdminPage.rejectTransaction(${order.id});document.querySelector('.modal-overlay')?.remove()">
+            <button class="btn btn-sm btn-secondary" style="border-color:var(--error);color:var(--error)" onclick="AdminPage.rejectTransaction(${order.id});document.querySelector('.modal-overlay')?.remove()">
               <i class="fas fa-times"></i> Reject
             </button>
           </div>` : ''}
-          
+
           ${order.transaction_approved && !order.download_link ? `
-          <div style="padding:12px;background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.15);border-radius:var(--radius-sm)">
-            <label style="font-size:0.85rem;font-weight:600;margin-bottom:8px;display:block">
-              <i class="fas fa-link"></i> Send Download Link
-            </label>
-            <div style="display:flex;gap:8px">
-              <input type="url" id="dlLink_${order.id}" placeholder="https://.../file.zip" style="flex:1">
+          <div class="order-view-delivery">
+            <div class="order-view-card-title"><i class="fas fa-link"></i> Send Download Link</div>
+            <div class="order-view-delivery-input">
+              <input type="url" id="dlLink_${order.id}" placeholder="https://.../file.zip">
               <button class="btn btn-primary btn-sm" onclick="AdminPage.sendDownloadLink(${order.id})">
                 <i class="fas fa-paper-plane"></i> Send
               </button>
             </div>
           </div>` : ''}
-          
+
           ${order.download_link ? `
-          <div style="padding:12px;background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.15);border-radius:var(--radius-sm)">
-            <div style="font-size:0.85rem;font-weight:600;color:var(--success);margin-bottom:4px">
-              <i class="fas fa-check-circle"></i> Download Link Sent
-            </div>
-            <a href="${order.download_link}" target="_blank" style="color:rgba(0,0,0,0.85);font-size:0.85rem;word-break:break-all">
-              ${order.download_link}
-            </a>
+          <div class="order-view-delivery-sent">
+            <div class="order-view-card-title" style="color:var(--success)"><i class="fas fa-check-circle"></i> Download Link Sent</div>
+            <a href="${order.download_link}" target="_blank">${order.download_link}</a>
           </div>` : ''}
         </div>
-      `, '600px');
+      `, '900px');
     } catch (error) {
       Components.toast('Failed to load order details', 'error');
     }
