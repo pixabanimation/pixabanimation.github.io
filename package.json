@@ -6,7 +6,8 @@
     "update-descriptions": "node tools/update-descriptions.mjs",
     "ai-write": "node tools/ai-blog-writer.mjs",
     "ai-trending": "node tools/ai-blog-writer.mjs --trending 5",
-    "build-blog-index-fs": "node tools/generate-blog-index-from-fs.mjs"
+    "build-blog-index-fs": "node tools/generate-blog-index-from-fs.mjs",
+    "ai-server": "node server/ai-blog-api.mjs"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",

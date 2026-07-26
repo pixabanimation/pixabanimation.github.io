@@ -1003,7 +1003,19 @@ async function main() {
   console.log('\n✅ Done!');
 }
 
-main().catch(err => {
-  console.error('❌ Fatal error:', err.message);
-  process.exit(1);
-});
+// ─── Exports (for API server) ────────────────────────────────────────────────
+export { callAI, generateArticle, writeArticle, discoverTrendingTopics,
+  regenerateSitemap, regenerateBlogIndex, getModel, getApiKey, BASE_URL };
+export { VALID_CATEGORIES, toSlug, generateBlogHtml, generateCoverSvg };
+
+// ─── CLI Entry Point ──────────────────────────────────────────────────────────
+const isCli = process.argv[1] &&
+  (process.argv[1].replace(/\\/g, '/').endsWith('ai-blog-writer.mjs') ||
+   process.argv[1].replace(/\\/g, '/').endsWith('ai-blog-writer'));
+
+if (isCli) {
+  main().catch(err => {
+    console.error('❌ Fatal error:', err.message);
+    process.exit(1);
+  });
+}
