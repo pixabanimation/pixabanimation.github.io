@@ -1237,6 +1237,72 @@ const DB = {
 
   async deleteInvoice(id) {
     return this.execute('DELETE FROM invoices WHERE id = ?', [id]);
+  },
+
+  // === Count helpers for admin pagination ===
+  async countProducts(filters = {}) {
+    let sql = 'SELECT COUNT(*) as count FROM products WHERE 1=1';
+    const params = [];
+    if (filters.search) {
+      sql += ' AND (name LIKE ? OR description LIKE ?)';
+      params.push(`%${filters.search}%`, `%${filters.search}%`);
+    }
+    const result = await this.query(sql, params);
+    return result[0]?.count || 0;
+  },
+
+  async countOrders(filters = {}) {
+    let sql = "SELECT COUNT(*) as count FROM orders WHERE 1=1";
+    const params = [];
+    if (filters.status) { sql += ' AND status = ?'; params.push(filters.status); }
+    const result = await this.query(sql, params);
+    return result[0]?.count || 0;
+  },
+
+  async countReviews() {
+    const result = await this.query('SELECT COUNT(*) as count FROM reviews');
+    return result[0]?.count || 0;
+  },
+
+  async countBlogPosts(filters = {}) {
+    let sql = 'SELECT COUNT(*) as count FROM blog_posts WHERE 1=1';
+    const params = [];
+    if (filters.published !== undefined) { sql += ' AND published = ?'; params.push(filters.published ? 1 : 0); }
+    const result = await this.query(sql, params);
+    return result[0]?.count || 0;
+  },
+
+  async countSubscribers() {
+    const result = await this.query('SELECT COUNT(*) as count FROM newsletter_subscribers');
+    return result[0]?.count || 0;
+  },
+
+  async countMessages() {
+    const result = await this.query('SELECT COUNT(*) as count FROM contact_messages');
+    return result[0]?.count || 0;
+  },
+
+  async countUsers() {
+    const result = await this.query('SELECT COUNT(*) as count FROM users');
+    return result[0]?.count || 0;
+  },
+
+  async countAds() {
+    const result = await this.query('SELECT COUNT(*) as count FROM blog_ads');
+    return result[0]?.count || 0;
+  },
+
+  async countPopupAds() {
+    const result = await this.query('SELECT COUNT(*) as count FROM popup_ads');
+    return result[0]?.count || 0;
+  },
+
+  async countMedia(filters = {}) {
+    let sql = 'SELECT COUNT(*) as count FROM media WHERE 1=1';
+    const params = [];
+    if (filters.media_type) { sql += ' AND media_type = ?'; params.push(filters.media_type); }
+    const result = await this.query(sql, params);
+    return result[0]?.count || 0;
   }
 };
 

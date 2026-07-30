@@ -7,8 +7,10 @@
 const AdminMedia = {
   currentFilter: 'all',
   uploadQueue: [],
+  currentPage: 1,
 
-  async render() {
+  async render(page) {
+    this.currentPage = page || 1;
     const container = document.getElementById('adminContent');
     container.innerHTML = `
       <div class="media-manager page-enter">
@@ -141,6 +143,7 @@ const AdminMedia = {
 
   setFilter(filter) {
     this.currentFilter = filter;
+    this.currentPage = 1;
     document.querySelectorAll('.media-filter-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.filter === filter);
     });
@@ -149,8 +152,12 @@ const AdminMedia = {
 
   async loadMedia() {
     try {
-      const media = await DB.getMedia({});
+      const [media, totalMedia] = await Promise.all([
+        DB.getMedia({}),
+        DB.countMedia({})
+      ]);
       this.allMedia = media;
+      this.totalMedia = totalMedia;
       this.renderMediaGrid();
       const count = document.getElementById('mediaCount');
       if (count) count.textContent = `${media.length} files`;
@@ -172,7 +179,14 @@ const AdminMedia = {
       filtered = filtered.filter(m => m.media_type === this.currentFilter);
     }
 
-    if (filtered.length === 0) {
+    const pageSize = 12;
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const page = this.currentPage || 1;
+    const start = (page - 1) * pageSize;
+    const paged = filtered.slice(start, start + pageSize);
+
+    if (paged.length === 0) {
       grid.innerHTML = `
         <div class="media-empty">
           <div style="font-size:3rem;margin-bottom:16px;opacity:0.3">
@@ -195,9 +209,11 @@ const AdminMedia = {
 
     grid.innerHTML = `
       <div class="media-grid-items">
-        ${filtered.map(m => this.mediaCard(m)).join('')}
+        ${paged.map(m => this.mediaCard(m)).join('')}
       </div>
+      ${Components.renderPagination(page, totalPages, totalItems, 'files')}
     `;
+    this.bindPaginationEvents();
     // Initialize video players after rendering
     setTimeout(() => VideoPlayer.init(), 100);
   },
@@ -490,5 +506,19 @@ const AdminMedia = {
     } catch (e) {
       return null;
     }
+  },
+
+  bindPaginationEvents() {
+    setTimeout(() => {
+      document.querySelectorAll('.media-grid .admin-page-btn[data-page]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const page = parseInt(e.currentTarget.dataset.page);
+          if (page) {
+            this.currentPage = page;
+            this.renderMediaGrid();
+          }
+        });
+      });
+    }, 0);
   }
 };

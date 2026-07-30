@@ -4,9 +4,11 @@
 
 const AdminPage = {
   currentTab: 'dashboard',
-  productPage: 0,
-  orderPage: 0,
   pageSize: 10,
+  productPage: 1, categoriesPage: 1, ordersPage: 1, reviewsPage: 1,
+  blogPage: 1, usersPage: 1, subscribersPage: 1, messagesPage: 1,
+  adsPage: 1, popupAdsPage: 1, mediaPage: 1,
+  productSearch: '', orderStatus: '', couponPage: 1,
 
   async render() {
     const content = document.getElementById('pageContent');
@@ -175,22 +177,33 @@ const AdminPage = {
 
     switch (tab) {
       case 'dashboard': this.loadDashboard(); break;
-      case 'products': this.loadProducts(); break;
-      case 'categories': this.loadCategories(); break;
-      case 'orders': this.loadOrders(); break;
-      case 'users': this.loadUsers(); break;
+      case 'products': this.loadProducts(this.productSearch, 1); break;
+      case 'categories': this.loadCategories(1); break;
+      case 'orders': this.loadOrders(this.orderStatus, 1); break;
+      case 'users': this.loadUsers(1); break;
       case 'coupons': this.loadCoupons(); break;
-      case 'media': AdminMedia.render(); break;
-      case 'subscribers': this.loadSubscribers(); break;
-      case 'reviews': this.loadReviews(); break;
-      case 'messages': this.loadMessages(); break;
-      case 'blog': this.loadBlogPosts(); break;
-      case 'ads': this.loadAds(); break;
-      case 'popupads': AdminPopupAds.render(); break;
+      case 'media': AdminMedia.render(1); break;
+      case 'subscribers': this.loadSubscribers(1); break;
+      case 'reviews': this.loadReviews(1); break;
+      case 'messages': this.loadMessages(1); break;
+      case 'blog': this.loadBlogPosts(1); break;
+      case 'ads': this.loadAds(1); break;
+      case 'popupads': AdminPopupAds.render(1); break;
       case 'invoice': AdminInvoice.render(); break;
       case 'quotation': AdminQuotation.render(); break;
       case 'settings': AdminSettings.render(); break;
     }
+  },
+
+  bindPaginationEvents(selector, callback) {
+    setTimeout(() => {
+      document.querySelectorAll(selector + ' .admin-page-btn[data-page]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const page = parseInt(e.currentTarget.dataset.page);
+          if (page) callback(page);
+        });
+      });
+    }, 0);
   },
 
   // ===================== DASHBOARD =====================
@@ -491,23 +504,30 @@ const AdminPage = {
   },
 
   // ===================== PRODUCTS =====================
-  async loadProducts(search = '') {
+  async loadProducts(search = '', page = 1) {
     const container = document.getElementById('adminContent');
+    this.productSearch = search;
+    this.productPage = page;
 
     try {
       const filters = {};
       if (search) filters.search = search;
-      const [products, categories] = await Promise.all([
+      filters.limit = this.pageSize;
+      filters.offset = (page - 1) * this.pageSize;
+      const [products, categories, totalProducts] = await Promise.all([
         DB.getAllProducts(filters),
-        DB.getCategories()
+        DB.getCategories(),
+        DB.countProducts({ search })
       ]);
+
+      const totalPages = Math.ceil(totalProducts / this.pageSize);
 
       container.innerHTML = `
         <div class="admin-toolbar">
           <div class="admin-search">
             <i class="fas fa-search"></i>
             <input type="text" id="productSearch" placeholder="Search products..." value="${search}" 
-                   onkeydown="if(event.key==='Enter')AdminPage.loadProducts(this.value)">
+                   onkeydown="if(event.key==='Enter')AdminPage.loadProducts(this.value, 1)">
           </div>
           <button class="btn btn-primary btn-sm" onclick="AdminPage.showProductForm(null, ${JSON.stringify(categories).replace(/"/g, "'")})">
             <i class="fas fa-plus"></i> Add Product
@@ -533,7 +553,7 @@ const AdminPage = {
                 '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No products found</td></tr>' :
                 products.map(p => `
                   <tr>
-                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem">${p.id}</td>
                     <td>
                       <div style="display:flex;align-items:center;gap:12px">
                         <img src="${p.image_url || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=80&q=60'}" 
@@ -577,7 +597,11 @@ const AdminPage = {
             </tbody>
           </table>
         </div>
+        ${Components.renderPagination(page, totalPages, totalProducts, 'products')}
       `;
+
+      // Bind pagination click events
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPage.loadProducts(search, newPage));
     } catch (error) {
       console.error('Products error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load products', error.message);
@@ -807,11 +831,17 @@ const AdminPage = {
   },
 
   // ===================== CATEGORIES =====================
-  async loadCategories() {
+  async loadCategories(page = 1) {
     const container = document.getElementById('adminContent');
+    this.categoriesPage = page;
 
     try {
-      const categories = await DB.getCategories();
+      const [categories, totalCategories] = await Promise.all([
+        DB.query(`SELECT c.*, (SELECT COUNT(*) FROM products WHERE category_id = c.id) as product_count FROM categories c ORDER BY c.name LIMIT ? OFFSET ?`, [this.pageSize, (page - 1) * this.pageSize]),
+        DB.query('SELECT COUNT(*) as count FROM categories')
+      ]);
+      const totalCount = totalCategories[0]?.count || 0;
+      const totalPages = Math.ceil(totalCount / this.pageSize);
 
       container.innerHTML = `
         <div class="admin-toolbar">
@@ -838,7 +868,7 @@ const AdminPage = {
                 '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No categories found</td></tr>' :
                 categories.map(c => `
                   <tr>
-                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem">${c.id}</td>
                     <td>
                       <img src="${c.image_url || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=80&q=60'}" 
                            alt="${c.name}" style="width:44px;height:44px;border-radius:8px;object-fit:cover">
@@ -866,7 +896,9 @@ const AdminPage = {
             </tbody>
           </table>
         </div>
+        ${Components.renderPagination(page, totalPages, totalCount, 'categories')}
       `;
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPage.loadCategories(newPage));
     } catch (error) {
       console.error('Categories error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load categories', error.message);
@@ -977,12 +1009,21 @@ const AdminPage = {
   },
 
   // ===================== ORDERS =====================
-  async loadOrders(statusFilter = '') {
+  async loadOrders(statusFilter = '', page = 1) {
     const container = document.getElementById('adminContent');
+    this.orderStatus = statusFilter;
+    this.ordersPage = page;
 
     try {
       const filters = statusFilter ? { status: statusFilter } : {};
-      const orders = await DB.getAllOrders(filters);
+      filters.limit = this.pageSize;
+      filters.offset = (page - 1) * this.pageSize;
+      const [orders, totalOrders] = await Promise.all([
+        DB.getAllOrders(filters),
+        DB.countOrders(filters)
+      ]);
+
+      const totalPages = Math.ceil(totalOrders / this.pageSize);
 
       container.innerHTML = `
         <div class="admin-toolbar">
@@ -1055,7 +1096,9 @@ const AdminPage = {
             </tbody>
           </table>
         </div>
+        ${Components.renderPagination(page, totalPages, totalOrders, 'orders')}
       `;
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPage.loadOrders(statusFilter, newPage));
     } catch (error) {
       console.error('Orders error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load orders', error.message);
@@ -1303,11 +1346,16 @@ const AdminPage = {
   },
 
   // ===================== USERS (Enhanced) =====================
-  async loadUsers() {
+  async loadUsers(page = 1) {
     const container = document.getElementById('adminContent');
+    this.usersPage = page;
 
     try {
-      const users = await DB.getAllUsers();
+      const [users, totalUsers] = await Promise.all([
+        DB.query('SELECT * FROM users ORDER BY created_at DESC LIMIT ? OFFSET ?', [this.pageSize, (page - 1) * this.pageSize]),
+        DB.countUsers()
+      ]);
+      const totalPages = Math.ceil(totalUsers / this.pageSize);
 
       container.innerHTML = `
         <div class="admin-toolbar">
@@ -1339,7 +1387,7 @@ const AdminPage = {
                 '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No users found</td></tr>' :
                 users.map(u => `
                   <tr>
-                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem">${u.id}</td>
                     <td>
                       ${u.avatar_url 
                         ? `<img src="${u.avatar_url}" alt="${u.name}" style="width:36px;height:36px;border-radius:50%;object-fit:cover">`
@@ -1372,7 +1420,9 @@ const AdminPage = {
             </tbody>
           </table>
         </div>
+        ${Components.renderPagination(page, totalPages, totalUsers, 'users')}
       `;
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPage.loadUsers(newPage));
     } catch (error) {
       console.error('Users error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load users', error.message);
@@ -1528,11 +1578,16 @@ const AdminPage = {
   },
 
   // ===================== MESSAGES =====================
-  async loadMessages() {
+  async loadMessages(page = 1) {
     const container = document.getElementById('adminContent');
+    this.messagesPage = page;
 
     try {
-      const messages = await DB.getAllMessages();
+      const [messages, totalMessages] = await Promise.all([
+        DB.query('SELECT * FROM contact_messages ORDER BY created_at DESC LIMIT ? OFFSET ?', [this.pageSize, (page - 1) * this.pageSize]),
+        DB.countMessages()
+      ]);
+      const totalPages = Math.ceil(totalMessages / this.pageSize);
 
       container.innerHTML = `
         <div class="admin-toolbar">
@@ -1558,9 +1613,7 @@ const AdminPage = {
                 '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">No messages yet</td></tr>' :
                 messages.map(m => `
                   <tr style="${!m.is_read && !m.admin_reply ? 'background:rgba(0,102,204,0.03)' : ''}${m.admin_reply ? 'opacity:0.7' : ''}">
-                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
-                    <td>
-                      <div style="font-weight:600;font-size:0.85rem">${m.name}</div>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem">${m.id}</td>
                       <div style="font-size:0.75rem;color:rgba(0,0,0,0.85)">${m.email}</div>
                     </td>
                     <td><span style="font-size:0.85rem;font-weight:500">${m.subject || '—'}</span></td>
@@ -1599,7 +1652,9 @@ const AdminPage = {
             </tbody>
           </table>
         </div>
+        ${Components.renderPagination(page, totalPages, totalMessages, 'messages')}
       `;
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPage.loadMessages(newPage));
     } catch (error) {
       console.error('Messages error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load messages', error.message);
@@ -1719,11 +1774,16 @@ const AdminPage = {
   },
 
   // ===================== SUBSCRIBERS =====================
-  async loadSubscribers() {
+  async loadSubscribers(page = 1) {
     const container = document.getElementById('adminContent');
+    this.subscribersPage = page;
 
     try {
-      const subscribers = await DB.getAllSubscribers();
+      const [subscribers, totalSubscribers] = await Promise.all([
+        DB.query('SELECT * FROM newsletter_subscribers ORDER BY subscribed_at DESC LIMIT ? OFFSET ?', [this.pageSize, (page - 1) * this.pageSize]),
+        DB.countSubscribers()
+      ]);
+      const totalPages = Math.ceil(totalSubscribers / this.pageSize);
 
       container.innerHTML = `
         <div class="admin-toolbar">
@@ -1747,7 +1807,7 @@ const AdminPage = {
                 '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">No subscribers yet</td></tr>' :
                 subscribers.map(s => `
                   <tr>
-                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem">${s.id}</td>
                     <td><span style="font-weight:600">${s.email}</span></td>
                     <td>${s.name || '—'}</td>
                     <td>
@@ -1767,7 +1827,9 @@ const AdminPage = {
             </tbody>
           </table>
         </div>
+        ${Components.renderPagination(page, totalPages, totalSubscribers, 'subscribers')}
       `;
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPage.loadSubscribers(newPage));
     } catch (error) {
       console.error('Subscribers error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load subscribers', error.message);
@@ -1800,11 +1862,23 @@ const AdminPage = {
   },
 
   // ===================== REVIEWS =====================
-  async loadReviews() {
+  async loadReviews(page = 1) {
     const container = document.getElementById('adminContent');
+    this.reviewsPage = page;
 
     try {
-      const reviews = await DB.getAllReviews();
+      const [reviews, totalReviews] = await Promise.all([
+        DB.query(
+          `SELECT r.*, p.name as product_name, p.image_url as product_image
+           FROM reviews r
+           LEFT JOIN products p ON r.product_id = p.id
+           ORDER BY r.created_at DESC LIMIT ? OFFSET ?`,
+          [this.pageSize, (page - 1) * this.pageSize]
+        ),
+        DB.countReviews()
+      ]);
+
+      const totalPages = Math.ceil(totalReviews / this.pageSize);
 
       container.innerHTML = `
         <div class="admin-toolbar">
@@ -1827,9 +1901,9 @@ const AdminPage = {
             <tbody>
               ${reviews.length === 0 ?
                 '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No reviews yet</td></tr>' :
-                reviews.map(r => `
+reviews.map(r => `
                   <tr>
-                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem">${r.id}</td>
                     <td>
                       <div style="display:flex;align-items:center;gap:8px">
                         ${r.product_image ? `<img src="${r.product_image}" alt="${r.product_name || ''}" style="width:32px;height:32px;border-radius:6px;object-fit:cover">` : ''}
@@ -1856,7 +1930,9 @@ const AdminPage = {
             </tbody>
           </table>
         </div>
+        ${Components.renderPagination(page, totalPages, totalReviews, 'reviews')}
       `;
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPage.loadReviews(newPage));
     } catch (error) {
       console.error('Reviews error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load reviews', error.message);
@@ -1889,10 +1965,15 @@ const AdminPage = {
   },
 
   // ===================== BLOG =====================
-  async loadBlogPosts() {
+  async loadBlogPosts(page = 1) {
     const container = document.getElementById('adminContent');
+    this.blogPage = page;
     try {
-      const posts = await DB.getAllBlogPosts({});
+      const [posts, totalPosts] = await Promise.all([
+        DB.query(`SELECT * FROM blog_posts ORDER BY created_at DESC LIMIT ? OFFSET ?`, [this.pageSize, (page - 1) * this.pageSize]),
+        DB.countBlogPosts()
+      ]);
+      const totalPages = Math.ceil(totalPosts / this.pageSize);
       container.innerHTML = `
         <div class="admin-toolbar">
           <h3 style="font-size:1rem;font-weight:600">Blog Posts</h3>
@@ -1925,8 +2006,7 @@ const AdminPage = {
                 '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No blog posts yet</td></tr>' :
                 posts.map(p => `
                   <tr>
-                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem"/td>
-                    <td><span style="font-weight:600;font-size:0.9rem">${p.title}</span></td>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem">${p.id}</td>
                     <td><span style="font-size:0.8rem">${p.category || '—'}</span></td>
                     <td><span style="font-size:0.85rem">${p.author || 'PixabAnimation'}</span></td>
                     <td><span style="font-size:0.85rem">${p.reading_time || '—'} min</span></td>
@@ -1961,7 +2041,9 @@ const AdminPage = {
             </tbody>
           </table>
         </div>
+        ${Components.renderPagination(page, totalPages, totalPosts, 'posts')}
       `;
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPage.loadBlogPosts(newPage));
     } catch (error) {
       console.error('Blog error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load blog posts', error.message);
@@ -2177,10 +2259,14 @@ const AdminPage = {
   },
 
   // ===================== ADS MANAGEMENT =====================
-  async loadAds() {
+  async loadAds(page = 1) {
     const container = document.getElementById('adminContent');
+    this.adsPage = page;
     try {
-      const ads = await DB.getAllAds();
+      const [allAds, totalAds] = await Promise.all([
+        DB.getAllAds(),
+        DB.countAds()
+      ]);
       const blogPageFiles = [
         'ai-assistants-for-designers.html', 'ai-design-tools-creative-workflow.html',
         'ai-driven-personalization-digital-media.html', 'ai-motion-graphics-revolution.html',
@@ -2204,10 +2290,14 @@ const AdminPage = {
         'visual-storytelling-data-animation.html', 'web-animation-css-javascript.html'
       ];
 
-      const activeCount = ads.filter(a => a.is_active).length;
-      const ad1Count = ads.filter(a => a.ad_type === 'ad1').length;
-      const ad2Count = ads.filter(a => a.ad_type === 'ad2').length;
-      const ad3Count = ads.filter(a => a.ad_type === 'ad3').length;
+      const activeCount = allAds.filter(a => a.is_active).length;
+      const ad1Count = allAds.filter(a => a.ad_type === 'ad1').length;
+      const ad2Count = allAds.filter(a => a.ad_type === 'ad2').length;
+      const ad3Count = allAds.filter(a => a.ad_type === 'ad3').length;
+
+      const totalPages = Math.ceil(totalAds / this.pageSize);
+      const start = (page - 1) * this.pageSize;
+      const ads = allAds.slice(start, start + this.pageSize);
 
       container.innerHTML = `
         <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
@@ -2315,7 +2405,9 @@ const AdminPage = {
           `;}).join('')}
         </div>
         `}
+        ${Components.renderPagination(page, totalPages, totalAds, 'ads')}
       `;
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPage.loadAds(newPage));
     } catch (error) {
       console.error('Ads error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load ads', error.message);

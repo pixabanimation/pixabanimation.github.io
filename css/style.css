@@ -11673,6 +11673,62 @@ body:has(.admin-page) .footer {
   background: rgba(0,0,0,0.02) !important;
 }
 
+/* --- Pagination --- */
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  margin-top: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.admin-pagination-info {
+  font-size: 0.82rem;
+  color: rgba(0,0,0,0.48);
+  font-weight: 500;
+}
+.admin-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.admin-page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(0,0,0,0.64);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+.admin-page-btn:hover {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.12);
+}
+.admin-page-btn.active {
+  background: #0071e3;
+  color: #fff;
+  border-color: #0071e3;
+}
+.admin-page-btn.active:hover {
+  background: #0062c4;
+}
+.admin-page-ellipsis {
+  padding: 6px 4px;
+  color: rgba(0,0,0,0.32);
+  font-size: 0.85rem;
+}
+
 /* --- Search --- */
 .admin-search {
   background: rgba(0,0,0,0.04) !important;

@@ -332,5 +332,42 @@ const Components = {
         ${buttonText ? `<a href="${buttonLink || '#/'}" class="btn btn-primary">${buttonText}</a>` : ''}
       </div>
     `;
+  },
+
+  // Pagination component
+  renderPagination(currentPage, totalPages, totalItems, itemLabel = 'items') {
+    if (totalPages <= 1) return '<div style="text-align:center;padding:12px;color:var(--text-muted);font-size:0.85rem">' + totalItems + ' ' + itemLabel + '</div>';
+
+    const start = (currentPage - 1) * 10 + 1;
+    const end = Math.min(currentPage * 10, totalItems);
+    let html = '<div class="admin-pagination"><div class="admin-pagination-info">' + start + '–' + end + ' of ' + totalItems + ' ' + itemLabel + '</div><div class="admin-pagination-controls">';
+
+    if (currentPage > 1) {
+      html += '<button class="admin-page-btn" data-page="' + (currentPage - 1) + '"><i class="fas fa-chevron-left"></i> Prev</button>';
+    }
+
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, currentPage + 2);
+
+    if (startPage > 1) {
+      html += '<button class="admin-page-btn' + (1 === currentPage ? ' active' : '') + '" data-page="1">1</button>';
+      if (startPage > 2) html += '<span class="admin-page-ellipsis">…</span>';
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      html += '<button class="admin-page-btn' + (i === currentPage ? ' active' : '') + '" data-page="' + i + '">' + i + '</button>';
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) html += '<span class="admin-page-ellipsis">…</span>';
+      html += '<button class="admin-page-btn' + (totalPages === currentPage ? ' active' : '') + '" data-page="' + totalPages + '">' + totalPages + '</button>';
+    }
+
+    if (currentPage < totalPages) {
+      html += '<button class="admin-page-btn" data-page="' + (currentPage + 1) + '">Next <i class="fas fa-chevron-right"></i></button>';
+    }
+
+    html += '</div></div>';
+    return html;
   }
 };

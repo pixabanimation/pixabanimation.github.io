@@ -3,12 +3,18 @@
 // ============================================
 
 const AdminPopupAds = {
-  async render() {
+  async render(page = 1) {
     const container = document.getElementById('adminContent');
     try {
-      const ads = await DB.getPopupAds();
-      const activeCount = ads.filter(a => a.is_active).length;
-      const animatedCount = ads.filter(a => a.is_animated).length;
+      const [allAds, totalAds] = await Promise.all([
+        DB.getPopupAds(),
+        DB.countPopupAds()
+      ]);
+      const totalPages = Math.ceil(totalAds / 10);
+      const start = (page - 1) * 10;
+      const ads = allAds.slice(start, start + 10);
+      const activeCount = allAds.filter(a => a.is_active).length;
+      const animatedCount = allAds.filter(a => a.is_animated).length;
 
       container.innerHTML = `
         <div class="admin-toolbar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
@@ -118,11 +124,24 @@ const AdminPopupAds = {
           `;}).join('')}
         </div>
         `}
+        ${Components.renderPagination(page, totalPages, totalAds, 'popup ads')}
       `;
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPopupAds.render(newPage));
     } catch (error) {
       console.error('Popup Ads error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load popup ads', error.message);
     }
+  },
+
+  bindPaginationEvents(selector, callback) {
+    setTimeout(() => {
+      document.querySelectorAll(selector + ' .admin-page-btn[data-page]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const page = parseInt(e.currentTarget.dataset.page);
+          if (page) callback(page);
+        });
+      });
+    }, 0);
   },
 
   async showForm(adId) {
