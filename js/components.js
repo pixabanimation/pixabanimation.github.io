@@ -189,7 +189,7 @@ const Components = {
           </div>
         `;
       } else {
-        gridHtml = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;max-height:400px;overflow-y:auto;padding:4px">`;
+        gridHtml = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;max-height:55vh;overflow-y:auto;padding:4px">`;
         media.forEach(m => {
           const url = m.secure_url || m.url;
           gridHtml += `
@@ -215,7 +215,7 @@ const Components = {
       overlay.className = 'modal-overlay media-picker-overlay';
       overlay.style.zIndex = '20000';
       overlay.innerHTML = `
-        <div class="modal-content" style="max-width:520px">
+        <div class="modal-content" style="max-width:780px">
           <div class="modal-header">
             <h2>Select Image</h2>
             <button class="modal-close" onclick="this.closest('.media-picker-overlay').remove();window.__mediaPickerCallback=null">

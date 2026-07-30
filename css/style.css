@@ -10301,6 +10301,11 @@ body:has(.admin-page) .footer {
   margin-bottom: 8px;
 }
 
+/* Media Picker */
+.media-picker-overlay {
+  overflow-y: auto;
+}
+
 /* ============================================
    Admin Settings — Neon Glass Cards
    ============================================ */
