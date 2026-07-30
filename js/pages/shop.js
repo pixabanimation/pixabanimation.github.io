@@ -3,7 +3,6 @@
 // ============================================
 
 const ShopPage = {
-  loadedCount: 0,
   currentFilters: null,
   currentCategoryName: '',
   searchHighlightIndex: -1,
@@ -31,56 +30,14 @@ const ShopPage = {
 
     content.innerHTML = `
       <div class="shop-page-premium">
-        <!-- Shop Hero -->
-        <div class="shop-hero page-enter">
-          <div class="shop-hero-inner">
-            <div class="shop-hero-copy">
-              <div class="shop-hero-badge">
-                <i class="fas fa-gem"></i>
-                ${categorySlug ? this.currentCategoryName : 'PixabAnimation Marketplace'}
-              </div>
-              <h1 class="shop-hero-title">
-                ${categorySlug
-                  ? `${this.currentCategoryName} for polished productions`
-                  : 'Premium motion assets for decisive edits'
-                }
-              </h1>
-              <p class="shop-hero-desc">
-                ${categorySlug
-                  ? `Browse hand-picked ${this.currentCategoryName.toLowerCase()} assets built for editors, motion designers, and production teams.`
-                  : 'Curated animation templates, video backgrounds, mockups, and creative packs with instant access for professional work.'
-                }
-              </p>
-              <div class="shop-hero-stats" aria-label="Marketplace highlights">
-                <span><strong>4K</strong><small>ready visuals</small></span>
-                <span><strong>Instant</strong><small>download flow</small></span>
-                <span><strong>Pro</strong><small>creator license</small></span>
-              </div>
-            </div>
-
-            <div class="shop-hero-gallery" aria-hidden="true">
-              <div class="shop-visual-card shop-visual-card-main">
-                <img src="assets/images/Animated-Background-Stock-Video-Footage-for-Premium-Download.jpg" alt="">
-                <span>Motion Background</span>
-              </div>
-              <div class="shop-visual-card">
-                <img src="assets/images/news-background-animation.jpg" alt="">
-                <span>Broadcast Pack</span>
-              </div>
-              <div class="shop-visual-card">
-                <img src="assets/images/infographic.jpg" alt="">
-                <span>Infographic Kit</span>
-              </div>
-              <div class="shop-visual-card">
-                <img src="assets/images/iphone-mockup.jpg" alt="">
-                <span>Device Mockup</span>
-              </div>
-            </div>
-
-            <div class="shop-category-chips" id="shopCategoryChips">
-              <span class="shop-category-label">Quick filter</span>
-            </div>
-          </div>
+        <!-- Category Chips (collapsible) -->
+        <div class="shop-category-chips" id="shopCategoryChips">
+          <button class="shop-category-toggle" id="shopCategoryToggle" onclick="ShopPage.toggleCategories()">
+            <i class="fas fa-tags"></i>
+            Quick filter
+            <i class="fas fa-chevron-down shop-category-chevron"></i>
+          </button>
+          <div class="shop-category-body" id="shopCategoryBody"></div>
         </div>
 
         <!-- Sticky Filter Toolbar -->
@@ -96,10 +53,10 @@ const ShopPage = {
                    aria-label="Search suggestions" hidden></div>
             </div>
             <div class="shop-toolbar-left">
-              <select class="shop-filter-select" id="filterCategory" onchange="ShopPage.applyFilters()" aria-label="Filter by category">
+              <select class="shop-filter-select" id="filterCategory" onchange="ShopPage.applyFilters()" aria-label="Filter by category" data-custom-dropdown>
                 <option value="">All Categories</option>
               </select>
-              <select class="shop-filter-select" id="filterSort" onchange="ShopPage.applyFilters()" aria-label="Sort products">
+              <select class="shop-filter-select" id="filterSort" onchange="ShopPage.applyFilters()" aria-label="Sort products" data-custom-dropdown>
                 <option value="newest" ${sortBy === 'newest' ? 'selected' : ''}>Newest</option>
                 <option value="price-asc" ${sortBy === 'price-asc' ? 'selected' : ''}>Price: Low to High</option>
                 <option value="price-desc" ${sortBy === 'price-desc' ? 'selected' : ''}>Price: High to Low</option>
@@ -127,13 +84,6 @@ const ShopPage = {
             </div>
           </div>
           <div id="shopGrid">${Components.loadingSkeleton(8)}</div>
-          <div class="shop-load-more" id="shopLoadMoreContainer" style="display:none">
-            <button class="shop-load-more-btn" id="shopLoadMoreBtn" onclick="ShopPage.loadMore()">
-              <i class="fas fa-cog shop-load-more-spinner" id="shopLoadMoreSpinner"></i>
-              <i class="fas fa-chevron-down"></i>
-              Load More Assets
-            </button>
-          </div>
         </div>
 
         <!-- SEO Structured Data -->
@@ -145,7 +95,7 @@ const ShopPage = {
     this.toolbarScrollHandler = () => {
       const toolbar = document.getElementById('shopToolbar');
       if (toolbar) {
-        toolbar.classList.toggle('scrolled', window.scrollY > 280);
+        toolbar.classList.toggle('scrolled', window.scrollY > 10);
       }
     };
     window.addEventListener('scroll', this.toolbarScrollHandler);
@@ -216,7 +166,7 @@ const ShopPage = {
     // Load categories into chips and filter dropdown
     try {
       const categories = await DB.getCategories();
-      const chipsContainer = document.getElementById('shopCategoryChips');
+      const chipsContainer = document.getElementById('shopCategoryBody');
       const select = document.getElementById('filterCategory');
 
       categories.forEach(cat => {
@@ -240,8 +190,14 @@ const ShopPage = {
       console.error('Failed to load categories:', e);
     }
 
+    // Initialize custom dropdowns after all options are loaded
+    Components.initDropdowns();
+
     // Render filter tags if filters are active
     this.renderFilterTags(categorySlug, searchQuery, sortBy);
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', Components.closeAllDropdowns);
 
     await this.loadProducts({ category: categorySlug, search: searchQuery, sort: sortBy });
   },
@@ -452,18 +408,14 @@ const ShopPage = {
   async loadProducts(filters) {
     const grid = document.getElementById('shopGrid');
     const results = document.getElementById('shopResults');
-    const loadMoreContainer = document.getElementById('shopLoadMoreContainer');
 
-    this.loadedCount = 0;
     this.currentFilters = filters;
 
     try {
       const products = await DB.getProducts({
         category: filters.category,
         search: filters.search,
-        sort: filters.sort,
-        limit: 8,
-        offset: 0
+        sort: filters.sort
       });
 
       if (products.length === 0) {
@@ -475,20 +427,14 @@ const ShopPage = {
           '#/shop'
         );
         results.innerHTML = '<span class="shop-results-kicker">Marketplace</span><strong>0</strong> assets found';
-        if (loadMoreContainer) loadMoreContainer.style.display = 'none';
       } else {
         grid.innerHTML = `
           <div class="product-grid">
             ${products.map((p, i) => Components.productCard(p, i)).join('')}
           </div>
         `;
-        this.loadedCount = products.length;
         results.innerHTML = `<span class="shop-results-kicker">Marketplace</span><strong>${products.length}</strong> premium asset${products.length !== 1 ? 's' : ''} shown`;
         App.updateWishlistIcons();
-
-        if (loadMoreContainer) {
-          loadMoreContainer.style.display = products.length >= 8 ? '' : 'none';
-        }
       }
     } catch (error) {
       console.error('Failed to load products:', error);
@@ -499,61 +445,15 @@ const ShopPage = {
         'Retry',
         '#/shop'
       );
-      if (loadMoreContainer) loadMoreContainer.style.display = 'none';
     }
   },
 
-  async loadMore() {
-    const btn = document.getElementById('shopLoadMoreBtn');
-    const container = document.getElementById('shopLoadMoreContainer');
-    const results = document.getElementById('shopResults');
-    let reachedEnd = false;
-
-    if (!btn || btn.disabled) return;
-    btn.disabled = true;
-    btn.classList.add('loading');
-
-    try {
-      const moreProducts = await DB.getProducts({
-        category: this.currentFilters?.category,
-        search: this.currentFilters?.search,
-        sort: this.currentFilters?.sort,
-        limit: 8,
-        offset: this.loadedCount
-      });
-
-      if (moreProducts.length === 0) {
-        if (container) container.remove();
-        return;
-      }
-
-      const grid = document.querySelector('#shopGrid .product-grid');
-      if (grid) {
-        // Append with stagger animation
-        grid.insertAdjacentHTML('beforeend', moreProducts.map((p, i) => Components.productCard(p, this.loadedCount + i)).join(''));
-      }
-
-      this.loadedCount += moreProducts.length;
-      if (results) results.innerHTML = `<span class="shop-results-kicker">Marketplace</span><strong>${this.loadedCount}</strong> premium asset${this.loadedCount !== 1 ? 's' : ''} shown`;
-      App.updateWishlistIcons();
-
-      if (moreProducts.length < 8) {
-        reachedEnd = true;
-        btn.innerHTML = '<i class="fas fa-check" style="margin-right:6px"></i> All assets loaded';
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        btn.style.cursor = 'default';
-        setTimeout(() => {
-          if (container) container.style.display = 'none';
-        }, 1800);
-      }
-    } catch (error) {
-      console.error('Failed to load more products:', error);
-      Components.toast('Failed to load more assets', 'error');
-    } finally {
-      if (!reachedEnd) btn.disabled = false;
-      btn.classList.remove('loading');
-    }
+  toggleCategories() {
+    const body = document.getElementById('shopCategoryBody');
+    const toggle = document.getElementById('shopCategoryToggle');
+    if (!body || !toggle) return;
+    const isOpen = body.classList.toggle('open');
+    toggle.classList.toggle('open', isOpen);
   },
 
   applyFilters() {
@@ -617,6 +517,7 @@ const ShopPage = {
       document.removeEventListener('click', this.shopSearchOutsideHandler);
       this.shopSearchOutsideHandler = null;
     }
+    document.removeEventListener('click', Components.closeAllDropdowns);
     clearTimeout(this.searchDebounceTimer);
     this.closeShopSearchSuggestions();
   }

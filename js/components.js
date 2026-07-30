@@ -369,5 +369,69 @@ const Components = {
 
     html += '</div></div>';
     return html;
+  },
+
+  // Custom Dropdown — replaces a native <select> with a styled dropdown
+  initDropdowns() {
+    document.querySelectorAll('[data-custom-dropdown]').forEach(el => this.createDropdown(el));
+  },
+
+  createDropdown(select) {
+    if (select.dataset.dropdownReady) return;
+    select.dataset.dropdownReady = 'true';
+    select.style.display = 'none';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'custom-dropdown';
+
+    const labelMap = {};
+    select.querySelectorAll('option').forEach(o => { labelMap[o.value] = o.textContent; });
+
+    const currentLabel = labelMap[select.value] || select.options[select.selectedIndex]?.textContent || 'Select';
+
+    const trigger = document.createElement('button');
+    trigger.className = 'custom-dropdown-trigger';
+    trigger.type = 'button';
+    trigger.innerHTML = `<span class="custom-dropdown-label">${currentLabel}</span><i class="fas fa-chevron-down custom-dropdown-arrow"></i>`;
+
+    const panel = document.createElement('div');
+    panel.className = 'custom-dropdown-panel';
+    panel.setAttribute('role', 'listbox');
+
+    select.querySelectorAll('option').forEach((opt) => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = `custom-dropdown-item${opt.value === select.value ? ' active' : ''}`;
+      item.dataset.value = opt.value;
+      item.textContent = opt.textContent;
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', opt.value === select.value ? 'true' : 'false');
+      item.addEventListener('click', () => {
+        select.value = opt.value;
+        trigger.querySelector('.custom-dropdown-label').textContent = opt.textContent;
+        panel.querySelectorAll('.custom-dropdown-item').forEach(it => {
+          it.classList.toggle('active', it.dataset.value === opt.value);
+          it.setAttribute('aria-selected', it.dataset.value === opt.value ? 'true' : 'false');
+        });
+        this.closeAllDropdowns();
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      panel.appendChild(item);
+    });
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = wrapper.classList.contains('open');
+      this.closeAllDropdowns();
+      if (!isOpen) wrapper.classList.add('open');
+    });
+
+    wrapper.appendChild(trigger);
+    wrapper.appendChild(panel);
+    select.parentNode.insertBefore(wrapper, select.nextSibling);
+  },
+
+  closeAllDropdowns() {
+    document.querySelectorAll('.custom-dropdown.open').forEach(d => d.classList.remove('open'));
   }
 };
