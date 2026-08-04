@@ -10,7 +10,7 @@
   <meta name="keywords" content="motion graphics, animation assets, 4K video clips, motion design templates, logo reveal animation, typography animation, After Effects templates, Premiere Pro templates, explainer video assets, animated lower thirds, stock motion graphics, video transitions, creative assets for editors, PixabAnimation">
   <meta name="author" content="PixabAnimation">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://pixabanimation.github.io/about">
+  <link rel="canonical" href="https://pixabanimation.github.io/about.html">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:title" content="About PixabAnimation — Where Creativity Meets Motion">
@@ -140,7 +140,7 @@
   }
   </script>
 
-<script>window.location.replace('/#/about');</script>
+<script>if (!window.location.hash) history.replaceState(null, '', '#/about');</script>
 </head>
 <body>
   <!-- App Shell -->
@@ -163,12 +163,12 @@
             </a>
           </li>
           <li><a href="#/" class="nav-link active" data-nav><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="#/shop" class="nav-link" data-nav><i class="fas fa-store"></i> Shop</a></li>
+          <li><a href="shop.html" class="nav-link" data-nav><i class="fas fa-store"></i> Shop</a></li>
           <li><a href="#/shop?category=videos" class="nav-link" data-nav><i class="fas fa-video"></i> Videos</a></li>
           <li><a href="#/shop?category=adobe-after-effect-plugins" class="nav-link" data-nav><i class="fas fa-plug"></i> Plugins</a></li>
           <li><a href="blog/" class="nav-link" data-nav><i class="fas fa-newspaper"></i> Blog</a></li>
-          <li><a href="#/about" class="nav-link" data-nav><i class="fas fa-info-circle"></i> About</a></li>
-          <li><a href="#/contact" class="nav-link" data-nav><i class="fas fa-envelope"></i> Contact</a></li>
+          <li><a href="about.html" class="nav-link" data-nav><i class="fas fa-info-circle"></i> About</a></li>
+          <li><a href="contact.html" class="nav-link" data-nav><i class="fas fa-envelope"></i> Contact</a></li>
           <li class="nav-divider-mobile"><hr></li>
           <li><a href="#/wishlist" class="nav-link nav-action-mobile" data-nav><i class="fas fa-heart"></i> Wishlist <span class="badge wishlist-badge-mobile" id="wishlistBadgeMobile">0</span></a></li>
           <li><a href="#/cart" class="nav-link nav-action-mobile" data-nav><i class="fas fa-shopping-bag"></i> Cart <span class="badge cart-badge-mobile" id="cartBadgeMobile">0</span></a></li>
@@ -211,7 +211,67 @@
       <div class="page-loader" id="pageLoader">
         <div class="loader-spinner"></div>
       </div>
-      <div id="pageContent"></div>
+      <div id="pageContent"><div class="about-page page-enter">
+        <div class="about-hero" style="text-align:center;padding:60px 24px;max-width:800px;margin:0 auto">
+          <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(0,102,204,0.1);border:1px solid rgba(0,102,204,0.15);border-radius:9999px;margin-bottom:20px">
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--ds-primary)"></span>
+            <span class="ds-caption" style="font-weight:500;color:var(--ds-primary)">Our Story</span>
+          </div>
+          <h1 class="ds-display-lg" style="color:#1d1d1f;margin-bottom:16px">
+            Where <span class="text-gradient">Creativity</span> Meets Motion
+          </h1>
+          <p class="ds-body" style="color:rgba(0,0,0,0.56);max-width:640px;margin:0 auto">
+            At PixabAnimation, we believe every creator deserves access to premium animation assets that bring their vision to life. 
+            Founded in 2024, our marketplace curates the finest 4K video clips, motion graphics, design templates, and animation resources 
+            from top artists around the world. From indie filmmakers to major production studios — we power the stories that move us.
+          </p>
+        </div>
+
+        <div class="about-values" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;max-width:var(--max-width);margin:0 auto;padding:40px 24px">
+          <div class="value-card" style="padding:32px 24px;text-align:center;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
+            <div style="width:48px;height:48px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--ds-primary)"><i class="fas fa-gem"></i></div>
+            <h3 class="ds-body-strong" style="margin-bottom:8px;color:#1d1d1f">Premium Quality</h3>
+            <p class="ds-caption" style="color:rgba(0,0,0,0.56);line-height:1.6">Every asset is hand-curated and tested to ensure 4K resolution, professional-grade quality, and seamless integration with your workflow.</p>
+          </div>
+          <div class="value-card" style="padding:32px 24px;text-align:center;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
+            <div style="width:48px;height:48px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--ds-primary)"><i class="fas fa-leaf"></i></div>
+            <h3 class="ds-body-strong" style="margin-bottom:8px;color:#1d1d1f">Creator-First</h3>
+            <p class="ds-caption" style="color:rgba(0,0,0,0.56);line-height:1.6">We partner with independent artists and studios worldwide, ensuring fair compensation and a diverse, ever-growing library of original content.</p>
+          </div>
+          <div class="value-card" style="padding:32px 24px;text-align:center;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
+            <div style="width:48px;height:48px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--ds-primary)"><i class="fas fa-rocket"></i></div>
+            <h3 class="ds-body-strong" style="margin-bottom:8px;color:#1d1d1f">Instant Access</h3>
+            <p class="ds-caption" style="color:rgba(0,0,0,0.56);line-height:1.6">Download your purchases instantly in full resolution. No watermarks, no delays. Start creating the moment you buy.</p>
+          </div>
+          <div class="value-card" style="padding:32px 24px;text-align:center;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
+            <div style="width:48px;height:48px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--ds-primary)"><i class="fas fa-heart"></i></div>
+            <h3 class="ds-body-strong" style="margin-bottom:8px;color:#1d1d1f">Community Driven</h3>
+            <p class="ds-caption" style="color:rgba(0,0,0,0.56);line-height:1.6">Join a thriving community of 10,000+ creators. Share your work, get inspired, and grow your craft with PixabAnimation.</p>
+          </div>
+        </div>
+
+        <div style="max-width:var(--max-width);margin:40px auto;padding:0 24px">
+          <div class="glass" style="padding:48px;text-align:center;border:1px solid rgba(0,0,0,0.06);border-radius:14px">
+            <h2 class="ds-display-md" style="color:#1d1d1f;margin-bottom:24px">
+              <span class="text-gradient">Numbers</span> Speak Louder
+            </h2>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:600px;margin:0 auto">
+              <div><div style="font-family:var(--font-display);font-size:2rem;font-weight:600;color:var(--ds-primary)">10K+</div><div class="ds-caption" style="color:rgba(0,0,0,0.48)">Happy Creators</div></div>
+              <div><div style="font-family:var(--font-display);font-size:2rem;font-weight:600;color:var(--ds-primary)">500+</div><div class="ds-caption" style="color:rgba(0,0,0,0.48)">Premium Assets</div></div>
+              <div><div style="font-family:var(--font-display);font-size:2rem;font-weight:600;color:var(--ds-primary)">50+</div><div class="ds-caption" style="color:rgba(0,0,0,0.48)">Artist Partners</div></div>
+              <div><div style="font-family:var(--font-display);font-size:2rem;font-weight:600;color:var(--ds-primary)">4K</div><div class="ds-caption" style="color:rgba(0,0,0,0.48)">Ultra HD Quality</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="max-width:var(--max-width);margin:40px auto;padding:0 24px 60px;text-align:center">
+          <h2 class="ds-display-md" style="color:#1d1d1f;margin-bottom:12px">Ready to Elevate Your Creative Projects?</h2>
+          <p class="ds-body" style="color:rgba(0,0,0,0.56);margin-bottom:24px">Join thousands of creators who trust PixabAnimation for their animation and design needs.</p>
+          <a href="shop.html" class="ds-pill-cta" style="padding:12px 28px;font-size:15px">
+            <i class="fas fa-store"></i> Explore Assets
+          </a>
+        </div>
+      </div>
     </main>
 
     <!-- Footer — Apple-Inspired Design -->
@@ -234,7 +294,7 @@
           <!-- Shop -->
           <div class="footer-col">
             <h4 class="footer-col-title">Shop</h4>
-            <a href="#/shop" class="footer-link">All Assets</a>
+            <a href="shop.html" class="footer-link">All Assets</a>
             <a href="#/shop?category=videos" class="footer-link">Animation &amp; Video</a>
             <a href="#/shop?category=adobe-after-effect-plugins" class="footer-link">After Effects Plugins</a>
             <a href="#/shop?category=background-animation" class="footer-link">Background Animation</a>
@@ -247,16 +307,16 @@
             <a href="#/shop?category=adobe-after-effect-plugins" class="footer-link">Plugins &amp; Extensions</a>
             <a href="#/shop?category=green-screen-mockup" class="footer-link">Green Screen Mockups</a>
             <a href="#/shop?category=ads-design" class="footer-link">Advertising Design</a>
-            <a href="#/shop" class="footer-link footer-link-all">View All <i class="fas fa-arrow-right"></i></a>
+            <a href="shop.html" class="footer-link footer-link-all">View All <i class="fas fa-arrow-right"></i></a>
           </div>
           <!-- Support -->
           <div class="footer-col">
             <h4 class="footer-col-title">Support</h4>
-            <a href="#/contact" class="footer-link">Contact Us</a>
-            <a href="#/about" class="footer-link">About Us</a>
-            <a href="#/privacy-policy" class="footer-link">Privacy Policy</a>
-            <a href="#/refund-policy" class="footer-link">Refund Policy</a>
-            <a href="#/terms-of-use" class="footer-link">Terms of Use</a>
+            <a href="contact.html" class="footer-link">Contact Us</a>
+            <a href="about.html" class="footer-link">About Us</a>
+            <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
+            <a href="refund-policy.html" class="footer-link">Refund Policy</a>
+            <a href="terms-of-use.html" class="footer-link">Terms of Use</a>
             <a href="blog/" class="footer-link">Blog</a>
           </div>
           <!-- Newsletter -->
@@ -272,13 +332,13 @@
         </div>
         <div class="footer-bottom">
           <div class="footer-bottom-links">
-            <a href="#/privacy-policy">Privacy</a>
+            <a href="privacy-policy.html">Privacy</a>
             <span class="footer-bottom-sep">·</span>
-            <a href="#/refund-policy">Refunds</a>
+            <a href="refund-policy.html">Refunds</a>
             <span class="footer-bottom-sep">·</span>
-            <a href="#/terms-of-use">Terms</a>
+            <a href="terms-of-use.html">Terms</a>
             <span class="footer-bottom-sep">·</span>
-            <a href="#/contact">Support</a>
+            <a href="contact.html">Support</a>
           </div>
           <p class="footer-bottom-copy">&copy; © 2026 PixabAnimation & SPurno. All rights reserved.</p>
             <div class="blog-footer-payment-icons">

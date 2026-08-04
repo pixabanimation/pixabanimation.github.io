@@ -863,12 +863,12 @@ ${meta.tags.map(t => `  <meta property="article:tag" content="${esc(t)}">`).join
           PixabAnimation
         </a></li>
         <li><a href="${BASE_URL}/">Home</a></li>
-        <li><a href="${BASE_URL}/#/shop">Shop</a></li>
+        <li><a href="${BASE_URL}/shop.html">Shop</a></li>
         <li><a href="${BASE_URL}/#/shop?category=videos">Videos</a></li>
         <li><a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins">Plugins</a></li>
         <li><a href="index.html" class="active">Blog</a></li>
-        <li><a href="${BASE_URL}/#/about">About</a></li>
-        <li><a href="${BASE_URL}/#/contact">Contact</a></li>
+        <li><a href="${BASE_URL}/about.html">About</a></li>
+        <li><a href="${BASE_URL}/contact.html">Contact</a></li>
       </ul>
       <div class="blog-nav-actions">
         <a href="${BASE_URL}/#/wishlist"><i class="fas fa-heart"></i></a>
@@ -959,9 +959,9 @@ ${content}
       <div class="useful-links">
         <div class="label">Useful Links</div>
         <div class="grid">
-          <a href="${BASE_URL}/#/shop"><i class="fas fa-shopping-bag" style="margin-right:6px"></i> Shop Premium Assets</a>
+          <a href="${BASE_URL}/shop.html"><i class="fas fa-shopping-bag" style="margin-right:6px"></i> Shop Premium Assets</a>
           <a href="${BASE_URL}/#/shop?category=videos"><i class="fas fa-video" style="margin-right:6px"></i> Motion Graphics Stock</a>
-          <a href="${BASE_URL}/#/about"><i class="fas fa-info-circle" style="margin-right:6px"></i> About PixabAnimation</a>
+          <a href="${BASE_URL}/about.html"><i class="fas fa-info-circle" style="margin-right:6px"></i> About PixabAnimation</a>
           <a href="${BASE_URL}/"><i class="fas fa-home" style="margin-right:6px"></i> Return to Homepage</a>
         </div>
       </div>
@@ -1015,7 +1015,7 @@ ${getTopTags().map(t => `          <a href="index.html" class="sidebar-tag" oncl
       <!-- Ads -->
       <div class="sidebar-section">
         <div class="sidebar-title">Sponsored</div>
-        <div id="ad-slot-1"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-cube"></i></div><div class="blog-ad-text"><h3>Premium Motion Graphics</h3><p>4000+ professional 4K motion backgrounds and templates.</p><a href="${BASE_URL}/#/shop" class="blog-ad-cta">Browse <i class="fas fa-arrow-right"></i></a></div></div></div></div></div>
+        <div id="ad-slot-1"><div class="blog-ad-container"><div class="blog-ad-inner"><span class="blog-ad-label">Ad</span><div class="blog-ad-content"><div class="blog-ad-icon"><i class="fas fa-cube"></i></div><div class="blog-ad-text"><h3>Premium Motion Graphics</h3><p>4000+ professional 4K motion backgrounds and templates.</p><a href="${BASE_URL}/shop.html" class="blog-ad-cta">Browse <i class="fas fa-arrow-right"></i></a></div></div></div></div></div>
         <div id="ad-slot-2" style="margin-top:12px"></div>
         <div id="ad-slot-3" style="margin-top:12px"></div>
       </div>
@@ -1047,7 +1047,7 @@ ${getTopTags().map(t => `          <a href="index.html" class="sidebar-tag" oncl
         </div>
         <div class="blog-footer-col">
           <h4>Shop</h4>
-          <a href="${BASE_URL}/#/shop">All Assets</a>
+          <a href="${BASE_URL}/shop.html">All Assets</a>
           <a href="${BASE_URL}/#/shop?category=videos">Animation & Video</a>
           <a href="${BASE_URL}/#/shop?category=adobe-after-effect-plugins">AE Plugins</a>
           <a href="${BASE_URL}/#/shop?category=background-animation">Backgrounds</a>
@@ -1061,10 +1061,10 @@ ${getTopTags().map(t => `          <a href="index.html" class="sidebar-tag" oncl
         </div>
         <div class="blog-footer-col">
           <h4>Support</h4>
-          <a href="${BASE_URL}/#/contact">Contact Us</a>
-          <a href="${BASE_URL}/#/about">About Us</a>
-          <a href="${BASE_URL}/#/privacy-policy">Privacy Policy</a>
-          <a href="${BASE_URL}/#/terms-of-use">Terms of Use</a>
+          <a href="${BASE_URL}/contact.html">Contact Us</a>
+          <a href="${BASE_URL}/about.html">About Us</a>
+          <a href="${BASE_URL}/privacy-policy.html">Privacy Policy</a>
+          <a href="${BASE_URL}/terms-of-use.html">Terms of Use</a>
           <a href="index.html">Blog</a>
         </div>
         <div class="blog-footer-col blog-footer-col-newsletter">
@@ -1079,10 +1079,10 @@ ${getTopTags().map(t => `          <a href="index.html" class="sidebar-tag" oncl
       </div>
       <div class="blog-footer-bottom">
         <div class="blog-footer-bottom-links">
-          <a href="${BASE_URL}/#/privacy-policy">Privacy</a>
-          <a href="${BASE_URL}/#/refund-policy">Refunds</a>
-          <a href="${BASE_URL}/#/terms-of-use">Terms</a>
-          <a href="${BASE_URL}/#/contact">Support</a>
+          <a href="${BASE_URL}/privacy-policy.html">Privacy</a>
+          <a href="${BASE_URL}/refund-policy.html">Refunds</a>
+          <a href="${BASE_URL}/terms-of-use.html">Terms</a>
+          <a href="${BASE_URL}/contact.html">Support</a>
         </div>
         <p class="blog-footer-bottom-copy">&copy; 2026 PixabAnimation & SPurno. All rights reserved.</p>
         <div class="blog-footer-payment-icons">

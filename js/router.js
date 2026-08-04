@@ -102,10 +102,21 @@ const Router = {
   },
 
   updateActiveNav(path) {
+    const cleanPath = path.split('?')[0];
     document.querySelectorAll('[data-nav]').forEach(link => {
-      const href = link.getAttribute('href').replace('#', '');
-      link.classList.toggle('active', 
-        href === '/' ? path === '/' : path.startsWith(href)
+      const href = link.getAttribute('href') || '';
+      let expected = '';
+      if (href.startsWith('#/')) {
+        expected = '/' + href.slice(2).split('?')[0];
+      } else if (href.endsWith('.html')) {
+        expected = '/' + href.replace(/\.html$/, '');
+      } else if (href.startsWith('/')) {
+        expected = href;
+      } else if (href && href !== '#') {
+        expected = '/' + href.replace(/\/$/, '');
+      }
+      link.classList.toggle('active',
+        expected === '/' ? cleanPath === '/' : !!(expected && cleanPath.startsWith(expected))
       );
     });
   },
