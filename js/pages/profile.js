@@ -524,7 +524,40 @@ const ProfilePage = {
     const user = App.getUser();
 
     try {
-      const messages = await DB.getUserMessages(user.id);
+      const [messages, adminMessages] = await Promise.all([
+        DB.getUserMessages(user.id),
+        DB.getAdminMessages(user.id)
+      ]);
+
+      // Mark admin messages as read
+      if (adminMessages.some(m => !m.is_read)) {
+        await DB.markAdminMessagesRead(user.id);
+      }
+
+      const adminSection = adminMessages.length > 0 ? `
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <h3 style="font-size:1.05rem;font-weight:600">
+              <i class="fas fa-headset" style="color:var(--accent-1)"></i> Messages from Admin
+            </h3>
+            <span style="font-size:0.75rem;padding:2px 10px;border-radius:var(--radius-full);background:rgba(0,102,204,0.1);color:var(--accent-1);font-weight:600">Support</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            ${adminMessages.map(m => `
+              <div style="padding:16px 20px;background:var(--bg-card);border:1px solid rgba(0,102,204,0.18);border-left:3px solid var(--accent-1);border-radius:var(--radius-md)">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+                  <div>
+                    <span style="font-weight:700;font-size:0.9rem">${m.subject || 'No subject'}</span>
+                    <span style="margin-left:8px;padding:2px 8px;border-radius:var(--radius-full);font-size:0.65rem;font-weight:600;background:rgba(0,102,204,0.12);color:var(--accent-1)">From Admin</span>
+                  </div>
+                  <span style="font-size:0.75rem;color:var(--text-muted)">${new Date(m.created_at).toLocaleString()}</span>
+                </div>
+                <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap">${m.message}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : '';
 
       container.innerHTML = `
         <div style="display:flex;flex-direction:column;gap:16px" class="page-enter">
@@ -537,32 +570,39 @@ const ProfilePage = {
             </button>
           </div>
 
-          ${messages.length === 0 ? `
-            <div style="text-align:center;padding:40px;color:var(--text-muted)">
-              <i class="fas fa-envelope-open-text" style="font-size:3rem;margin-bottom:12px;display:block;opacity:0.3"></i>
-              <p>No messages yet. Send a message to the admin team.</p>
-            </div>
-          ` : messages.map(m => `
-            <div style="padding:16px 20px;background:var(--bg-card);border:1px solid ${m.admin_reply ? 'rgba(0,230,118,0.2)' : 'var(--border-light)'};border-radius:var(--radius-md)">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px">
-                <div>
-                  <span style="font-weight:600;font-size:0.9rem">${m.subject || 'No subject'}</span>
-                  ${m.admin_reply ? '<span style="margin-left:8px;padding:2px 8px;border-radius:var(--radius-full);font-size:0.65rem;font-weight:600;background:rgba(0,230,118,0.15);color:var(--success)">Replied</span>' : ''}
-                </div>
-                <span style="font-size:0.75rem;color:var(--text-muted)">${new Date(m.created_at).toLocaleDateString()}</span>
+          ${adminSection}
+
+          <div>
+            <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:12px">
+              <i class="fas fa-reply" style="color:var(--accent-1)"></i> Sent to Admin
+            </h3>
+            ${messages.length === 0 ? `
+              <div style="text-align:center;padding:40px;color:var(--text-muted)">
+                <i class="fas fa-envelope-open-text" style="font-size:3rem;margin-bottom:12px;display:block;opacity:0.3"></i>
+                <p>No messages yet. Send a message to the admin team.</p>
               </div>
-              <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px;line-height:1.6;white-space:pre-wrap">${m.message}</div>
-              ${m.admin_reply ? `
-                <div style="padding:10px 14px;margin-top:8px;background:rgba(0,230,118,0.06);border-left:3px solid var(--success);border-radius:0 var(--radius-sm) var(--radius-sm) 0">
-                  <div style="font-size:0.75rem;font-weight:600;color:var(--success);margin-bottom:4px">
-                    <i class="fas fa-reply"></i> Admin Reply
+            ` : messages.map(m => `
+              <div style="padding:16px 20px;background:var(--bg-card);border:1px solid ${m.admin_reply ? 'rgba(0,230,118,0.2)' : 'var(--border-light)'};border-radius:var(--radius-md);margin-bottom:14px">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+                  <div>
+                    <span style="font-weight:600;font-size:0.9rem">${m.subject || 'No subject'}</span>
+                    ${m.admin_reply ? '<span style="margin-left:8px;padding:2px 8px;border-radius:var(--radius-full);font-size:0.65rem;font-weight:600;background:rgba(0,230,118,0.15);color:var(--success)">Replied</span>' : ''}
                   </div>
-                  <div style="font-size:0.85rem;line-height:1.6;white-space:pre-wrap">${m.admin_reply}</div>
-                  ${m.replied_at ? `<div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px">${new Date(m.replied_at).toLocaleString()}</div>` : ''}
+                  <span style="font-size:0.75rem;color:var(--text-muted)">${new Date(m.created_at).toLocaleDateString()}</span>
                 </div>
-              ` : ''}
-            </div>
-          `).join('')}
+                <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px;line-height:1.6;white-space:pre-wrap">${m.message}</div>
+                ${m.admin_reply ? `
+                  <div style="padding:10px 14px;margin-top:8px;background:rgba(0,230,118,0.06);border-left:3px solid var(--success);border-radius:0 var(--radius-sm) var(--radius-sm) 0">
+                    <div style="font-size:0.75rem;font-weight:600;color:var(--success);margin-bottom:4px">
+                      <i class="fas fa-reply"></i> Admin Reply
+                    </div>
+                    <div style="font-size:0.85rem;line-height:1.6;white-space:pre-wrap">${m.admin_reply}</div>
+                    ${m.replied_at ? `<div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px">${new Date(m.replied_at).toLocaleString()}</div>` : ''}
+                  </div>
+                ` : ''}
+              </div>
+            `).join('')}
+          </div>
         </div>
       `;
     } catch (error) {

@@ -9,6 +9,8 @@ const AdminPage = {
   blogPage: 1, usersPage: 1, subscribersPage: 1, messagesPage: 1,
   adsPage: 1, popupAdsPage: 1, mediaPage: 1,
   productSearch: '', orderStatus: '', couponPage: 1,
+  composeSelectedUserId: null,
+  composeSearchTimer: null,
 
   async render() {
     const content = document.getElementById('pageContent');
@@ -1658,8 +1660,17 @@ const AdminPage = {
 
       container.innerHTML = `
         <div class="admin-toolbar">
-          <h3 style="font-size:1rem;font-weight:600">Inbox</h3>
-          <span style="color:var(--text-muted);font-size:0.85rem">${messages.length} message${messages.length !== 1 ? 's' : ''}</span>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <h3 style="font-size:1rem;font-weight:600;margin:0">Messages</h3>
+            <div class="admin-segmented">
+              <button class="admin-segmented-btn active" onclick="AdminPage.switchMessageView('inbox')">Inbox</button>
+              <button class="admin-segmented-btn" onclick="AdminPage.switchMessageView('sent')">Sent</button>
+            </div>
+            <span style="color:var(--text-muted);font-size:0.85rem">${messages.length} message${messages.length !== 1 ? 's' : ''}</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="AdminPage.showComposeMessage()">
+            <i class="fas fa-pen"></i> Compose
+          </button>
         </div>
         <div class="admin-table-container">
           <table class="admin-table">
@@ -1681,6 +1692,8 @@ const AdminPage = {
                 messages.map(m => `
                   <tr style="${!m.is_read && !m.admin_reply ? 'background:rgba(0,102,204,0.03)' : ''}${m.admin_reply ? 'opacity:0.7' : ''}">
                     <td style="color:rgba(0,0,0,0.85);font-size:0.85rem">${m.id}</td>
+                    <td>
+                      <div style="font-size:0.85rem;font-weight:500">${m.name}</div>
                       <div style="font-size:0.75rem;color:rgba(0,0,0,0.85)">${m.email}</div>
                     </td>
                     <td><span style="font-size:0.85rem;font-weight:500">${m.subject || '—'}</span></td>
@@ -1837,6 +1850,344 @@ const AdminPage = {
       this.loadMessages();
     } catch (error) {
       Components.toast('Failed to delete message', 'error');
+    }
+  },
+
+  // ===================== ADMIN COMPOSE (Outbox) =====================
+  switchMessageView(view) {
+    if (view === 'sent') {
+      this.loadSentMessages(1);
+    } else {
+      this.loadMessages(1);
+    }
+  },
+
+  async loadSentMessages(page = 1) {
+    const container = document.getElementById('adminContent');
+    this.messagesPage = page;
+
+    try {
+      const [messages, totalMessages] = await Promise.all([
+        DB.getSentMessages({ limit: this.pageSize, offset: (page - 1) * this.pageSize }),
+        DB.countSentMessages()
+      ]);
+      const totalPages = Math.ceil(totalMessages / this.pageSize);
+
+      container.innerHTML = `
+        <div class="admin-toolbar">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <h3 style="font-size:1rem;font-weight:600;margin:0">Messages</h3>
+            <div class="admin-segmented">
+              <button class="admin-segmented-btn" onclick="AdminPage.switchMessageView('inbox')">Inbox</button>
+              <button class="admin-segmented-btn active" onclick="AdminPage.switchMessageView('sent')">Sent</button>
+            </div>
+            <span style="color:var(--text-muted);font-size:0.85rem">${messages.length} sent message${messages.length !== 1 ? 's' : ''}</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="AdminPage.showComposeMessage()">
+            <i class="fas fa-pen"></i> Compose
+          </button>
+        </div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width:30px">#</th>
+                <th>To</th>
+                <th>Subject</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th style="width:90px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${messages.length === 0 ?
+                '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No sent messages yet. Click Compose to send one.</td></tr>' :
+                messages.map(m => `
+                  <tr ${m.is_read ? 'opacity:0.7' : ''}>
+                    <td style="color:rgba(0,0,0,0.85);font-size:0.85rem">${m.id}</td>
+                    <td>
+                      <div style="font-weight:600;font-size:0.85rem">${m.recipient_name || '—'}</div>
+                      <div style="font-size:0.75rem;color:rgba(0,0,0,0.85)">${m.recipient_email || '—'}</div>
+                    </td>
+                    <td><span style="font-size:0.85rem;font-weight:500">${m.subject || '—'}</span></td>
+                    <td>
+                      <span style="font-size:0.85rem;color:var(--text-secondary);display:block;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(m.message || '').replace(/"/g, '&quot;')}">
+                        ${m.message ? m.message.substring(0, 60) + (m.message.length > 60 ? '...' : '') : '—'}
+                      </span>
+                    </td>
+                    <td>
+                      ${m.is_read
+                        ? '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:rgba(255,255,255,0.06);color:var(--text-muted)">Read</span>'
+                        : '<span style="padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:rgba(0,102,204,0.1);color:var(--accent-1)">Sent</span>'}
+                    </td>
+                    <td style="font-size:0.8rem;color:var(--text-muted)">${new Date(m.created_at).toLocaleDateString()}</td>
+                    <td>
+                      <div style="display:flex;gap:6px">
+                        <button class="admin-action-btn" onclick="AdminPage.showSentMessageDetail(${m.id})" title="View">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="admin-action-btn delete" onclick="AdminPage.confirmDeleteSentMessage(${m.id})" title="Delete">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
+        </div>
+        ${Components.renderPagination(page, totalPages, totalMessages, 'messages')}
+      `;
+      this.bindPaginationEvents('.admin-pagination', (newPage) => AdminPage.loadSentMessages(newPage));
+    } catch (error) {
+      console.error('Sent messages error:', error);
+      container.innerHTML = Components.emptyState('😔', 'Failed to load sent messages', error.message);
+    }
+  },
+
+  async showSentMessageDetail(messageId) {
+    try {
+      const messages = await DB.query('SELECT * FROM admin_messages WHERE id = ?', [messageId]);
+      const msg = messages[0];
+      if (!msg) {
+        Components.toast('Message not found', 'error');
+        return;
+      }
+      const recipient = await DB.getUserById(msg.user_id);
+
+      Components.showModal(`Sent Message #${msg.id}`, `
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:2px">To</div>
+              <div style="font-weight:600">${recipient?.name || '—'}</div>
+              <div style="font-size:0.8rem;color:var(--text-secondary)">${recipient?.email || '—'}</div>
+            </div>
+            <div>
+              <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:2px">Status</div>
+              <div style="font-weight:600">${msg.is_read ? 'Read' : 'Sent'}</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:2px">Subject</div>
+            <div style="font-weight:600">${msg.subject || '—'}</div>
+          </div>
+          <div>
+            <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:4px">Message</div>
+            <div style="padding:14px;background:rgba(255,255,255,0.06);border-radius:var(--radius-sm);font-size:0.9rem;line-height:1.7;white-space:pre-wrap">${msg.message}</div>
+          </div>
+          <div style="font-size:0.75rem;color:var(--text-muted)">
+            ${new Date(msg.created_at).toLocaleString()}
+          </div>
+        </div>
+      `, '540px');
+    } catch (error) {
+      Components.toast('Failed to load message details', 'error');
+    }
+  },
+
+  confirmDeleteSentMessage(messageId) {
+    Components.showModal('Delete Sent Message', `
+      <p style="color:var(--text-secondary);margin-bottom:20px">
+        Are you sure you want to delete this sent message? This action cannot be undone.
+      </p>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" style="background:var(--error)" onclick="AdminPage.deleteSentMessage(${messageId})">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    `);
+  },
+
+  async deleteSentMessage(messageId) {
+    try {
+      await DB.deleteAdminMessage(messageId);
+      Components.toast('Message deleted', 'success');
+      document.querySelector('.modal-overlay')?.remove();
+      this.loadSentMessages();
+    } catch (error) {
+      Components.toast('Failed to delete message', 'error');
+    }
+  },
+
+  // === Compose modal (Gmail-style) ===
+  showComposeMessage() {
+    this.composeSelectedUserId = null;
+    this.composeRecipient = null;
+
+    Components.showModal('New Message', `
+      <form id="composeForm" onsubmit="AdminPage.sendComposeMessage(event)" class="compose-form">
+        <div class="compose-field">
+          <label class="compose-label">To</label>
+          <div class="compose-recipient-wrap" id="composeRecipientWrap">
+            <div class="compose-to-box">
+              <i class="fas fa-user-circle"></i>
+              <input type="text" id="composeToInput" placeholder="Search registered users by name or email..."
+                     autocomplete="off" oninput="AdminPage.composeUserSearch(this.value)"
+                     onfocus="AdminPage.composeUserSearch(this.value)">
+            </div>
+            <div class="compose-search-results" id="composeSearchResults"></div>
+          </div>
+          <div class="compose-recipient-chip" id="composeRecipientChip" style="display:none"></div>
+          <div class="compose-hint" id="composeRecipientHint">
+            <i class="fas fa-info-circle"></i> Start typing to search registered users.
+          </div>
+        </div>
+        <div class="compose-field">
+          <label class="compose-label">Subject</label>
+          <input type="text" id="composeSubject" placeholder="What is this about?" required>
+        </div>
+        <div class="compose-field compose-body">
+          <label class="compose-label">Message</label>
+          <textarea id="composeMessage" placeholder="Write your message..." required></textarea>
+        </div>
+        <div class="compose-footer">
+          <span class="compose-footer-hint"><i class="fas fa-envelope"></i> Recipient sees this in their profile Messages.</span>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Send
+          </button>
+        </div>
+      </form>
+    `, '620px');
+
+    setTimeout(() => document.getElementById('composeToInput')?.focus(), 150);
+  },
+
+  async composeUserSearch(query) {
+    const trimmed = (query || '').trim();
+    const container = document.getElementById('composeSearchResults');
+    const hint = document.getElementById('composeRecipientHint');
+    if (!container) return;
+
+    clearTimeout(this.composeSearchTimer);
+
+    if (trimmed.length < 2) {
+      container.innerHTML = '';
+      container.classList.remove('show');
+      if (hint) hint.style.display = 'flex';
+      return;
+    }
+
+    if (hint) hint.style.display = 'none';
+
+    this.composeSearchTimer = setTimeout(async () => {
+      try {
+        const users = await DB.searchUsers(trimmed);
+        container.innerHTML = users.length === 0
+          ? '<div class="compose-search-empty">No registered users found</div>'
+          : users.map(u => `
+              <div class="compose-search-item" onclick="AdminPage.selectComposeRecipient(${u.id}, '${String(u.name).replace(/'/g, "\\'")}', '${String(u.email).replace(/'/g, "\\'")}')">
+                <div class="compose-user-avatar">${String(u.name).charAt(0).toUpperCase()}</div>
+                <div class="compose-user-meta">
+                  <div class="compose-user-name">${u.name}</div>
+                  <div class="compose-user-email">${u.email}</div>
+                </div>
+                <i class="fas fa-plus-circle compose-user-add"></i>
+              </div>
+            `).join('');
+        container.classList.add('show');
+      } catch (error) {
+        console.error('Compose user search error:', error);
+        container.innerHTML = '<div class="compose-search-empty">Search failed. Please try again.</div>';
+        container.classList.add('show');
+      }
+    }, 250);
+  },
+
+  selectComposeRecipient(userId, name, email) {
+    this.composeSelectedUserId = userId;
+    this.composeRecipient = { id: userId, name, email };
+
+    const wrap = document.getElementById('composeRecipientWrap');
+    const chip = document.getElementById('composeRecipientChip');
+    const hint = document.getElementById('composeRecipientHint');
+    const container = document.getElementById('composeSearchResults');
+    const input = document.getElementById('composeToInput');
+
+    if (container) {
+      container.innerHTML = '';
+      container.classList.remove('show');
+    }
+    if (wrap) wrap.style.display = 'none';
+    if (hint) hint.style.display = 'none';
+
+    if (chip) {
+      chip.style.display = 'flex';
+      chip.innerHTML = `
+        <div class="compose-user-avatar">${String(name).charAt(0).toUpperCase()}</div>
+        <div class="compose-user-meta">
+          <div class="compose-user-name">${name}</div>
+          <div class="compose-user-email">${email}</div>
+        </div>
+        <button type="button" class="compose-chip-remove" onclick="AdminPage.clearComposeRecipient()" title="Remove recipient">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+    }
+    if (input) input.value = '';
+  },
+
+  clearComposeRecipient() {
+    this.composeSelectedUserId = null;
+    this.composeRecipient = null;
+
+    const wrap = document.getElementById('composeRecipientWrap');
+    const chip = document.getElementById('composeRecipientChip');
+    const hint = document.getElementById('composeRecipientHint');
+    const container = document.getElementById('composeSearchResults');
+
+    if (wrap) wrap.style.display = 'block';
+    if (chip) {
+      chip.style.display = 'none';
+      chip.innerHTML = '';
+    }
+    if (hint) hint.style.display = 'flex';
+    if (container) {
+      container.innerHTML = '';
+      container.classList.remove('show');
+    }
+    setTimeout(() => document.getElementById('composeToInput')?.focus(), 0);
+  },
+
+  async sendComposeMessage(event) {
+    event.preventDefault();
+
+    if (!this.composeSelectedUserId) {
+      Components.toast('Please select a recipient from the search results', 'error');
+      document.getElementById('composeToInput')?.focus();
+      return;
+    }
+
+    const subject = document.getElementById('composeSubject').value.trim();
+    const message = document.getElementById('composeMessage').value.trim();
+
+    if (!message) {
+      Components.toast('Please write a message', 'error');
+      document.getElementById('composeMessage')?.focus();
+      return;
+    }
+
+    const btn = document.querySelector('#composeForm button[type="submit"]');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    }
+
+    try {
+      await DB.createAdminMessage(this.composeSelectedUserId, subject || null, message);
+      Components.toast('Message sent!', 'success');
+      this.composeSelectedUserId = null;
+      this.composeRecipient = null;
+      document.querySelector('.modal-overlay')?.remove();
+    } catch (error) {
+      console.error('Compose send error:', error);
+      Components.toast('Failed to send message: ' + error.message, 'error');
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send';
+      }
     }
   },
 

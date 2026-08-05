@@ -65,6 +65,25 @@ async function main() {
     }
   }
 
+  // Migration: Add admin_messages table for admin-to-user messaging (compose)
+  console.log("🔄 Adding admin_messages table...");
+  try {
+    await client.execute(`CREATE TABLE IF NOT EXISTS admin_messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      from_admin_id INTEGER,
+      subject TEXT,
+      message TEXT NOT NULL,
+      is_read INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (from_admin_id) REFERENCES users(id) ON DELETE SET NULL
+    );`);
+    console.log("  ✅ admin_messages table ready");
+  } catch (err) {
+    console.error("  ⚠️ Could not create admin_messages table:", err.message);
+  }
+
   // Migration: Rename shipping_address to customer_info and drop shipping column
   console.log("🔄 Running orders table schema migrations...");
   const orderRenameMigrations = [

@@ -147,6 +147,19 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   FOREIGN KEY (replied_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
+-- Admin outbox table (admin-to-user messaging)
+CREATE TABLE IF NOT EXISTS admin_messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  from_admin_id INTEGER,
+  subject TEXT,
+  message TEXT NOT NULL,
+  is_read INTEGER DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (from_admin_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
 -- Newsletter subscribers table
 CREATE TABLE IF NOT EXISTS newsletter_subscribers (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

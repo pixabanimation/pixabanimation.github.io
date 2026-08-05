@@ -438,6 +438,67 @@ const DB = {
     return this.execute('UPDATE contact_messages SET is_read = 1 WHERE id = ?', [id]);
   },
 
+  // === Admin-to-User Messaging (Compose) ===
+  async searchUsers(query, limit = 8) {
+    if (!query || query.trim().length < 1) return [];
+    return this.query(
+      `SELECT id, name, email, avatar_url FROM users 
+       WHERE name LIKE ? OR email LIKE ?
+       ORDER BY 
+         CASE 
+           WHEN name LIKE ? THEN 0
+           WHEN email LIKE ? THEN 0
+           ELSE 1
+         END,
+         name ASC
+       LIMIT ?`,
+      [`%${query}%`, `%${query}%`, `${query}%`, `${query}%`, limit]
+    );
+  },
+
+  async createAdminMessage(userId, subject, message) {
+    const admin = App.getUser();
+    const adminId = admin ? admin.id : null;
+    return this.execute(
+      'INSERT INTO admin_messages (user_id, from_admin_id, subject, message) VALUES (?, ?, ?, ?)',
+      [userId, adminId, subject, message]
+    );
+  },
+
+  async getSentMessages(filters = {}) {
+    const params = [];
+    let sql = `SELECT m.*, u.name as recipient_name, u.email as recipient_email
+       FROM admin_messages m
+       LEFT JOIN users u ON m.user_id = u.id
+       ORDER BY m.created_at DESC`;
+    if (filters.limit) { sql += ' LIMIT ?'; params.push(filters.limit); }
+    if (filters.offset) { sql += ' OFFSET ?'; params.push(filters.offset); }
+    return this.query(sql, params);
+  },
+
+  async countSentMessages() {
+    const result = await this.query('SELECT COUNT(*) as count FROM admin_messages');
+    return result[0]?.count || 0;
+  },
+
+  async getAdminMessages(userId) {
+    return this.query(
+      'SELECT * FROM admin_messages WHERE user_id = ? ORDER BY created_at DESC',
+      [userId]
+    );
+  },
+
+  async markAdminMessagesRead(userId) {
+    return this.execute(
+      'UPDATE admin_messages SET is_read = 1 WHERE user_id = ? AND is_read = 0',
+      [userId]
+    );
+  },
+
+  async deleteAdminMessage(id) {
+    return this.execute('DELETE FROM admin_messages WHERE id = ?', [id]);
+  },
+
   // === Newsletter ===
   async subscribeNewsletter(email, name = null) {
     try {
