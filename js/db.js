@@ -5,6 +5,20 @@
 const DB = {
   client: null,
 
+  // Order status metadata — shared by user tracking and admin panels
+  ORDER_STATUSES: [
+    { key: 'pending', label: 'Order Placed', icon: 'fa-file-invoice', desc: 'Your order has been received and is awaiting payment verification.' },
+    { key: 'confirmed', label: 'Payment Approved', icon: 'fa-check-circle', desc: 'Your payment was verified successfully.' },
+    { key: 'shipped', label: 'Processing', icon: 'fa-box-open', desc: 'Your files are being prepared for delivery.' },
+    { key: 'delivered', label: 'Delivered', icon: 'fa-download', desc: 'Your download link is ready.' },
+    { key: 'cancelled', label: 'Cancelled', icon: 'fa-times-circle', desc: 'This order was cancelled.' }
+  ],
+
+  getOrderStatusMeta(status) {
+    return this.ORDER_STATUSES.find(s => s.key === status) ||
+      { key: status, label: status.charAt(0).toUpperCase() + status.slice(1), icon: 'fa-circle', desc: '' };
+  },
+
   init() {
     this.client = window.__tursoClient;
     if (!this.client) {
@@ -317,6 +331,9 @@ const DB = {
       );
     }
 
+    // Log initial tracking event
+    await this.logOrderTracking(orderId, 'pending', 'Order placed');
+
     // Clear the cart
     await this.clearCart();
 
@@ -339,6 +356,7 @@ const DB = {
   },
 
   async approveTransaction(orderId) {
+    await this.logOrderTracking(orderId, 'confirmed', 'Payment verified by admin');
     return this.execute(
       "UPDATE orders SET transaction_approved = 1, status = 'confirmed' WHERE id = ?",
       [orderId]
@@ -346,6 +364,7 @@ const DB = {
   },
 
   async rejectTransaction(orderId) {
+    await this.logOrderTracking(orderId, 'cancelled', 'Transaction rejected by admin');
     return this.execute(
       "UPDATE orders SET status = 'cancelled' WHERE id = ?",
       [orderId]
@@ -353,6 +372,7 @@ const DB = {
   },
 
   async setDownloadLink(orderId, downloadLink) {
+    await this.logOrderTracking(orderId, 'delivered', 'Download link sent');
     return this.execute(
       'UPDATE orders SET download_link = ?, status = ? WHERE id = ?',
       [downloadLink, 'delivered', orderId]
@@ -684,7 +704,29 @@ const DB = {
     return order;
   },
 
+  // === Order Tracking ===
+  async logOrderTracking(orderId, status, note, createdBy = null) {
+    return this.execute(
+      'INSERT INTO order_tracking (order_id, status, note, created_by) VALUES (?, ?, ?, ?)',
+      [orderId, status, note, createdBy]
+    );
+  },
+
+  async getOrderTracking(orderId) {
+    try {
+      return await this.query(
+        'SELECT * FROM order_tracking WHERE order_id = ? ORDER BY created_at ASC, id ASC',
+        [orderId]
+      );
+    } catch (e) {
+      console.error('Failed to load order tracking:', e);
+      return [];
+    }
+  },
+
   async updateOrderStatus(orderId, status) {
+    const meta = this.getOrderStatusMeta(status);
+    await this.logOrderTracking(orderId, status, meta.desc || `Status changed to ${status}`);
     return this.execute('UPDATE orders SET status = ? WHERE id = ?', [status, orderId]);
   },
 

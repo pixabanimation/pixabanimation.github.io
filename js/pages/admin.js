@@ -1036,6 +1036,7 @@ const AdminPage = {
               <option value="" ${statusFilter === '' ? 'selected' : ''}>All Status</option>
               <option value="pending" ${statusFilter === 'pending' ? 'selected' : ''}>Pending</option>
               <option value="confirmed" ${statusFilter === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+              <option value="shipped" ${statusFilter === 'shipped' ? 'selected' : ''}>Shipped</option>
               <option value="delivered" ${statusFilter === 'delivered' ? 'selected' : ''}>Delivered</option>
               <option value="cancelled" ${statusFilter === 'cancelled' ? 'selected' : ''}>Cancelled</option>
             </select>
@@ -1169,7 +1170,10 @@ const AdminPage = {
 
   async viewOrder(orderId) {
     try {
-      const order = await DB.getOrderDetail(orderId);
+      const [order, tracking] = await Promise.all([
+        DB.getOrderDetail(orderId),
+        DB.getOrderTracking(orderId)
+      ]);
       if (!order) {
         Components.toast('Order not found', 'error');
         return;
@@ -1182,6 +1186,38 @@ const AdminPage = {
       const countryCode = customerParts[3] || '';
       const custState = customerParts[4] || '';
       const countryName = countryCode ? (Countries.getName ? Countries.getName(countryCode) : countryCode) : '';
+
+      // Tracking history timeline
+      const trackingTimeline = tracking.length > 0 ? `
+        <div class="track-steps-admin">
+          ${tracking.map(t => {
+            const meta = DB.getOrderStatusMeta(t.status);
+            return `
+              <div class="track-step completed">
+                <div class="track-node"><i class="fas ${meta.icon}"></i></div>
+                <div class="track-content">
+                  <div class="track-title">${meta.label}${t.created_by ? ' <span style="font-weight:400;font-size:0.7rem;color:var(--text-muted)">(admin)</span>' : ''}</div>
+                  ${t.note ? `<div class="track-desc">${t.note}</div>` : ''}
+                  <div class="track-time"><i class="fas fa-clock"></i> ${new Date(t.created_at).toLocaleString()}</div>
+                </div>
+              </div>`;
+          }).join('')}
+        </div>
+      ` : '<div style="color:var(--text-muted);font-size:0.85rem">No tracking history available for this order.</div>';
+
+      // Status update control (delivered handled by "Send Download Link" flow)
+      const statusControl = order.status === 'cancelled' ? '' : `
+        <div class="order-view-status-control">
+          <select id="trackStatus_${order.id}" style="flex:1">
+            ${['pending', 'confirmed', 'shipped', 'delivered'].map(s =>
+              `<option value="${s}" ${order.status === s ? 'selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`
+            ).join('')}
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="AdminPage.updateOrderStatusFromModal(${order.id})">
+            <i class="fas fa-sync-alt"></i> Update
+          </button>
+        </div>
+      `;
 
       Components.showModal(`Order #${order.id}`, `
         <div class="order-view-horizontal">
@@ -1281,6 +1317,19 @@ const AdminPage = {
             <div class="order-view-card-title" style="color:var(--success)"><i class="fas fa-check-circle"></i> Download Link Sent</div>
             <a href="${order.download_link}" target="_blank">${order.download_link}</a>
           </div>` : ''}
+
+          <!-- Status Update -->
+          ${statusControl ? `
+          <div class="order-view-card">
+            <div class="order-view-card-title"><i class="fas fa-tasks"></i> Update Order Status</div>
+            ${statusControl}
+          </div>` : ''}
+
+          <!-- Tracking History -->
+          <div class="order-view-card">
+            <div class="order-view-card-title"><i class="fas fa-history"></i> Tracking History</div>
+            ${trackingTimeline}
+          </div>
         </div>
       `, '900px');
     } catch (error) {
@@ -1339,6 +1388,24 @@ const AdminPage = {
     try {
       await DB.updateOrderStatus(orderId, status);
       Components.toast(`Order #${orderId} status updated to ${status}`, 'success');
+      this.loadOrders();
+    } catch (error) {
+      Components.toast('Failed to update order status', 'error');
+    }
+  },
+
+  async updateOrderStatusFromModal(orderId) {
+    const select = document.getElementById(`trackStatus_${orderId}`);
+    if (!select) return;
+    const status = select.value;
+    if (status === 'delivered') {
+      Components.toast('Use "Send Download Link" to mark an order delivered', 'error');
+      return;
+    }
+    try {
+      await DB.updateOrderStatus(orderId, status);
+      Components.toast(`Order #${orderId} status updated to ${status}`, 'success');
+      document.querySelector('.modal-overlay')?.remove();
       this.loadOrders();
     } catch (error) {
       Components.toast('Failed to update order status', 'error');

@@ -8,6 +8,16 @@ const AuthPage = {
     // Show register form when path is /register OR query has type=register
     const type = (params.path === '/register') ? 'register' : (params.query?.type || 'login');
 
+    // Store redirect target (e.g. back to checkout after sign in)
+    const redirect = params.query?.redirect;
+    if (redirect) {
+      this.redirectTarget = redirect.startsWith('/') ? redirect : '/' + redirect;
+    } else {
+      this.redirectTarget = null;
+    }
+    // Query string to carry the redirect across login <-> register links
+    this.redirectQuery = this.redirectTarget ? '?redirect=' + this.redirectTarget.slice(1) : '';
+
     if (type === 'register') {
       this.renderRegister(content);
     } else {
@@ -49,7 +59,7 @@ const AuthPage = {
             </button>
           </form>
           <div class="auth-footer">
-            Don't have an account? <a href="#/register">Create one</a>
+            Don't have an account? <a href="#/register${this.redirectQuery}">Create one</a>
           </div>
         </div>
       </div>
@@ -102,7 +112,7 @@ const AuthPage = {
             </button>
           </form>
           <div class="auth-footer">
-            Already have an account? <a href="#/login">Sign in</a>
+            Already have an account? <a href="#/login${this.redirectQuery}">Sign in</a>
           </div>
         </div>
       </div>
@@ -132,7 +142,7 @@ const AuthPage = {
           }));
           Components.toast(`Welcome back, ${user.name}!`, 'success');
           App.updateAuthUI();
-          Router.navigate(user.is_admin ? '#/admin' : '#/');
+          Router.navigate(this.redirectTarget ? '#' + this.redirectTarget : (user.is_admin ? '#/admin' : '#/'));
           return;
         }
       }
@@ -176,7 +186,7 @@ const AuthPage = {
       }));
       Components.toast(`Welcome, ${name}!`, 'success');
       App.updateAuthUI();
-      Router.navigate('#/');
+      Router.navigate(this.redirectTarget ? '#' + this.redirectTarget : '#/');
     } catch (error) {
       console.error('Registration error:', error);
       Components.toast('Registration failed: ' + error.message, 'error');

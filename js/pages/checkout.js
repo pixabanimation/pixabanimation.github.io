@@ -11,6 +11,13 @@ const CheckoutPage = {
   async render() {
     const content = document.getElementById('pageContent');
 
+    // Users must sign in before checking out
+    const user = App.getUser();
+    if (!user) {
+      this.renderLoginGate(content);
+      return;
+    }
+
     content.innerHTML = `
       <div class="checkout-page page-enter">
         <div class="checkout-hero">
@@ -49,6 +56,36 @@ const CheckoutPage = {
     `;
 
     await this.loadCheckout();
+  },
+
+  renderLoginGate(container) {
+    container.innerHTML = `
+      <div class="auth-page page-enter">
+        <div class="auth-card glass">
+          <div class="auth-header">
+            <div style="font-size:2.5rem;margin-bottom:12px">🔐</div>
+            <h1>Sign in to <span class="text-gradient">Checkout</span></h1>
+            <p>You need an account to complete your purchase.</p>
+          </div>
+          <div class="checkout-gate-benefits">
+            <div class="checkout-gate-benefit"><i class="fas fa-check-circle"></i> Track your orders anytime</div>
+            <div class="checkout-gate-benefit"><i class="fas fa-check-circle"></i> Faster checkout next time</div>
+            <div class="checkout-gate-benefit"><i class="fas fa-check-circle"></i> Receive download links securely</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:24px">
+            <a href="#/login?redirect=checkout" class="btn btn-primary btn-block btn-lg">
+              <i class="fas fa-sign-in-alt"></i> Sign In
+            </a>
+            <a href="#/register?redirect=checkout" class="btn btn-secondary btn-block btn-lg">
+              <i class="fas fa-user-plus"></i> Create an Account
+            </a>
+          </div>
+          <div class="auth-footer">
+            Your cart is saved. <a href="#/cart" style="color:var(--accent-1)">Back to Cart</a>
+          </div>
+        </div>
+      </div>
+    `;
   },
 
   async loadCheckout() {
@@ -238,6 +275,15 @@ const CheckoutPage = {
 
       // Submit buttons: CSS media queries handle mobile vs desktop visibility
       // (.checkout-submit-mobile shown on mobile, .checkout-summary-col button shown on desktop)
+
+      // Prefill customer info from the signed-in user's profile
+      const user = App.getUser();
+      if (user) {
+        const nameInput = document.getElementById('shipName');
+        const emailInput = document.getElementById('shipEmail');
+        if (nameInput && !nameInput.value && user.name) nameInput.value = user.name;
+        if (emailInput && !emailInput.value && user.email) emailInput.value = user.email;
+      }
 
     } catch (error) {
       console.error('Checkout error:', error);

@@ -120,6 +120,11 @@ const ProfilePage = {
                 </div>
               `).join('')}
             </div>
+            <div style="margin-top:14px;display:flex;justify-content:flex-end">
+              <button class="btn btn-sm btn-secondary" onclick="ProfilePage.trackOrder(${order.id})">
+                <i class="fas fa-truck"></i> Track Order
+              </button>
+            </div>
           </div>
         `;
       }
@@ -128,6 +133,112 @@ const ProfilePage = {
     } catch (error) {
       console.error('Orders error:', error);
       container.innerHTML = Components.emptyState('😔', 'Failed to load orders', error.message);
+    }
+  },
+
+  _statusBadge(status) {
+    const colors = {
+      'pending': 'var(--warning)',
+      'confirmed': 'var(--info)',
+      'shipped': 'var(--accent-1)',
+      'delivered': 'var(--success)',
+      'cancelled': 'var(--error)'
+    };
+    const color = colors[status] || 'var(--text-muted)';
+    return `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;background:${color}20;color:${color}">
+      <span style="width:6px;height:6px;border-radius:50%;background:${color}"></span>
+      ${status.charAt(0).toUpperCase() + status.slice(1)}
+    </span>`;
+  },
+
+  async trackOrder(orderId) {
+    try {
+      const order = await DB.getOrderDetail(orderId);
+      if (!order) {
+        Components.toast('Order not found', 'error');
+        return;
+      }
+
+      const tracking = await DB.getOrderTracking(orderId);
+      const isCancelled = order.status === 'cancelled';
+      const steps = DB.ORDER_STATUSES.filter(s => s.key !== 'cancelled');
+      const currentIndex = steps.findIndex(s => s.key === order.status);
+
+      // Map status -> timestamp from the tracking history
+      const timeMap = {};
+      tracking.forEach(t => {
+        if (!timeMap[t.status]) timeMap[t.status] = t.created_at;
+      });
+      if (!timeMap['pending'] && order.created_at) timeMap['pending'] = order.created_at;
+
+      const timeline = steps.map((step, i) => {
+        const reached = !isCancelled && currentIndex !== -1 && i <= currentIndex;
+        const current = !isCancelled && i === currentIndex;
+        const ts = timeMap[step.key];
+        return `
+          <div class="track-step ${reached ? 'completed' : ''} ${current ? 'current' : ''}">
+            <div class="track-node">
+              <i class="fas ${step.icon}"></i>
+            </div>
+            <div class="track-content">
+              <div class="track-title">
+                ${step.label}
+                ${current ? '<span class="track-current-badge">Current</span>' : ''}
+                ${reached ? '<span class="track-done-check"><i class="fas fa-check"></i></span>' : ''}
+              </div>
+              <div class="track-desc">${step.desc}</div>
+              ${ts ? `<div class="track-time"><i class="fas fa-clock"></i> ${new Date(ts).toLocaleString()}</div>` : '<div class="track-time" style="color:var(--text-muted)">Awaiting</div>'}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const cancelTime = timeMap['cancelled'];
+      const cancelledBanner = isCancelled ? `
+        <div class="track-cancelled">
+          <i class="fas fa-times-circle"></i>
+          <div>
+            <strong>Order Cancelled</strong>
+            <div class="track-desc">${order.transaction_id && !order.transaction_approved ? 'Payment was not approved.' : 'This order was cancelled.'}</div>
+            ${cancelTime ? `<div class="track-time"><i class="fas fa-clock"></i> ${new Date(cancelTime).toLocaleString()}</div>` : ''}
+          </div>
+        </div>
+      ` : '';
+
+      const itemsSummary = (order.items || []).map(item =>
+        `<div class="track-item"><i class="fas fa-cube"></i> ${item.product_name} × ${item.quantity}</div>`
+      ).join('');
+
+      Components.showModal(`Order #${order.id} — Tracking`, `
+        <div class="track-modal">
+          <div class="track-summary">
+            <div class="track-summary-col">
+              <span class="track-summary-label">Status</span>
+              ${this._statusBadge(order.status)}
+            </div>
+            <div class="track-summary-col">
+              <span class="track-summary-label">Total</span>
+              <span class="track-summary-value">$${parseFloat(order.total).toFixed(2)}</span>
+            </div>
+            <div class="track-summary-col">
+              <span class="track-summary-label">Items</span>
+              <span class="track-summary-value">${order.items?.length || 0}</span>
+            </div>
+          </div>
+          ${itemsSummary ? `<div style="margin-bottom:20px;display:flex;flex-direction:column;gap:6px">${itemsSummary}</div>` : ''}
+          ${cancelledBanner}
+          <div class="track-timeline ${isCancelled ? 'cancelled' : ''}">
+            ${timeline}
+          </div>
+          <div class="track-help">
+            <i class="fas fa-headset"></i>
+            Need help with this order? <a href="#/contact" onclick="document.querySelector('.modal-overlay')?.remove()">Contact support</a>
+          </div>
+        </div>
+      `, '520px');
+    } catch (error) {
+      console.error('Track order error:', error);
+      Components.toast('Failed to load tracking info', 'error');
     }
   },
 

@@ -100,6 +100,70 @@ async function main() {
     }
   }
 
+  // Migration: Add order_tracking table for order tracking history
+  console.log("🔄 Adding order_tracking table...");
+  try {
+    await client.execute(`CREATE TABLE IF NOT EXISTS order_tracking (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      order_id INTEGER NOT NULL,
+      status TEXT NOT NULL,
+      note TEXT,
+      created_by INTEGER,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+      FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+    );`);
+    console.log("  ✅ order_tracking table ready");
+  } catch (err) {
+    console.error("  ⚠️ Could not create order_tracking table:", err.message);
+  }
+
+  // Migration: Backfill tracking history for existing orders based on their current status
+  console.log("🔄 Backfilling order tracking history...");
+  try {
+    const existingOrders = await client.execute("SELECT id, status, created_at FROM orders");
+    for (const order of existingOrders.rows) {
+      const existing = await client.execute(
+        "SELECT COUNT(*) as count FROM order_tracking WHERE order_id = ?",
+        [order.id]
+      );
+      if (existing.rows[0].count > 0) continue;
+
+      await client.execute(
+        "INSERT INTO order_tracking (order_id, status, note, created_at) VALUES (?, 'pending', 'Order placed', ?)",
+        [order.id, order.created_at]
+      );
+      const status = order.status;
+      if (status === 'confirmed' || status === 'shipped' || status === 'delivered') {
+        await client.execute(
+          "INSERT INTO order_tracking (order_id, status, note) VALUES (?, 'confirmed', 'Payment verified by admin')",
+          [order.id]
+        );
+      }
+      if (status === 'shipped' || status === 'delivered') {
+        await client.execute(
+          "INSERT INTO order_tracking (order_id, status, note) VALUES (?, 'shipped', 'Order is being prepared')",
+          [order.id]
+        );
+      }
+      if (status === 'delivered') {
+        await client.execute(
+          "INSERT INTO order_tracking (order_id, status, note) VALUES (?, 'delivered', 'Download link sent')",
+          [order.id]
+        );
+      }
+      if (status === 'cancelled') {
+        await client.execute(
+          "INSERT INTO order_tracking (order_id, status, note) VALUES (?, 'cancelled', 'Order cancelled')",
+          [order.id]
+        );
+      }
+    }
+    console.log("  ✅ Order tracking history backfilled");
+  } catch (err) {
+    console.error("  ⚠️ Order tracking backfill error:", err.message);
+  }
+
   // Migration: Add media_type and video columns to existing products table
   console.log("🔄 Running migrations...");
   const migrations = [
