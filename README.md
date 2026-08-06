@@ -6,6 +6,7 @@ A single-page application marketplace for premium motion graphics, 4K video clip
 
 ---
 
+
 ## ✨ Features
 
 - **🎬 Full-featured SPA marketplace** — Home, Shop, Product Detail, Cart, Checkout, Auth, Profile, Wishlist
