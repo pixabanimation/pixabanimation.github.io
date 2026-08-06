@@ -22,16 +22,28 @@ export const DB = {
   },
 
   init() {
-    this.client = window.__tursoClient;
-    if (!this.client) {
-      console.error('Turso client not initialized');
+    if (window.__tursoClient) {
+      this.client = window.__tursoClient;
     }
     return this;
   },
 
+  // Re-checks for a ready client on every call. The Turso client is created
+  // asynchronously in js/main.js (credentials are decrypted at runtime), so
+  // it may not exist yet when DB.init() first runs. This guarantees DB still
+  // works as soon as the client appears.
+  _ensureClient() {
+    if (!this.client) this.init();
+    return this.client;
+  },
+
   async query(sql, params = []) {
+    const client = this._ensureClient();
+    if (!client) {
+      throw new Error('Database client is not ready yet. Please refresh the page.');
+    }
     try {
-      const result = await this.client.execute({ sql, args: params });
+      const result = await client.execute({ sql, args: params });
       return result.rows || [];
     } catch (error) {
       console.error('Database query error:', error);
@@ -40,8 +52,12 @@ export const DB = {
   },
 
   async execute(sql, params = []) {
+    const client = this._ensureClient();
+    if (!client) {
+      throw new Error('Database client is not ready yet. Please refresh the page.');
+    }
     try {
-      const result = await this.client.execute({ sql, args: params });
+      const result = await client.execute({ sql, args: params });
       return result;
     } catch (error) {
       console.error('Database execute error:', error);

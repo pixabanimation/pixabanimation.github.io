@@ -28,7 +28,14 @@ export const App = {
   async init() {
     console.log('🚀 pixabanimation initializing...');
 
-    // Initialize database client (must run after the Turso module script)
+    // Wait for the Turso client to be created before any DB access.
+    // window.__dbReady is set by js/main.js; if it is missing (module error)
+    // the app still initializes and DB.init() below picks up whatever exists.
+    if (window.__dbReady) {
+      try { await window.__dbReady; } catch (e) { console.error(e); }
+    }
+
+    // Initialize database client
     DB.init();
 
     // Register routes

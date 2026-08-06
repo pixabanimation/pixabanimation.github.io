@@ -70,12 +70,17 @@ window.AdminInvoice = AdminInvoice;
 window.AdminQuotation = AdminQuotation;
 void DB;
 
-// Initialize the Turso client (credentials are decrypted at runtime). Module
-// scripts finish evaluating before DOMContentLoaded, so DB.init() in
-// App.init() is guaranteed to see a ready client.
-const _creds = await __getCredentials();
-window.__tursoClient = createClient({
-  url: _creds.url,
-  authToken: _creds.authToken
-});
-console.log("Turso client initialized");
+// Initialize the Turso client (credentials are decrypted at runtime) and
+// expose a readiness promise. DOMContentLoaded can fire before the async
+// decryption completes, which used to leave DB.client undefined and break
+// login. App.init() awaits this promise before touching the database, and
+// DB.init() is called here so the client is available as early as possible.
+window.__dbReady = (async () => {
+  const _creds = await __getCredentials();
+  window.__tursoClient = createClient({
+    url: _creds.url,
+    authToken: _creds.authToken
+  });
+  DB.init();
+  console.log('Turso client initialized');
+})();
