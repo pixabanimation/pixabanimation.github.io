@@ -416,18 +416,19 @@ export const App = {
     suggestionsEl.classList.add('active');
 
     try {
-      const [products, categories] = await Promise.all([
+      const [products, categories, blog] = await Promise.all([
         DB.searchSuggestions(query),
-        DB.searchCategories(query)
+        DB.searchCategories(query),
+        BlogData.searchSuggestions(query)
       ]);
 
       if (requestId !== this.searchRequestId) return;
 
-      if (products.length === 0 && categories.length === 0) {
+      if (products.length === 0 && categories.length === 0 && blog.length === 0) {
         suggestionsEl.innerHTML = `
           <div class="search-suggestion-empty">
             <i class="fas fa-search" style="font-size:1.5rem;margin-bottom:8px;opacity:0.3;display:block"></i>
-            No products found for "${this.escapeHtml(query)}"
+            No products or articles found for "${this.escapeHtml(query)}"
           </div>
           <div class="search-suggestion-view-all" onclick="App.onSearchSuggestionClick('viewAll', '${this.escapeHtml(query)}')">
             <i class="fas fa-arrow-right"></i> Search all products for "${this.escapeHtml(query)}"
@@ -475,6 +476,25 @@ export const App = {
                   ${inStock ? 'In Stock' : 'Out of Stock'}
                 </span>
               </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
+      if (blog.length > 0) {
+        html += `<div class="search-suggestions-group">
+          <div class="search-suggestions-group-title"><i class="fas fa-blog"></i> Blog Articles</div>`;
+        blog.forEach(a => {
+          html += `
+            <div class="search-suggestion-item" data-suggestion-index="${index++}"
+                 onclick="App.onSearchSuggestionClick('blog', '${a.slug}')">
+              <img class="search-suggestion-img" src="${a.cover_image || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=80&q=60'}" alt="${this.escapeHtml(a.title)}" loading="lazy">
+              <div class="search-suggestion-info">
+                <div class="search-suggestion-name">${this.escapeHtml(a.title)}</div>
+                <div class="search-suggestion-category"><i class="fas fa-pen-nib"></i> ${this.escapeHtml(a.category || 'Blog Article')}</div>
+              </div>
+              <span class="search-suggestion-stock in-stock" style="white-space:nowrap"><i class="fas fa-book-open"></i> Article</span>
             </div>
           `;
         });
@@ -532,6 +552,9 @@ export const App = {
         break;
       case 'category':
         Router.navigate(`#/shop?category=${value}`);
+        break;
+      case 'blog':
+        Router.navigate(`#/blog/${value}`);
         break;
       case 'viewAll':
         Router.navigate(`#/shop?search=${encodeURIComponent(value)}`);
