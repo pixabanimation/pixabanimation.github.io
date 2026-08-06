@@ -2,7 +2,10 @@
 // pixabanimation — Admin Popup Ads Manager (Redesigned)
 // ============================================
 
-const AdminPopupAds = {
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+
+export const AdminPopupAds = {
   async render(page = 1) {
     const container = document.getElementById('adminContent');
     try {

@@ -2,7 +2,8 @@
 // PixabAnimation — Terms of Use Page
 // ============================================
 
-const TermsOfUsePage = {
+
+export const TermsOfUsePage = {
   render() {
     const content = document.getElementById('pageContent');
 

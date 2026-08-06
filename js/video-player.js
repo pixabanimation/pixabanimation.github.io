@@ -3,7 +3,8 @@
 // With persistent watermark overlay
 // ============================================
 
-const VideoPlayer = {
+
+export const VideoPlayer = {
   /**
    * Create a watermarked video player
    * @param {Object} options

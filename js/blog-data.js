@@ -4,7 +4,9 @@
 // Used as fallback when DB has no blog posts
 // ============================================
 
-const BLOG_DATA = [
+import { DB } from './db.js';
+
+export const BLOG_DATA = [
   {
     id: 1, slug: 'ai-motion-graphics-revolution', featured: 1,
     title: 'The AI Revolution in Motion Graphics: What Every Designer Needs to Know in 2026',
@@ -448,7 +450,7 @@ const BLOG_DATA = [
 ];
 
 // Helper functions that mirror DB.* methods for static blog data
-const BlogData = {
+export const BlogData = {
   getAll() {
     return BLOG_DATA;
   },

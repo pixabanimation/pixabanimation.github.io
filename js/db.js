@@ -2,7 +2,9 @@
 // pixabanimation — Database Layer (Turso/libsql)
 // ============================================
 
-const DB = {
+import { App } from './app.js';
+
+export const DB = {
   client: null,
 
   // Order status metadata — shared by user tracking and admin panels
@@ -1489,5 +1491,11 @@ const DB = {
     return result[0]?.count || 0;
   }
 };
+
+// Expose lazily on `window` for modules that run without importing this one
+// (e.g. blog-ads.js / popup-ads.js on standalone blog pages).
+if (typeof window !== 'undefined') {
+  window.DB = DB;
+}
 
 

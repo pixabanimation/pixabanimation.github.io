@@ -3,7 +3,12 @@
 // Design follows spurno.github.io/blog/3d-infographic.html
 // ============================================
 
-const BlogPostPage = {
+import { BlogAds } from '../blog-ads.js';
+import { BlogData } from '../blog-data.js';
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+
+export const BlogPostPage = {
   async render(params) {
     const content = document.getElementById('pageContent');
     const slug = params.params?.slug;

@@ -3,7 +3,10 @@
 // Supports: DB save/load, live preview, PDF/JPG export, landscape preview
 // ============================================
 
-const AdminInvoice = {
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+
+export const AdminInvoice = {
   currentView: 'list', // 'list' | 'form'
   editingInvoiceId: null,
 

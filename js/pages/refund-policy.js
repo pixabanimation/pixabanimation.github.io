@@ -2,7 +2,8 @@
 // PixabAnimation — Refund Policy Page
 // ============================================
 
-const RefundPolicyPage = {
+
+export const RefundPolicyPage = {
   render() {
     const content = document.getElementById('pageContent');
 

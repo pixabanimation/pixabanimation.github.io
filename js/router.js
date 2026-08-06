@@ -2,7 +2,8 @@
 // pixabanimation — Hash-based SPA Router
 // ============================================
 
-const Router = {
+
+export const Router = {
   routes: {},
   currentRoute: null,
   beforeHooks: [],

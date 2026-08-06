@@ -3,7 +3,13 @@
 // Professional Gorgeous Design
 // ============================================
 
-const HomePage = {
+import { App } from '../app.js';
+import { Components } from '../components.js';
+import { Countries } from '../country-data.js';
+import { DB } from '../db.js';
+import { VideoPlayer } from '../video-player.js';
+
+export const HomePage = {
   async render(params) {
     const content = document.getElementById('pageContent');
     

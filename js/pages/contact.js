@@ -2,7 +2,10 @@
 // PixabAnimation — Contact Page
 // ============================================
 
-const ContactPage = {
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+
+export const ContactPage = {
   render() {
     const content = document.getElementById('pageContent');
 

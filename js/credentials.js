@@ -5,13 +5,12 @@
 // The ciphertext lives in this file; the 256-bit key lives separately in
 // js/credentials-key.js (split-secret). Neither file contains plaintext.
 //
-// This runtime decrypts and exposes `window.__getCredentials()`, an async
-// function returning `{ url, authToken }`. Pages must load js/credentials-key.js
-// BEFORE this file and then `await window.__getCredentials()`.
-//
+// Exposes `__getCredentials()` (async → { url, authToken }).
 // REGENERATE with:  node tools/encrypt-credentials.mjs
 
-const _CREDENTIALS_PAYLOAD = 'beb5e7408e622e3b8586523e:0b5c398ab1fadfc9aaacdcea3a914fe5:7a016868fbc5c22a505fe2915b0f108463255369d16cb8b83c4d69902f3c94b0faae864f37f6eccbf336d98d29af774e30fdb9437699fb17c939d05ebcbeea43d47f7bc981983535e8a35a76c221ad26c117954c56ce55122d03433c264293df9c170cd41843b8e11b3128a9821e4404b2af6eec7867a4fe17fb5d79b73966991c8ea052dfd280876e9a8f9f2f611894ae5a2ac0ec76a784faf6ef3dcdd8e583786d1f2632c0ea0f81097af9559fe721b601fb40386940163d62fac926ff011bc54d9b5e7819e5143a6e0e6b4f7119ffa9ffe5d257963c39680b657894c036f56c0cb15b2f49032eb007568d8fa34b0f1daceb87d756cc026a2e529421a504ee2713088254d741a06340b74a6dd2058c19fdfadb83f6ce2518ff31ca7882b211a58dedb9b42e1111e1c5f125256fedaf5cbe8849df925950f216ffba36b3a667a64f74c2b15378a5bd64a438104df8a8911b9f88a7bddd73d7e700f1a21b949a7ba8ee9deff1a2f04274078fc9ecb339146adb9d0fbccf64f771e82b561e290ee22d2aac3523c746a343b219961febbc2bd553b22f661ffd3447453f43a209795a7e739e2f9a33c3';
+import { _CREDENTIALS_KEY } from './credentials-key.js';
+
+const _CREDENTIALS_PAYLOAD = '6a717ffc77535915545bc3b6:d2edfbe93073965c0340e94531a7444c:2da10726195405644a229ca5a9ea79dccd105d4e615d7489285a1223ac142666f0be42a0d6eba04b4d62debeddd8b5b2671bc554db37f58216ba04431e76b750be9aaee335519dd0935801dc6ed2bd83ba9764adfbc4b6f41f75578e57c41ff4a8c7327373a9d7f6fea623ca23fc65496b0c4448531239f675cd9b957c295f4a158f51d6d9d0ff485f3b523a363c554cfe930e62fa38073ceb30a2ca73a4f806fa29cbe0f3a3697678c22265f5f1a3b96500ed69a44e912cff35d4b863d8127e1c32a7e9e4f4eb6ddbf86b289d79d204235fe430204f74c952731c826cd578a6609be051b1130ce33548d3ebf1d2ff101e9519f732dbc66648387a74e72f42e8e2244b94320284e31632874015927e58801fe7fc086258be216a82b9d04d404d1f9a1bf973a4e11ce73f778517eed467ce22860c9481351c7370c68e153eaa9963fdb4ff1ac78723d05084d65604dc8f01576f3ee7f2f5003dcd46ca7d3f53d0fc985141cb06e8566e181cddb026d47e16958af9c186f121b1bb06369e6fb9b196693fc52db4a5d0581bd3601a8616155e4a6f34487578bd06a9db392067a89fb2d3318e088e4279';
 
 function _hexToBytes(hex) {
   const bytes = new Uint8Array(hex.length / 2);
@@ -51,10 +50,7 @@ async function _decryptPayload() {
   return JSON.parse(new TextDecoder().decode(plain));
 }
 
-async function __getCredentials() {
-  if (typeof _CREDENTIALS_KEY === 'undefined') {
-    throw new Error('js/credentials-key.js must be loaded before js/credentials.js');
-  }
+export async function __getCredentials() {
   try {
     return await _decryptPayload();
   } catch (error) {
@@ -62,5 +58,3 @@ async function __getCredentials() {
     throw error;
   }
 }
-
-window.__getCredentials = __getCredentials;

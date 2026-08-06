@@ -3,7 +3,12 @@
 // Profile pic, account details, password, messages
 // ============================================
 
-const ProfilePage = {
+import { App } from '../app.js';
+import { AuthPage } from './auth.js';
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+
+export const ProfilePage = {
   async render() {
     const content = document.getElementById('pageContent');
     const user = App.getUser();

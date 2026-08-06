@@ -4,7 +4,12 @@
 // Auto-configured with cloud.txt credentials
 // ============================================
 
-const AdminMedia = {
+import { AdminPage } from '../pages/admin.js';
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+import { VideoPlayer } from '../video-player.js';
+
+export const AdminMedia = {
   currentFilter: 'all',
   uploadQueue: [],
   currentPage: 1,

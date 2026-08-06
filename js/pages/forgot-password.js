@@ -3,7 +3,11 @@
 // Security question-based recovery
 // ============================================
 
-const ForgotPasswordPage = {
+import { AdminSettings } from '../pages/admin-settings.js';
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+
+export const ForgotPasswordPage = {
   step: 1, // 1: email, 2: security question, 3: reset password
 
   render(params) {

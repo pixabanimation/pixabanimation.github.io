@@ -2,7 +2,10 @@
 // pixabanimation — Cart Page
 // ============================================
 
-const CartPage = {
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+
+export const CartPage = {
   async render() {
     const content = document.getElementById('pageContent');
 

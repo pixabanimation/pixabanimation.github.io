@@ -2,7 +2,13 @@
 // pixabanimation — Product Detail Page (Redesigned)
 // ============================================
 
-const ProductPage = {
+import { App } from '../app.js';
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+import { Router } from '../router.js';
+import { VideoPlayer } from '../video-player.js';
+
+export const ProductPage = {
   currentQty: 1,
   currentProduct: null,
   currentImages: [],

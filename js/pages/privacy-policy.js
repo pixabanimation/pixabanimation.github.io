@@ -2,7 +2,8 @@
 // PixabAnimation — Privacy Policy Page
 // ============================================
 
-const PrivacyPolicyPage = {
+
+export const PrivacyPolicyPage = {
   render() {
     const content = document.getElementById('pageContent');
 

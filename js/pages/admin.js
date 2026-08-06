@@ -2,7 +2,17 @@
 // pixabanimation — Admin Dashboard
 // ============================================
 
-const AdminPage = {
+import { AdminInvoice } from '../pages/admin-invoice.js';
+import { AdminMedia } from '../pages/admin-media.js';
+import { AdminPopupAds } from '../pages/admin-popup-ads.js';
+import { AdminQuotation } from '../pages/admin-quotation.js';
+import { AdminSettings } from '../pages/admin-settings.js';
+import { App } from '../app.js';
+import { Components } from '../components.js';
+import { Countries } from '../country-data.js';
+import { DB } from '../db.js';
+
+export const AdminPage = {
   currentTab: 'dashboard',
   pageSize: 10,
   productPage: 1, categoriesPage: 1, ordersPage: 1, reviewsPage: 1,

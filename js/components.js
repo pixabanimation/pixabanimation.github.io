@@ -2,7 +2,12 @@
 // pixabanimation — Reusable UI Components
 // ============================================
 
-const Components = {
+import { App } from './app.js';
+import { DB } from './db.js';
+import { Router } from './router.js';
+import { AdminSettings } from './pages/admin-settings.js';
+
+export const Components = {
   // Toast notification
   toast(message, type = 'info', duration = 3000) {
     const container = document.getElementById('toastContainer');

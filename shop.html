@@ -340,47 +340,6 @@
   </button>
 
   <!-- Scripts -->
-  <script src="js/credentials-key.js"></script>
-  <script src="js/credentials.js"></script>
-  <script src="js/country-data.js"></script>
-  <script type="module">
-    import { createClient } from "https://esm.sh/@libsql/client@0.14.0/web";
-    
-    const _creds = await window.__getCredentials();
-    window.__tursoClient = createClient({
-      url: _creds.url,
-      authToken: _creds.authToken
-    });
-    
-    console.log("Turso client initialized");
-  </script>
-  <script src="js/db.js"></script>
-  <script src="js/router.js"></script>
-  <script src="js/components.js"></script>
-  <script src="js/pages/home.js"></script>
-  <script src="js/pages/shop.js"></script>
-  <script src="js/pages/product.js"></script>
-  <script src="js/pages/cart.js"></script>
-  <script src="js/pages/checkout.js"></script>
-  <script src="js/pages/auth.js"></script>
-  <script src="js/pages/profile.js"></script>
-  <script src="js/pages/wishlist.js"></script>
-  <script src="js/pages/contact.js"></script>
-  <script src="js/pages/about.js"></script>
-  <script src="js/pages/privacy-policy.js"></script>
-  <script src="js/pages/refund-policy.js"></script>
-  <script src="js/pages/terms-of-use.js"></script>
-  <script src="js/pages/admin.js"></script>
-  <script src="js/pages/admin-media.js"></script>
-  <script src="js/pages/admin-settings.js"></script>
-  <script src="js/pages/forgot-password.js"></script>
-  <script src="js/blog-data.js"></script>
-  <script src="js/pages/blog.js"></script>
-  <script src="js/pages/blog-post.js"></script>
-  <script src="js/video-player.js"></script>
-  <script src="js/blog-ads.js"></script>
-  <script src="js/popup-ads.js"></script>
-  <script src="js/pages/admin-popup-ads.js"></script>
-  <script src="js/app.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

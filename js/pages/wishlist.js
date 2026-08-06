@@ -2,7 +2,12 @@
 // pixabanimation — Wishlist Page
 // ============================================
 
-const WishlistPage = {
+import { App } from '../app.js';
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+import { Router } from '../router.js';
+
+export const WishlistPage = {
   async render() {
     const content = document.getElementById('pageContent');
 

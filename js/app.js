@@ -2,7 +2,29 @@
 // pixabanimation — Main Application Controller
 // ============================================
 
-const App = {
+import { AboutPage } from './pages/about.js';
+import { AdminPage } from './pages/admin.js';
+import { AuthPage } from './pages/auth.js';
+import { BlogData } from './blog-data.js';
+import { CartPage } from './pages/cart.js';
+import { CheckoutPage } from './pages/checkout.js';
+import { Components } from './components.js';
+import { ContactPage } from './pages/contact.js';
+import { DB } from './db.js';
+import { ForgotPasswordPage } from './pages/forgot-password.js';
+import { HomePage } from './pages/home.js';
+import { PopupAds } from './popup-ads.js';
+import { PrivacyPolicyPage } from './pages/privacy-policy.js';
+import { ProductPage } from './pages/product.js';
+import { ProfilePage } from './pages/profile.js';
+import { RefundPolicyPage } from './pages/refund-policy.js';
+import { Router } from './router.js';
+import { ShopPage } from './pages/shop.js';
+import { TermsOfUsePage } from './pages/terms-of-use.js';
+import { VideoPlayer } from './video-player.js';
+import { WishlistPage } from './pages/wishlist.js';
+
+export const App = {
   async init() {
     console.log('🚀 pixabanimation initializing...');
 

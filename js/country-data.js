@@ -2,7 +2,8 @@
 // Country Data — All countries with flags & states
 // ============================================
 
-const Countries = {
+
+export const Countries = {
   list: [
     { code: 'AF', name: 'Afghanistan', flag: '🇦🇫', phone: '+93' },
     { code: 'AL', name: 'Albania', flag: '🇦🇱', phone: '+355' },

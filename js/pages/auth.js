@@ -2,7 +2,12 @@
 // pixabanimation — Auth Pages (Login & Register)
 // ============================================
 
-const AuthPage = {
+import { App } from '../app.js';
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+import { Router } from '../router.js';
+
+export const AuthPage = {
   render(params) {
     const content = document.getElementById('pageContent');
     // Show register form when path is /register OR query has type=register

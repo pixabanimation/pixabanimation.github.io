@@ -3,7 +3,10 @@
 // For animation billing. Saves to database.
 // ============================================
 
-const AdminQuotation = {
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+
+export const AdminQuotation = {
   currentView: 'list', // 'list' | 'form'
   editingQuoteId: null,
 

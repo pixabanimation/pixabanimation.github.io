@@ -6,4 +6,4 @@
 // static site this file ships to the browser — do NOT rely on it alone to
 // protect the token; rotate the token if it ever leaked.
 
-const _CREDENTIALS_KEY = 'kYjxVqHTH7lVsBb7VgguSKAdKp1Oo68Y+mjg+x8pnCI=';
+export const _CREDENTIALS_KEY = 'YcuRwjv95nDgV5b7BtGvsM/d7AG0CKXn7eb1+GHRsZg=';

@@ -2,8 +2,11 @@
 // blog-ads.js — Dynamic Blog Ad Loader (Redesigned)
 // Ads: Top (after cover), Mid-article, Bottom, Sidebar (single)
 // ============================================
+// NOTE: DB is read lazily from `window.DB` (set by js/db.js) so this module
+// can run on standalone blog pages that do NOT load the full SPA. When DB is
+// absent the built-in fallback ads are used.
 
-const BlogAds = {
+export const BlogAds = {
   defaultAds: {
     top: {
       title: 'Premium Motion Graphics Assets',
@@ -36,7 +39,7 @@ const BlogAds = {
   },
 
   async init() {
-    if (typeof DB === 'undefined' || !DB.init) {
+    if (typeof window.DB === 'undefined' || !window.DB || !window.DB.init) {
       this.injectAdSlots();
       this.renderFallbackAds();
       return;
@@ -133,9 +136,9 @@ const BlogAds = {
       const currentPage = pathParts[pathParts.length - 1] || 'index.html';
 
       const [ad1, ad2, ad3] = await Promise.all([
-        DB.getActiveAdsForPage(currentPage, 'ad1'),
-        DB.getActiveAdsForPage(currentPage, 'ad2'),
-        DB.getActiveAdsForPage(currentPage, 'ad3')
+        window.DB.getActiveAdsForPage(currentPage, 'ad1'),
+        window.DB.getActiveAdsForPage(currentPage, 'ad2'),
+        window.DB.getActiveAdsForPage(currentPage, 'ad3')
       ]);
 
       this.injectAdSlots();

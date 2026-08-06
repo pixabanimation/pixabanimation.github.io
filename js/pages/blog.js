@@ -3,7 +3,12 @@
 // Premium Google News-Inspired Design
 // ============================================
 
-const BlogPage = {
+import { BlogAds } from '../blog-ads.js';
+import { BlogData } from '../blog-data.js';
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+
+export const BlogPage = {
   currentPage: 1,
   pageSize: 12,
   currentCategory: '',

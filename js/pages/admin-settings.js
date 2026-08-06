@@ -3,7 +3,12 @@
 // Full account management: name, email, profile pic, password
 // ============================================
 
-const AdminSettings = {
+import { App } from '../app.js';
+import { AuthPage } from '../pages/auth.js';
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+
+export const AdminSettings = {
   async render() {
     const container = document.getElementById('adminContent');
     const user = App.getUser();

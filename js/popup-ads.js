@@ -1,8 +1,11 @@
 // ============================================
 // pixabanimation — Popup Ad System (Redesigned)
 // ============================================
+// NOTE: DB is read lazily from `window.DB` (set by js/db.js) so this module
+// can run on standalone blog pages that do NOT load the full SPA. When DB is
+// absent the built-in fallback popup ads are used.
 
-const PopupAds = {
+export const PopupAds = {
   initialized: false,
   ads: [],
   shownAds: [],
@@ -55,7 +58,7 @@ const PopupAds = {
   async _waitForDB(maxWait = 5000) {
     const start = Date.now();
     while (Date.now() - start < maxWait) {
-      if (typeof DB !== 'undefined' && DB.client) {
+      if (typeof window.DB !== 'undefined' && window.DB && window.DB.client) {
         this._dbReady = true;
         return;
       }
@@ -76,8 +79,8 @@ const PopupAds = {
 
   async loadAds() {
     try {
-      if (this._dbReady && typeof DB !== 'undefined' && DB.client) {
-        const allAds = await DB.getPopupAds(true);
+      if (this._dbReady && typeof window.DB !== 'undefined' && window.DB && window.DB.client) {
+        const allAds = await window.DB.getPopupAds(true);
         if (allAds && allAds.length > 0) {
           this.ads = this.shuffleArray(allAds);
           return this.ads;

@@ -2,7 +2,12 @@
 // pixabanimation - Shop Page (Premium Redesign)
 // ============================================
 
-const ShopPage = {
+import { App } from '../app.js';
+import { Components } from '../components.js';
+import { DB } from '../db.js';
+import { Router } from '../router.js';
+
+export const ShopPage = {
   currentFilters: null,
   currentCategoryName: '',
   searchHighlightIndex: -1,

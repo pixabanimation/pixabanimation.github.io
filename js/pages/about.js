@@ -2,7 +2,8 @@
 // PixabAnimation — About Page
 // ============================================
 
-const AboutPage = {
+
+export const AboutPage = {
   render() {
     const content = document.getElementById('pageContent');
 

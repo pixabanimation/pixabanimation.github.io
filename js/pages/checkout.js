@@ -2,7 +2,13 @@
 // PixabAnimation — Checkout Page (Redesigned)
 // ============================================
 
-const CheckoutPage = {
+import { App } from '../app.js';
+import { Components } from '../components.js';
+import { Countries } from '../country-data.js';
+import { DB } from '../db.js';
+import { Router } from '../router.js';
+
+export const CheckoutPage = {
   cartItems: [],
   subtotal: 0,
   tax: 0,
