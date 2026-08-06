@@ -716,6 +716,145 @@ const AdminInvoice = {
     }
   },
 
+  // ==================== SALES / ORDER INVOICE POPUP ====================
+  // Opens a modal showing the invoice for an order with Save PDF + Print actions.
+  showOrderInvoicePopup(order, invoice) {
+    const items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : (invoice.items || []);
+    const formatDate = (d) => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
+    const money = (n) => '$' + parseFloat(n || 0).toFixed(2);
+
+    const itemsHTML = items.length === 0
+      ? '<tr><td colspan="3" class="oiv-empty">No items on this invoice</td></tr>'
+      : items.map(it => `
+        <tr>
+          <td class="oiv-desc">${it.description || '—'}<span class="oiv-qty-inline">× ${it.quantity}</span></td>
+          <td class="oiv-right">${money(it.rate)}</td>
+          <td class="oiv-right oiv-amt">${money(it.amount)}</td>
+        </tr>`).join('');
+
+    const docHTML = `
+      <div class="order-invoice-doc">
+        <div class="oiv-head">
+          <div>
+            <div class="oiv-title">INVOICE</div>
+            <div class="oiv-number"># ${invoice.invoice_number}</div>
+          </div>
+          <div class="oiv-status">${this.statusBadge(invoice.status)}</div>
+        </div>
+        <div class="oiv-grid">
+          <div class="oiv-meta">
+            <span class="oiv-label">Date</span>
+            <span class="oiv-value">${formatDate(invoice.date)}</span>
+          </div>
+          <div class="oiv-meta">
+            <span class="oiv-label">Order #</span>
+            <span class="oiv-value">#${order.id}</span>
+          </div>
+          <div class="oiv-meta">
+            <span class="oiv-label">Payment</span>
+            <span class="oiv-value" style="text-transform:capitalize">${order.payment_method || '—'}</span>
+          </div>
+          <div class="oiv-meta">
+            <span class="oiv-label">TX ID</span>
+            <span class="oiv-value oiv-tx">${order.transaction_id || '—'}</span>
+          </div>
+        </div>
+        <div class="oiv-parties">
+          <div>
+            <div class="oiv-label">From</div>
+            <div class="oiv-strong">${invoice.from_name}</div>
+            <div class="oiv-soft">${invoice.from_email || ''}</div>
+            <div class="oiv-soft">${invoice.from_phone || ''}</div>
+            <div class="oiv-soft">${invoice.from_address || ''}</div>
+          </div>
+          <div>
+            <div class="oiv-label">Bill To</div>
+            <div class="oiv-strong">${invoice.to_name}</div>
+            <div class="oiv-soft">${invoice.to_email || ''}</div>
+            <div class="oiv-soft">${invoice.to_phone || ''}</div>
+            <div class="oiv-soft">${invoice.to_address || ''}</div>
+          </div>
+        </div>
+        <div class="oiv-table-wrap">
+          <table class="oiv-table">
+            <thead>
+              <tr><th>Item</th><th class="oiv-right">Rate</th><th class="oiv-right">Amount</th></tr>
+            </thead>
+            <tbody>${itemsHTML}</tbody>
+          </table>
+        </div>
+        <div class="oiv-totals">
+          <div class="oiv-total-row"><span>Subtotal</span><span>${money(invoice.subtotal)}</span></div>
+          ${parseFloat(invoice.tax_amount) > 0 ? `<div class="oiv-total-row"><span>Tax (${invoice.tax_rate}%)</span><span>${money(invoice.tax_amount)}</span></div>` : ''}
+          ${parseFloat(invoice.discount_amount) > 0 ? `<div class="oiv-total-row"><span>Discount (${invoice.discount}%)</span><span>−${money(invoice.discount_amount)}</span></div>` : ''}
+          <div class="oiv-total-row oiv-total"><span>Total</span><span>${money(invoice.total)}</span></div>
+        </div>
+        ${invoice.terms ? `<div class="oiv-terms">${invoice.terms}</div>` : ''}
+      </div>
+    `;
+
+    Components.showModal(`Sales Invoice — Order #${order.id}`, `
+      <div class="order-invoice-popup">
+        ${docHTML}
+        <div class="oiv-actions">
+          <button class="btn btn-primary btn-sm" onclick="AdminInvoice.exportInvoicePDF(${invoice.id})">
+            <i class="fas fa-file-pdf"></i> Save PDF
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="AdminInvoice.printStoredInvoice(${invoice.id})">
+            <i class="fas fa-print"></i> Print
+          </button>
+        </div>
+      </div>
+    `, '560px');
+  },
+
+  // ==================== PRINT STORED INVOICE ====================
+  async printStoredInvoice(invoiceId) {
+    try {
+      const invoice = await DB.getInvoiceById(invoiceId);
+      if (!invoice) {
+        Components.toast('Invoice not found', 'error');
+        return;
+      }
+      const items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : (invoice.items || []);
+      const html = this.generatePreviewFromData(invoice, items);
+      this.printHTML(html, invoice.invoice_number);
+    } catch (error) {
+      console.error('Print stored invoice error:', error);
+      Components.toast('Failed to print invoice: ' + error.message, 'error');
+    }
+  },
+
+  printHTML(html, title) {
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(`
+      <html>
+      <head>
+        <title>Invoice - ${title}</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+        <style>
+          body { margin: 0; padding: 20px; font-family: 'Inter', sans-serif; }
+          @media print {
+            body { padding: 0; }
+            @page { size: landscape; margin: 0.5in; }
+          }
+        </style>
+      </head>
+      <body>${html}</body>
+      </html>
+    `);
+    doc.close();
+    setTimeout(() => {
+      iframe.contentWindow.print();
+      setTimeout(() => iframe.remove(), 1000);
+    }, 500);
+  },
+
   // ==================== EXPORT PDF (from stored data) ====================
   async exportInvoicePDF(invoiceId) {
     try {
@@ -925,34 +1064,7 @@ const AdminInvoice = {
     this.updateLivePreview();
     const preview = document.getElementById('invoicePreview');
     if (!preview) return;
-
-    const iframe = document.createElement('iframe');
-    iframe.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden';
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow.document;
-    doc.open();
-    doc.write(`
-      <html>
-      <head>
-        <title>Invoice - ${document.getElementById('inv_number')?.value || 'Export'}</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-        <style>
-          body { margin: 0; padding: 20px; font-family: 'Inter', sans-serif; }
-          @media print {
-            body { padding: 0; }
-            @page { size: landscape; margin: 0.5in; }
-          }
-        </style>
-      </head>
-      <body>${preview.outerHTML}</body>
-      </html>
-    `);
-    doc.close();
-    setTimeout(() => {
-      iframe.contentWindow.print();
-      setTimeout(() => iframe.remove(), 1000);
-    }, 500);
+    this.printHTML(preview.outerHTML, document.getElementById('inv_number')?.value || 'Export');
   },
 
   // ==================== DELETE ====================

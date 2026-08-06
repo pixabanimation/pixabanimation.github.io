@@ -1,18 +1,20 @@
 import { createClient } from "@libsql/client";
 import { readFileSync } from "fs";
 import { createHash } from "crypto";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import { getTurso } from "../tools/lib/env.mjs";
 
-const client = createClient({
-  url: "libsql://ecommercelog-spurno.aws-us-east-1.turso.io",
-  authToken: "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODI4Mzg4MjUsImlkIjoiMDE5ZjE5NzItZmQwMS03ZDBkLWFkNWMtNWQ5YTkzZWI0NzBlIiwia2lkIjoiY3dfWmw5T3NsV2FnNFFkUjVHZUN0Nll2b19MTkdlUmY1STY1bEZVMXRCOCIsInJpZCI6ImVjYzBjNjcxLWUyMmMtNDA0Yy1hZjNmLWYzZDNlNjE4OTk5ZiJ9.4otvGu6MrGbhOb7JppDQwSXHXXsWDKf5miDw43Oba8M33U5wRNtK8DC8Zv2D-M-21nE6fo2cdazBjAgB4mgDAQ"
-});
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const client = createClient(getTurso());
 
 async function main() {
   console.log("🚀 Initializing pixabanimation database...");
 
-  // Read schema
-  const schema = readFileSync("schema.sql", "utf-8");
-  const seed = readFileSync("seed.sql", "utf-8");
+  // Read schema (paths resolved relative to this script, not the CWD)
+  const schema = readFileSync(join(__dirname, "schema.sql"), "utf-8");
+  const seed = readFileSync(join(__dirname, "seed.sql"), "utf-8");
 
   // Execute schema
   console.log("📦 Creating tables...");
@@ -322,6 +324,17 @@ async function main() {
     console.log("  ✅ invoices table ready");
   } catch (err) {
     console.error("  ⚠️ Could not create invoices table:", err.message);
+  }
+
+  // Migration: Link invoices to source orders
+  console.log("🔄 Adding order_id to invoices table...");
+  try {
+    await client.execute("ALTER TABLE invoices ADD COLUMN order_id INTEGER REFERENCES orders(id) ON DELETE SET NULL");
+    console.log("  ✅ invoices.order_id migration done");
+  } catch (err) {
+    if (!err.message.includes('duplicate column') && !err.message.includes('already exists')) {
+      console.error("  ⚠️ Could not add order_id to invoices:", err.message);
+    }
   }
 
   // Migration: Add quotations table

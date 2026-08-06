@@ -13752,6 +13752,316 @@ body:has(.admin-page) .footer {
 }
 
 /* ============================================
+   Admin Orders — Clickable Rows + Sales Invoice Popup
+   ============================================ */
+
+.admin-orders-table .order-row {
+  cursor: pointer;
+}
+
+.admin-orders-table .order-row td {
+  transition: background 0.2s ease;
+}
+
+.admin-orders-table .order-row:hover td {
+  background: rgba(0, 113, 227, 0.04) !important;
+}
+
+.admin-orders-table .order-id-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.admin-orders-table .order-id-cell i {
+  color: var(--accent-1);
+  font-size: 0.8rem;
+}
+
+/* Sales / order invoice popup */
+.order-invoice-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 76vh;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.order-invoice-doc {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  color: #1d1d1f;
+  font-family: 'Inter', -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+.oiv-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 18px 20px;
+  border-bottom: 3px solid #1e3a8a;
+  background: #f8fafc;
+}
+
+.oiv-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+}
+
+.oiv-number {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 700;
+  margin-top: 3px;
+}
+
+.oiv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  padding: 14px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.oiv-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.oiv-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+}
+
+.oiv-value {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1d1d1f;
+  word-break: break-word;
+}
+
+.oiv-tx {
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.oiv-parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.oiv-parties .oiv-label {
+  margin-bottom: 4px;
+}
+
+.oiv-strong {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1d1d1f;
+}
+
+.oiv-soft {
+  font-size: 0.75rem;
+  color: #666;
+  word-break: break-word;
+}
+
+.oiv-table-wrap {
+  padding: 8px 20px;
+  overflow-x: auto;
+}
+
+.oiv-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.oiv-table th {
+  background: #0f172a;
+  color: #fff;
+  text-align: left;
+  padding: 9px 12px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.oiv-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.82rem;
+  color: #1d1d1f;
+}
+
+.oiv-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.oiv-desc {
+  min-width: 0;
+  word-break: break-word;
+}
+
+.oiv-qty-inline {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+.oiv-right {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.oiv-amt {
+  font-weight: 600;
+}
+
+.oiv-empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 20px;
+}
+
+.oiv-totals {
+  margin-left: auto;
+  width: 100%;
+  max-width: 320px;
+  padding: 6px 20px 16px;
+  border-top: 2px solid #333;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.oiv-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.oiv-total-row span:last-child {
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.oiv-total {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #1e3a8a;
+  padding-top: 8px;
+  margin-top: 2px;
+  border-top: 2px solid #1e3a8a;
+}
+
+.oiv-total span:last-child {
+  color: #1e3a8a;
+}
+
+.oiv-terms {
+  padding: 10px 20px;
+  border-top: 1px solid #eee;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.oiv-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.oiv-actions .btn {
+  flex: 1;
+  min-width: 140px;
+}
+
+@media (max-width: 480px) {
+  .oiv-parties,
+  .oiv-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile: convert the orders table into tappable cards */
+@media (max-width: 768px) {
+  .admin-table.admin-orders-table {
+    display: block;
+  }
+  .admin-table.admin-orders-table thead {
+    display: none;
+  }
+  .admin-table.admin-orders-table tbody {
+    display: block;
+    width: 100%;
+  }
+  .admin-table.admin-orders-table tr {
+    display: block;
+    margin: 0 0 12px;
+    padding: 6px 14px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    transform: none !important;
+  }
+  .admin-table.admin-orders-table tr:hover td,
+  .admin-table.admin-orders-table tr:nth-child(even):hover td,
+  .admin-table.admin-orders-table tr:nth-child(even) td {
+    background: transparent !important;
+  }
+  .admin-table.admin-orders-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 9px 0 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    text-align: right;
+    white-space: normal;
+  }
+  .admin-table.admin-orders-table td:first-child,
+  .admin-table.admin-orders-table td:last-child {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .admin-table.admin-orders-table td::before {
+    content: attr(data-label);
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .admin-table.admin-orders-table tr td:last-child {
+    border-bottom: none;
+  }
+  .admin-table.admin-orders-table .order-row {
+    cursor: pointer;
+  }
+}
+
+/* ============================================
    AI Blog Writer
    ============================================ */
 

@@ -1,5 +1,11 @@
 node_modules/
 .env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*.jks
 database/node_modules/
 database/package.json
 database/package-lock.json

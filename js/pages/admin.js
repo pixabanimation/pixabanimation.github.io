@@ -1048,7 +1048,7 @@ const AdminPage = {
           </div>
         </div>
         <div class="admin-table-container">
-          <table class="admin-table">
+          <table class="admin-table admin-orders-table">
             <thead>
               <tr>
                 <th>Order #</th>
@@ -1066,21 +1066,27 @@ const AdminPage = {
               ${orders.length === 0 ?
                 '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">No orders found</td></tr>' :
                 orders.map(o => `
-                  <tr>
-                    <td><span style="font-weight:700">#${o.id}</span></td>
-                    <td><span style="font-size:0.85rem;color:var(--text-muted)">${new Date(o.created_at).toLocaleDateString()}</span></td>
-                    <td><span style="font-size:0.85rem">${o.customer_info ? o.customer_info.split(',')[0] : '—'}</span></td>
-                    <td>${o.item_count}</td>
-                    <td style="font-weight:600;color:rgba(0,0,0,0.85)">$${parseFloat(o.total).toFixed(2)}</td>
-                    <td><span style="font-size:0.8rem;text-transform:capitalize">${o.payment_method || '—'}</span></td>
-                    <td>
+                  <tr class="order-row" role="button" tabindex="0"
+                      onclick="AdminPage.openOrderInvoice(${o.id}, event)"
+                      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();AdminPage.openOrderInvoice(${o.id}, event)}"
+                      title="Click to view sales invoice">
+                    <td data-label="Order"><span class="order-id-cell"><i class="fas fa-file-invoice-dollar"></i> #${o.id}</span></td>
+                    <td data-label="Date"><span style="font-size:0.85rem;color:var(--text-muted)">${new Date(o.created_at).toLocaleDateString()}</span></td>
+                    <td data-label="Customer"><span style="font-size:0.85rem">${o.customer_info ? o.customer_info.split(',')[0] : '—'}</span></td>
+                    <td data-label="Items">${o.item_count}</td>
+                    <td data-label="Total"><span style="font-weight:600;color:rgba(0,0,0,0.85)">$${parseFloat(o.total).toFixed(2)}</span></td>
+                    <td data-label="Payment"><span style="font-size:0.8rem;text-transform:capitalize">${o.payment_method || '—'}</span></td>
+                    <td data-label="TX ID">
                       ${o.transaction_id ? `<span style="font-size:0.75rem;font-family:monospace;color:${o.transaction_approved ? 'var(--success)' : 'var(--warning)'}">${o.transaction_id.substring(0, 12)}...</span>` : '<span style="font-size:0.75rem;color:rgba(0,0,0,0.85)">—</span>'}
                     </td>
-                    <td>${this.statusBadge(o.status)}</td>
-                    <td>
+                    <td data-label="Status">${this.statusBadge(o.status)}</td>
+                    <td data-label="Actions">
                       <div style="display:flex;gap:4px">
                         <button class="admin-action-btn" onclick="AdminPage.viewOrder(${o.id})" title="View Order">
                           <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="admin-action-btn" style="color:var(--accent-1)" onclick="AdminPage.openOrderInvoice(${o.id}, event, true)" title="Sales Invoice / PDF">
+                          <i class="fas fa-file-invoice-dollar"></i>
                         </button>
                         ${o.transaction_id && !o.transaction_approved && o.status === 'pending' ? `
                         <button class="admin-action-btn" style="color:var(--success)" onclick="AdminPage.approveTransaction(${o.id})" title="Approve Transaction">
@@ -1336,6 +1342,32 @@ const AdminPage = {
       `, '900px');
     } catch (error) {
       Components.toast('Failed to load order details', 'error');
+    }
+  },
+
+  // Opens the sales invoice popup for an order (row click). Generates the
+  // invoice on demand if one doesn't exist yet, then offers Save PDF + Print.
+  async openOrderInvoice(orderId, event, force = false) {
+    if (event && !force) {
+      // Don't hijack clicks on buttons/links/inputs inside the row
+      // (the dedicated invoice action button passes force=true)
+      const interactive = event.target.closest('button, a, select, input, textarea, .admin-action-btn');
+      if (interactive) return;
+      event.stopPropagation();
+    }
+    try {
+      const [invoice, order] = await Promise.all([
+        DB.createInvoiceForOrder(orderId),
+        DB.getOrderDetail(orderId)
+      ]);
+      if (!order || !invoice) {
+        Components.toast('Could not load order invoice', 'error');
+        return;
+      }
+      AdminInvoice.showOrderInvoicePopup(order, invoice);
+    } catch (error) {
+      console.error('Open order invoice error:', error);
+      Components.toast('Failed to open invoice: ' + error.message, 'error');
     }
   },
 

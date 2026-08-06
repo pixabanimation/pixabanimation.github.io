@@ -13,6 +13,7 @@ import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname, extname } from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@libsql/client';
+import { getTurso } from './lib/env.mjs';
 import { get } from 'https';
 import { createWriteStream } from 'fs';
 
@@ -29,10 +30,7 @@ if (!existsSync(assetsDir)) {
 const BASE_URL = 'https://pixabanimation.github.io';
 
 // ─── DB Connection ──────────────────────────────────────────────────────────
-const client = createClient({
-  url: 'libsql://ecommercelog-spurno.aws-us-east-1.turso.io',
-  authToken: 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODI4Mzg4MjUsImlkIjoiMDE5ZjE5NzItZmQwMS03ZDBkLWFkNWMtNWQ5YTkzZWI0NzBlIiwia2lkIjoiY3dfWmw5T3NsV2FnNFFkUjVHZUN0Nll2b19MTkdlUmY1STY1bEZVMXRCOCIsInJpZCI6ImVjYzBjNjcxLWUyMmMtNDA0Yy1hZjNmLWYzZDNlNjE4OTk5ZiJ9.4otvGu6MrGbhOb7JppDQwSXHXXsWDKf5miDw43Oba8M33U5wRNtK8DC8Zv2D-M-21nE6fo2cdazBjAgB4mgDAQ'
-});
+const client = createClient(getTurso());
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function downloadImage(url, dest) {

@@ -334,6 +334,13 @@ const DB = {
     // Log initial tracking event
     await this.logOrderTracking(orderId, 'pending', 'Order placed');
 
+    // Generate an invoice for this order (best effort — never blocks the order)
+    try {
+      await this.createInvoiceForOrder(orderId);
+    } catch (e) {
+      console.warn('Auto invoice generation failed for order #' + orderId, e);
+    }
+
     // Clear the cart
     await this.clearCart();
 
@@ -1277,6 +1284,80 @@ const DB = {
   // === Invoices Management ===
   async getAllInvoices() {
     return this.query('SELECT * FROM invoices ORDER BY created_at DESC');
+  },
+
+  async getInvoiceByOrderId(orderId) {
+    try {
+      const invoices = await this.query('SELECT * FROM invoices WHERE order_id = ?', [orderId]);
+      return invoices.length > 0 ? invoices[0] : null;
+    } catch (e) {
+      // order_id column may not exist yet — fall back to the derived invoice number
+      console.warn('invoices.order_id column unavailable, falling back to invoice_number lookup', e);
+      const invoices = await this.query(
+        'SELECT * FROM invoices WHERE invoice_number = ?',
+        ['INV-ORD-' + String(orderId).padStart(4, '0')]
+      );
+      return invoices.length > 0 ? invoices[0] : null;
+    }
+  },
+
+  // Builds + saves an invoice from an order. Idempotent: returns the existing
+  // invoice if one was already generated for this order.
+  async createInvoiceForOrder(orderId) {
+    const existing = await this.getInvoiceByOrderId(orderId);
+    if (existing) return existing;
+
+    const order = await this.getOrderDetail(orderId);
+    if (!order) throw new Error('Order not found');
+
+    const customerParts = (order.customer_info || '').split(',').map(s => s.trim());
+    const items = (order.items || []).map(it => {
+      const price = parseFloat(it.price) || 0;
+      const qty = parseInt(it.quantity) || 1;
+      return { description: it.product_name || 'Item', quantity: qty, rate: price, amount: price * qty };
+    });
+
+    const subtotal = parseFloat(order.subtotal) || items.reduce((s, it) => s + it.amount, 0);
+    const taxAmount = parseFloat(order.tax) || 0;
+    const taxRate = subtotal > 0 ? Math.round((taxAmount / subtotal) * 10000) / 100 : 0;
+    const total = parseFloat(order.total) || (subtotal + taxAmount);
+
+    const statusMap = { pending: 'draft', confirmed: 'sent', shipped: 'sent', delivered: 'paid', cancelled: 'cancelled' };
+    const date = (order.created_at || new Date().toISOString()).split('T')[0];
+
+    const invoiceId = await this.createInvoice({
+      invoice_number: 'INV-ORD-' + String(orderId).padStart(4, '0'),
+      date,
+      due_date: null,
+      from_name: 'PixabAnimation Studio',
+      from_email: 'spurno@icloud.com',
+      from_phone: '+880 1521211774',
+      from_address: 'Dhanmondi, Dhaka',
+      to_name: customerParts[0] || 'Customer',
+      to_email: customerParts[1] || null,
+      to_phone: customerParts[2] || null,
+      to_company: null,
+      to_address: null,
+      items: JSON.stringify(items),
+      subtotal,
+      tax_rate: taxRate,
+      tax_amount: taxAmount,
+      discount: 0,
+      discount_amount: 0,
+      total,
+      notes: null,
+      terms: 'Thank you for your purchase. Payment via ' + (order.payment_method || 'online transfer') + '.',
+      status: statusMap[order.status] || 'draft'
+    });
+
+    // Best-effort link back to the source order
+    try {
+      await this.execute('UPDATE invoices SET order_id = ? WHERE id = ?', [orderId, invoiceId]);
+    } catch (e) {
+      console.warn('Could not link invoice to order (order_id column missing):', e);
+    }
+
+    return this.getInvoiceById(invoiceId);
   },
 
   async getInvoiceById(id) {

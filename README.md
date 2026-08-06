@@ -18,7 +18,7 @@ A single-page application marketplace for premium motion graphics, 4K video clip
 - **💰 Manual payment processing** — Payoneer & Skrill integration with transaction verification workflow
 - **📨 Newsletter subscription** — Email capture with database storage
 - **🌍 International flags** — Country list with 140+ countries, state/province data for major countries
-- **🔒 XOR-obfuscated credentials** — Database credentials encoded to prevent casual theft
+- **🔒 AES-256-GCM encrypted credentials** — Turso database credentials encrypted with a split-secret scheme (ciphertext and key in separate files)
 - **📈 SEO optimized** — JSON-LD structured data (Organization, WebSite, Product, FAQPage, CollectionPage, BreadcrumbList), Open Graph, Twitter Cards, sitemap, robots.txt
 
 
@@ -45,7 +45,8 @@ A single-page application marketplace for premium motion graphics, 4K video clip
 │   ├── router.js          # SPA hash-based router
 │   ├── components.js      # Reusable UI components
 │   ├── db.js              # Database abstraction layer
-│   ├── credentials.js     # Encrypted Turso credentials
+│   ├── credentials.js       # AES-GCM encrypted Turso credentials (ciphertext)
+│   ├── credentials-key.js   # AES-256 key (split from the ciphertext)
 │   ├── country-data.js    # 140+ countries with flags & states
 │   ├── video-player.js    # Custom watermarked video player
 │   └── pages/             # Page-specific modules (17 pages)
@@ -58,6 +59,13 @@ A single-page application marketplace for premium motion graphics, 4K video clip
 ├── docs/                  # Full documentation
 └── DESIGN.md              # Design system tokens
 ```
+
+## 🔐 Security
+
+- **Never commit secrets.** All credentials live in the gitignored `.env` file at the repo root (copy `.env.example` → `.env`). `tools/lib/env.mjs` loads `TURSO_URL` / `TURSO_AUTH_TOKEN` / OpenRouter vars from there or from the process environment (CI).
+- **Browser credentials are encrypted.** `js/credentials.js` holds only AES-256-GCM ciphertext; the key is generated fresh into `js/credentials-key.js` on every run of `node tools/encrypt-credentials.mjs` (which reads the plaintext from `.env`).
+- **Rotate on any leak.** Because this is a static site, both encrypted files ship to the browser, so encryption here is *obfuscation-grade*, not a substitute for a rotated token. If a token was ever committed to git history, revoke it in the Turso console and update `.env`, then re-run the encrypt script.
+- **CI secrets.** GitHub Actions uses repository secrets (`OPENROUTER_API_KEY`, `GITHUB_TOKEN`) — never literal keys in workflows.
 
 ## 🤝 Contributing
 
