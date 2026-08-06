@@ -11,40 +11,64 @@ import { createClient } from "https://esm.sh/@libsql/client@0.14.0/web";
 import { __getCredentials } from './credentials.js';
 
 import './country-data.js';
-import './db.js';
-import './router.js';
-import './components.js';
+import { DB } from './db.js';
+import { Router } from './router.js';
+import { Components } from './components.js';
 
-import './pages/home.js';
-import './pages/shop.js';
-import './pages/product.js';
-import './pages/cart.js';
-import './pages/checkout.js';
-import './pages/auth.js';
-import './pages/profile.js';
+import { HomePage } from './pages/home.js';
+import { ShopPage } from './pages/shop.js';
+import { ProductPage } from './pages/product.js';
+import { CartPage } from './pages/cart.js';
+import { CheckoutPage } from './pages/checkout.js';
+import { AuthPage } from './pages/auth.js';
+import { ProfilePage } from './pages/profile.js';
 import './pages/wishlist.js';
-import './pages/contact.js';
+import { ContactPage } from './pages/contact.js';
 import './pages/about.js';
 import './pages/privacy-policy.js';
 import './pages/refund-policy.js';
 import './pages/terms-of-use.js';
 
-import './pages/admin.js';
-import './pages/admin-media.js';
-import './pages/admin-settings.js';
-import './pages/forgot-password.js';
+import { AdminPage } from './pages/admin.js';
+import { AdminMedia } from './pages/admin-media.js';
+import { AdminSettings } from './pages/admin-settings.js';
+import { ForgotPasswordPage } from './pages/forgot-password.js';
 
 import './blog-data.js';
-import './pages/blog.js';
+import { BlogPage } from './pages/blog.js';
 import './pages/blog-post.js';
 import './video-player.js';
 import './blog-ads.js';
-import './popup-ads.js';
-import './pages/admin-popup-ads.js';
-import './pages/admin-invoice.js';
-import './pages/admin-quotation.js';
+import { PopupAds } from './popup-ads.js';
+import { AdminPopupAds } from './pages/admin-popup-ads.js';
+import { AdminInvoice } from './pages/admin-invoice.js';
+import { AdminQuotation } from './pages/admin-quotation.js';
 
-import './app.js';
+import { App } from './app.js';
+
+// Inline onclick/onchange handlers in rendered templates reference these
+// objects as globals, so expose the modules on window (ES modules are scoped).
+window.App = App;
+window.Router = Router;
+window.Components = Components;
+window.PopupAds = PopupAds;
+window.HomePage = HomePage;
+window.ShopPage = ShopPage;
+window.ProductPage = ProductPage;
+window.CartPage = CartPage;
+window.CheckoutPage = CheckoutPage;
+window.ProfilePage = ProfilePage;
+window.BlogPage = BlogPage;
+window.ContactPage = ContactPage;
+window.AuthPage = AuthPage;
+window.ForgotPasswordPage = ForgotPasswordPage;
+window.AdminPage = AdminPage;
+window.AdminMedia = AdminMedia;
+window.AdminSettings = AdminSettings;
+window.AdminPopupAds = AdminPopupAds;
+window.AdminInvoice = AdminInvoice;
+window.AdminQuotation = AdminQuotation;
+void DB;
 
 // Initialize the Turso client (credentials are decrypted at runtime). Module
 // scripts finish evaluating before DOMContentLoaded, so DB.init() in

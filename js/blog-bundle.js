@@ -5,4 +5,6 @@
 // scripts. Both ad-injection modules run their own init on import.
 
 import './blog-ads.js';
-import './popup-ads.js';
+import { PopupAds } from './popup-ads.js';
+
+window.PopupAds = PopupAds;
