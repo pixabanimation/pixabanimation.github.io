@@ -20,7 +20,7 @@
   var SKIP_SEL = [
     'script', 'style', 'noscript', 'code', 'pre', 'kbd', 'samp',
     'textarea', 'input', 'select', 'option', 'button',
-    '.nav-lang', '[data-no-translate]', '[translate="no"]'
+    '.nav-lang', '.nav-clock', '[data-no-translate]', '[translate="no"]'
   ].join(',');
 
   // 20 most-used languages (code, flag, native name, English name)
@@ -49,7 +49,8 @@
 
   var Translator = {
     currentLang: DEFAULT_LANG,
-    _lastTranslated: null,
+    _translated: null,
+    _cache: null,
     _applying: false,
     _token: 0,
     _observer: null,
@@ -68,7 +69,8 @@
       var self = this;
       self.buildWidgets();
       self.wire();
-      self._lastTranslated = [];
+      self._translated = new Map();
+      self._cache = new Map();
       var saved = self.getStored();
       if (saved && saved !== DEFAULT_LANG) {
         self.apply(saved);
@@ -102,6 +104,8 @@
           if (self.isSkipped(node)) return NodeFilter.FILTER_REJECT;
           var v = node.nodeValue || '';
           if (!v.trim()) return NodeFilter.FILTER_REJECT;
+          // Skip letter-free text (digits, times, prices, punctuation)
+          if (!/[a-zA-Z]/.test(v)) return NodeFilter.FILTER_REJECT;
           return NodeFilter.FILTER_ACCEPT;
         }
       });
@@ -118,12 +122,14 @@
     },
 
     restore: function () {
-      var list = this._lastTranslated || [];
-      for (var i = 0; i < list.length; i++) {
-        var t = list[i];
-        if (t.node && t.node.isConnected) t.node.nodeValue = t.original;
-      }
-      this._lastTranslated = [];
+      var map = this._translated;
+      if (!map) return;
+      map.forEach(function (entry, node) {
+        if (node.isConnected && node.nodeValue === entry.full) {
+          node.nodeValue = entry.original;
+        }
+      });
+      map.clear();
     },
 
     apply: function (code) {
@@ -144,20 +150,53 @@
       self.currentLang = code;
       if (document.documentElement) document.documentElement.lang = code;
 
-      var items = self.collect();
-      if (!items.length) return;
-      self._translate(items, code, token);
+      self._translateNew(code, token);
     },
 
-    _translate: async function (items, code, token) {
+    // Translate only nodes that aren't already translated. Never restores,
+    // so unrelated DOM churn (e.g. a ticking clock) can't flip the page back.
+    _translateNew: function (code, token) {
       var self = this;
+      if (!self._translated) return;
+
+      // Prune stale entries (detached nodes or externally-replaced text)
+      var stale = [];
+      self._translated.forEach(function (entry, node) {
+        if (!node.isConnected || node.nodeValue !== entry.full) stale.push(node);
+      });
+      for (var s = 0; s < stale.length; s++) self._translated.delete(stale[s]);
+
+      var items = self.collect().filter(function (it) {
+        return !self._translated.has(it.node);
+      });
+      if (!items.length) return;
+      self._batchTranslate(items, code, token);
+    },
+
+    _batchTranslate: async function (items, code, token) {
+      var self = this;
+      var prefix = code + '\u0000';
+
+      // Apply cached translations instantly; only fetch text never seen before.
+      var pending = [];
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var key = prefix + item.trimmed;
+        if (self._cache.has(key)) {
+          var cached = self._cache.get(key);
+          if (cached !== item.trimmed) self._apply(item, cached, token);
+          continue;
+        }
+        pending.push(item);
+      }
+      if (!pending.length) return;
 
       var chunks = [];
       var cur = [];
       var len = 0;
-      for (var i = 0; i < items.length; i++) {
-        cur.push(items[i]);
-        len += items[i].trimmed.length + 1;
+      for (var j = 0; j < pending.length; j++) {
+        cur.push(pending[j]);
+        len += pending[j].trimmed.length + 1;
         if (cur.length >= 60 || len >= 1500) {
           chunks.push(cur);
           cur = [];
@@ -177,35 +216,37 @@
         } catch (err) {
           translated = '';
         }
-        if (!translated) continue;
+        if (!translated) {
+          // Cache as unchanged so we don't retry this text repeatedly
+          for (var m = 0; m < chunk.length; m++) self._cache.set(prefix + chunk[m].trimmed, chunk[m].trimmed);
+          continue;
+        }
         var lines = translated.split('\n');
 
         for (var k = 0; k < chunk.length; k++) {
-          if (token !== self._token) return;
-          var item = chunk[k];
-          var node = item.node;
-          if (!node || !node.isConnected) continue;
-          // Never overwrite content that changed since collection
-          if (node.nodeValue !== (item.lead + item.trimmed + item.trail)) continue;
-          var line = (lines[k] !== undefined && lines[k] !== '') ? lines[k] : item.trimmed;
-          if (line === item.trimmed) continue;
-          var original = node.nodeValue;
-          self._lastTranslated.push({ node: node, original: original });
-          node.nodeValue = item.lead + line + item.trail;
+          var it = chunk[k];
+          var line = (lines[k] !== undefined && lines[k] !== '') ? lines[k] : it.trimmed;
+          self._cache.set(prefix + it.trimmed, line);
+          if (line !== it.trimmed) self._apply(it, line, token);
         }
       }
+    },
+
+    _apply: function (item, line, token) {
+      if (token !== this._token) return;
+      var node = item.node;
+      if (!node || !node.isConnected) return;
+      if (node.nodeValue !== (item.lead + item.trimmed + item.trail)) return;
+      var original = node.nodeValue;
+      node.nodeValue = item.lead + line + item.trail;
+      this._translated.set(node, { original: original, lead: item.lead, trail: item.trail, full: item.lead + line + item.trail });
     },
 
     refresh: function () {
       var self = this;
       if (self.currentLang === DEFAULT_LANG) return;
       var token = ++self._token;
-      self._applying = true;
-      self.restore();
-      self._applying = false;
-      var items = self.collect();
-      if (!items.length) return;
-      self._translate(items, self.currentLang, token);
+      self._translateNew(self.currentLang, token);
     },
 
     observe: function () {
@@ -213,8 +254,25 @@
       var target = self.scope();
       if (!target || typeof MutationObserver === 'undefined') return;
       if (self._observer) self._observer.disconnect();
-      self._observer = new MutationObserver(function () {
+      self._observer = new MutationObserver(function (muts) {
         if (self._applying) return;
+
+        // Ignore mutations that only touch skipped subtrees (e.g. the
+        // ticking nav clock) so they can't trigger a re-translate.
+        var relevant = false;
+        for (var i = 0; i < muts.length; i++) {
+          var m = muts[i];
+          var node = m.addedNodes.length ? m.addedNodes[0] : m.target;
+          var insideSkip = false;
+          var cur = (node && node.nodeType === 1) ? node : (node && node.parentElement);
+          while (cur && cur !== document.body) {
+            if (cur.matches && cur.matches(SKIP_SEL)) { insideSkip = true; break; }
+            cur = cur.parentElement;
+          }
+          if (!insideSkip) { relevant = true; break; }
+        }
+        if (!relevant) return;
+
         clearTimeout(self._observeTimer);
         self._observeTimer = setTimeout(function () { self.refresh(); }, 700);
       });
