@@ -6,7 +6,6 @@ A single-page application marketplace for premium motion graphics, 4K video clip
 
 ---
 
-
 ## ✨ Features
 
 - **🎬 Full-featured SPA marketplace** — Home, Shop, Product Detail, Cart, Checkout, Auth, Profile, Wishlist
@@ -20,13 +19,12 @@ A single-page application marketplace for premium motion graphics, 4K video clip
 - **📨 Newsletter subscription** — Email capture with database storage
 - **🌍 International flags** — Country list with 140+ countries, state/province data for major countries
 - **🔒 AES-256-GCM encrypted credentials** — Turso database credentials encrypted with a split-secret scheme (ciphertext and key in separate files)
-- **📈 SEO optimized** — JSON-LD structured data (Organization, WebSite, Product, FAQPage, CollectionPage, BreadcrumbList), Open Graph, Twitter Cards, sitemap, robots.txt
-
+- **📈 SEO optimized** — JSON-LD structured data (Organization, WebSite, Product, FAQPage, CollectionPage, BreadcrumbList), Open Graph, Twitter Cards, sitemap, robots.txt.
 
 ## 🏗 Tech Stack
 
 | Technology | Purpose |
-|---|---|
+| --- | --- |
 | **Vanilla JavaScript** | Application logic, SPA routing, templating |
 | **HTML5 + CSS3** | App shell, Apple-inspired design system |
 | **Turso (libSQL)** | Serverless edge database |
@@ -37,7 +35,7 @@ A single-page application marketplace for premium motion graphics, 4K video clip
 
 ## 📁 Project Structure
 
-```
+```tree
 ├── index.html             # App entry point with all script imports
 ├── 404.html               # GitHub Pages 404 fallback
 ├── css/style.css          # Single stylesheet
