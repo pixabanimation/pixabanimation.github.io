@@ -2698,10 +2698,10 @@ reviews.map(r => `
           </div>
           <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6">
             This will: <br>
-            1. Generate individual blog post HTML files from the database<br>
+            1. Generate individual blog post HTML files from the database (existing files are kept as-is)<br>
             2. Regenerate <code>blog/index.html</code> with all posts<br>
             3. Update <code>sitemap.xml</code> with new URLs<br><br>
-            <strong>Tip:</strong> Run this after creating or editing blog posts to publish the changes live.
+            <strong>Tip:</strong> To bring static articles into the database (e.g. after writing files directly or via AI generation), run <code>npm run sync-blog</code>.
           </p>
           <div style="display:flex;gap:8px">
             <button class="btn btn-primary btn-sm" style="flex:1" onclick="navigator.clipboard.writeText('npm run build-blog');Components.toast('Command copied!','success');document.querySelector('.modal-overlay')?.remove()">

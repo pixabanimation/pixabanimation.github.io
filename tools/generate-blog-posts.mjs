@@ -6,7 +6,10 @@
  * content from the Turso database. Produces files in blog/{slug}.html
  * following the same template as existing blog posts.
  *
- * Usage: node tools/generate-blog-posts.mjs
+ * Usage: node tools/generate-blog-posts.mjs [--force]
+ *
+ * Existing files are skipped by default. Pass `--force` to regenerate
+ * every post from the database (overwrites existing HTML).
  */
 
 import { writeFileSync, existsSync } from 'fs';
@@ -629,14 +632,16 @@ async function main() {
       }
     }
 
-    let generated = 0;
+    const FORCE = process.argv.includes('--force');
+
+  let generated = 0;
   let skipped = 0;
 
   for (const post of posts) {
     const filename = `${post.slug}.html`;
     const filepath = join(blogDir, filename);
 
-    if (existsSync(filepath)) {
+    if (existsSync(filepath) && !FORCE) {
       console.log(`  ⏭  Skipped (exists): ${filename}`);
       skipped++;
       continue;

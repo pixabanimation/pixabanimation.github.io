@@ -3,9 +3,10 @@
     "build-blog": "node tools/generate-blog-posts.mjs && node tools/generate-blog-index.mjs && node tools/generate-sitemap.mjs",
     "build-blog-index": "node tools/generate-blog-index.mjs",
     "build-blog-posts": "node tools/generate-blog-posts.mjs",
+    "sync-blog": "node tools/sync-blog-static-to-db.mjs",
     "update-descriptions": "node tools/update-descriptions.mjs",
-    "ai-write": "node tools/ai-blog-writer.mjs",
-    "ai-trending": "node tools/ai-blog-writer.mjs --trending 5",
+    "ai-write": "node tools/ai-blog-writer.mjs && node tools/sync-blog-static-to-db.mjs",
+    "ai-trending": "node tools/ai-blog-writer.mjs --trending 5 && node tools/sync-blog-static-to-db.mjs",
     "build-blog-index-fs": "node tools/generate-blog-index-from-fs.mjs",
     "ai-server": "node server/ai-blog-api.mjs"
   },

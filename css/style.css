@@ -14090,9 +14090,6 @@ body:has(.admin-page) .footer {
    ============================================ */
 
 /* Hide the underlying Google widget + banners */
-.gt-element {
-  display: none !important;
-}
 body {
   top: 0 !important;
 }

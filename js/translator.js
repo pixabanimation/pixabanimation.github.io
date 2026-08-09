@@ -1,15 +1,27 @@
 // ============================================
 // pixabanimation — Language Selector (20 languages)
-// Uses the free Google Translate website widget,
-// restricted to the 20 most-used languages, wrapped
-// in a custom responsive dropdown in the navbar.
+//
+// In-page translation powered by Google's free
+// translate_a/single (GTX) endpoint. The official
+// Google Translate website widget no longer exposes
+// a programmatic control (its hidden <select> was
+// removed), so we translate the page content directly
+// and keep the same custom responsive dropdown in the
+// navbar. No API key required; CORS is open.
 // ============================================
 (function () {
   'use strict';
 
   var LANG_KEY = 'pixa_lang';
   var DEFAULT_LANG = 'en';
-  var TRANSLATE_ID = 'google_translate_element';
+  var GTX = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=';
+
+  // Elements whose text is never translated
+  var SKIP_SEL = [
+    'script', 'style', 'noscript', 'code', 'pre', 'kbd', 'samp',
+    'textarea', 'input', 'select', 'option', 'button',
+    '.nav-lang', '[data-no-translate]', '[translate="no"]'
+  ].join(',');
 
   // 20 most-used languages (code, flag, native name, English name)
   var LANGUAGES = [
@@ -35,32 +47,183 @@
     { code: 'ur', flag: '🇵🇰', native: 'اردو', name: 'Urdu' }
   ];
 
-  var INCLUDED = LANGUAGES.map(function (l) { return l.code; }).join(',');
-
   var Translator = {
-    sel: null,
-    ready: false,
+    currentLang: DEFAULT_LANG,
+    _lastTranslated: null,
+    _applying: false,
+    _token: 0,
+    _observer: null,
+    _observeTimer: null,
 
     init: function () {
       var self = this;
-      document.addEventListener('DOMContentLoaded', function () {
-        self.buildWidgets();
-        self.wire();
-        self.waitForSelect(function (sel) {
-          self.sel = sel;
-          self.ready = true;
-          var saved = self.getStored();
-          if (saved && saved !== DEFAULT_LANG) {
-            self.trigger(saved);
-          }
-        });
-      });
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { self.start(); });
+      } else {
+        self.start();
+      }
+    },
+
+    start: function () {
+      var self = this;
+      self.buildWidgets();
+      self.wire();
+      self._lastTranslated = [];
+      var saved = self.getStored();
+      if (saved && saved !== DEFAULT_LANG) {
+        self.apply(saved);
+      }
+      self.observe();
     },
 
     getStored: function () {
       try { return localStorage.getItem(LANG_KEY) || DEFAULT_LANG; } catch (e) { return DEFAULT_LANG; }
     },
 
+    scope: function () {
+      return document.body;
+    },
+
+    isSkipped: function (node) {
+      var el = node.parentElement;
+      while (el && el !== document.body) {
+        if (el.matches && el.matches(SKIP_SEL)) return true;
+        el = el.parentElement;
+      }
+      return false;
+    },
+
+    collect: function () {
+      var self = this;
+      var scope = self.scope();
+      if (!scope) return [];
+      var walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT, {
+        acceptNode: function (node) {
+          if (self.isSkipped(node)) return NodeFilter.FILTER_REJECT;
+          var v = node.nodeValue || '';
+          if (!v.trim()) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      var items = [];
+      var node;
+      while ((node = walker.nextNode())) {
+        var v = node.nodeValue;
+        var trimmed = v.trim();
+        var lead = v.slice(0, v.indexOf(trimmed));
+        var trail = v.slice(v.indexOf(trimmed) + trimmed.length);
+        items.push({ node: node, trimmed: trimmed, lead: lead, trail: trail });
+      }
+      return items;
+    },
+
+    restore: function () {
+      var list = this._lastTranslated || [];
+      for (var i = 0; i < list.length; i++) {
+        var t = list[i];
+        if (t.node && t.node.isConnected) t.node.nodeValue = t.original;
+      }
+      this._lastTranslated = [];
+    },
+
+    apply: function (code) {
+      var self = this;
+      if (code === DEFAULT_LANG) {
+        self._applying = true;
+        self.restore();
+        self._applying = false;
+        self.currentLang = code;
+        if (document.documentElement) document.documentElement.lang = DEFAULT_LANG;
+        return;
+      }
+
+      var token = ++self._token;
+      self._applying = true;
+      self.restore();
+      self._applying = false;
+      self.currentLang = code;
+      if (document.documentElement) document.documentElement.lang = code;
+
+      var items = self.collect();
+      if (!items.length) return;
+      self._translate(items, code, token);
+    },
+
+    _translate: async function (items, code, token) {
+      var self = this;
+
+      var chunks = [];
+      var cur = [];
+      var len = 0;
+      for (var i = 0; i < items.length; i++) {
+        cur.push(items[i]);
+        len += items[i].trimmed.length + 1;
+        if (cur.length >= 60 || len >= 1500) {
+          chunks.push(cur);
+          cur = [];
+          len = 0;
+        }
+      }
+      if (cur.length) chunks.push(cur);
+
+      for (var c = 0; c < chunks.length; c++) {
+        var chunk = chunks[c];
+        var joined = chunk.map(function (it) { return it.trimmed; }).join('\n');
+        var translated;
+        try {
+          var res = await fetch(GTX + encodeURIComponent(code) + '&dt=t&q=' + encodeURIComponent(joined));
+          var json = await res.json();
+          translated = (json && json[0] && json[0].map(function (s) { return s[0]; }).join('')) || '';
+        } catch (err) {
+          translated = '';
+        }
+        if (!translated) continue;
+        var lines = translated.split('\n');
+
+        for (var k = 0; k < chunk.length; k++) {
+          if (token !== self._token) return;
+          var item = chunk[k];
+          var node = item.node;
+          if (!node || !node.isConnected) continue;
+          // Never overwrite content that changed since collection
+          if (node.nodeValue !== (item.lead + item.trimmed + item.trail)) continue;
+          var line = (lines[k] !== undefined && lines[k] !== '') ? lines[k] : item.trimmed;
+          if (line === item.trimmed) continue;
+          var original = node.nodeValue;
+          self._lastTranslated.push({ node: node, original: original });
+          node.nodeValue = item.lead + line + item.trail;
+        }
+      }
+    },
+
+    refresh: function () {
+      var self = this;
+      if (self.currentLang === DEFAULT_LANG) return;
+      var token = ++self._token;
+      self._applying = true;
+      self.restore();
+      self._applying = false;
+      var items = self.collect();
+      if (!items.length) return;
+      self._translate(items, self.currentLang, token);
+    },
+
+    observe: function () {
+      var self = this;
+      var target = self.scope();
+      if (!target || typeof MutationObserver === 'undefined') return;
+      if (self._observer) self._observer.disconnect();
+      self._observer = new MutationObserver(function () {
+        if (self._applying) return;
+        clearTimeout(self._observeTimer);
+        self._observeTimer = setTimeout(function () { self.refresh(); }, 700);
+      });
+      // childList only: translation itself only changes text node values
+      // (characterData), so our own writes never trigger a re-translate loop.
+      self._observer.observe(target, { childList: true, subtree: true });
+    },
+
+    // ─── Dropdown UI ────────────────────────────────────────────────
     buildWidgets: function () {
       var self = this;
       var containers = document.querySelectorAll('[data-lang-widget]');
@@ -134,7 +297,6 @@
           return;
         }
 
-        // Close if clicking outside any widget
         var inWidget = e.target.closest('.nav-lang');
         if (!inWidget) self.closeAll();
       });
@@ -158,66 +320,16 @@
       });
     },
 
-    waitForSelect: function (cb) {
-      var start = Date.now();
-      var timer = setInterval(function () {
-        var sel = document.querySelector('.goog-te-combo');
-        if (sel) {
-          clearInterval(timer);
-          cb(sel);
-          return;
-        }
-        if (Date.now() - start > 12000) clearInterval(timer);
-      }, 150);
-    },
-
     trigger: function (code) {
       try { localStorage.setItem(LANG_KEY, code); } catch (e) { /* ignore */ }
       this.syncLabels();
-
-      if (!this.sel || !this.ready) return;
-
-      var found = false;
-      for (var i = 0; i < this.sel.options.length; i++) {
-        if (this.sel.options[i].value === code) {
-          this.sel.value = code;
-          found = true;
-          break;
-        }
-      }
-      if (!found) this.sel.value = ''; // restore original
-
-      this.sel.dispatchEvent(new Event('change', { bubbles: true }));
+      this.apply(code);
     },
 
     setLang: function (code) {
       this.trigger(code);
       this.closeAll();
     }
-  };
-
-  // Google Translate bootstrap callback
-  window.googleTranslateElementInit = function () {
-    var attempts = 0;
-    var timer = setInterval(function () {
-      attempts++;
-      var el = document.getElementById(TRANSLATE_ID);
-      if (el && window.google && window.google.translate && window.google.translate.TranslateElement) {
-        try {
-          new window.google.translate.TranslateElement({
-            pageLanguage: DEFAULT_LANG,
-            includedLanguages: INCLUDED,
-            autoDisplay: false,
-            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
-          }, el);
-          clearInterval(timer);
-          return;
-        } catch (err) {
-          // keep retrying
-        }
-      }
-      if (attempts > 40) clearInterval(timer); // ~12s timeout
-    }, 300);
   };
 
   window.Translator = Translator;
