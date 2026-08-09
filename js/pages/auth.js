@@ -10,8 +10,10 @@ import { Router } from '../router.js';
 export const AuthPage = {
   render(params) {
     const content = document.getElementById('pageContent');
-    // Show register form when path is /register OR query has type=register
-    const type = (params.path === '/register') ? 'register' : (params.query?.type || 'login');
+    // Show register form when path is /register OR query has type=register.
+    // Strip any query string (e.g. ?redirect=...) so the route is detected.
+    const cleanPath = (params.path || '').split('?')[0];
+    const type = (cleanPath === '/register') ? 'register' : (params.query?.type || 'login');
 
     // Store redirect target (e.g. back to checkout after sign in)
     const redirect = params.query?.redirect;

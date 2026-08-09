@@ -8651,6 +8651,14 @@ select:focus option:checked {
     pointer-events: all;
   }
   
+  .nav-links.open {
+    visibility: visible;
+    opacity: 1;
+    max-height: 85vh;
+    overflow-y: auto;
+    pointer-events: all;
+  }
+  
   .nav-links .nav-link {
     padding: 12px 8px;
     height: auto;
@@ -14076,4 +14084,175 @@ body:has(.admin-page) .footer {
 @keyframes aiwFadeIn { from { opacity:0; transform:translateY(5px) } to { opacity:1; transform:translateY(0) }}
 
 /* ─── Header Banner ─── */
+
+/* ============================================
+   Language Selector (Google Translate)
+   ============================================ */
+
+/* Hide the underlying Google widget + banners */
+.gt-element {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+#goog-gt-tt {
+  display: none !important;
+}
+
+/* ─── Desktop dropdown ─── */
+.nav-lang {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 980px;
+  background: transparent;
+  color: #1d1d1f;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.25s ease;
+}
+.nav-lang-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+.nav-lang-btn .fa-globe {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.55);
+}
+.nav-lang-caret {
+  font-size: 9px;
+  color: rgba(0, 0, 0, 0.4);
+  transition: transform 0.25s ease;
+}
+.nav-lang.open .nav-lang-caret {
+  transform: rotate(180deg);
+}
+
+.nav-lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 236px;
+  max-height: 60vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  z-index: 1201;
+}
+.nav-lang.open .nav-lang-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-lang-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.nav-lang-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.nav-lang-item.active {
+  background: rgba(0, 113, 227, 0.1);
+}
+.nav-lang-item.active .nav-lang-name {
+  color: #0071e3;
+}
+.nav-lang-flag {
+  font-size: 16px;
+  line-height: 1;
+  width: 22px;
+  text-align: center;
+}
+.nav-lang-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: #1d1d1f;
+}
+.nav-lang-en {
+  margin-left: auto;
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+/* Mobile widget lives inside the hamburger menu */
+.nav-lang--mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .nav-lang {
+    display: none;
+  }
+  .nav-lang-li {
+    grid-column: 1 / -1;
+    list-style: none;
+    padding: 0;
+  }
+  .nav-lang--mobile {
+    display: flex;
+  }
+  .nav-lang--mobile .nav-lang-btn {
+    width: 100%;
+    height: auto;
+    min-height: 48px;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+  .nav-lang--mobile .nav-lang-menu {
+    position: static;
+    width: 100%;
+    max-height: 45vh;
+    box-shadow: none;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    margin-top: 6px;
+  }
+  .nav-lang--mobile .nav-lang-item {
+    padding: 10px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-lang-btn,
+  .nav-lang-menu,
+  .nav-lang-caret {
+    transition: none !important;
+  }
+  .nav-lang.open .nav-lang-caret {
+    transform: none;
+  }
+}
 
