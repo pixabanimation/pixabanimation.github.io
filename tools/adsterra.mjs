@@ -65,12 +65,16 @@ export const AD_TYPES = [
 <script src="https://www.highperformanceformat.com/62eff44ce37f09b13655d3931caf610d/invoke.js"></script>`
 ];
 
-export const AD_STYLE = `<style>
+export const AD_STYLE = `<!-- Adsterra Style -->
+<style>
 .adsterra-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;margin:32px 0;min-height:60px;overflow:hidden}
 .adsterra-slot .adsterra-label{display:block;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(0,0,0,.3);margin-bottom:8px;text-align:center}
 .adsterra-slot iframe,.adsterra-slot img,.adsterra-slot ins,.adsterra-slot div{max-width:100%}
 .adsterra-sidebar{margin:0 auto}
-@media(prefers-color-scheme:dark){.adsterra-slot .adsterra-label{color:rgba(255,255,255,.38)}}
+.pl-card-ad{display:flex;flex-direction:column;align-items:center;justify-content:center;grid-column:1/-1;margin:2px 0 10px;min-height:60px;overflow:hidden}
+.pl-card-ad .adsterra-label{display:block;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(0,0,0,.3);margin-bottom:8px;text-align:center}
+@media(max-width:620px){.pl-card-ad iframe{max-width:100%}}
+@media(prefers-color-scheme:dark){.adsterra-slot .adsterra-label,.pl-card-ad .adsterra-label{color:rgba(255,255,255,.38)}}
 </style>`;
 
 /**
@@ -111,3 +115,17 @@ export function postAdHtml(fileIndex, slot) {
 export const INDEX_LEADERBOARD = adsterraSlot(AD_TYPES[TOP_AD]);
 export const INDEX_SIDEBAR_1 = adsterraSlot(AD_TYPES[SIDEBAR_AD], 'adsterra-sidebar');
 export const INDEX_SIDEBAR_2 = adsterraSlot(AD_TYPES[MID1_AD], 'adsterra-sidebar');
+
+// In-grid ad rows. Uses the three plain banner scripts only, because the
+// atOptions pattern relies on a page-global (multiple would overwrite each
+// other) and the leaderboard/sidebar already claim every atOptions key.
+const GRID_AD_POOL = [0, 1, 2];
+
+/**
+ * Build a full-width ad card that weaves between the article cards in the
+ * index grid. `.pl-card-ad` spans all grid columns via grid-column:1/-1.
+ * @param {number} fileIndex rotates which banner script is used
+ */
+export function indexGridAd(fileIndex) {
+  return adsterraSlot(AD_TYPES[GRID_AD_POOL[fileIndex % GRID_AD_POOL.length]], 'pl-card-ad');
+}

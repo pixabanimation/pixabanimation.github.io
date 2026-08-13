@@ -11,7 +11,11 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { postAdHtml, AD_STYLE, INDEX_LEADERBOARD, INDEX_SIDEBAR_1, INDEX_SIDEBAR_2 } from './adsterra.mjs';
+import { postAdHtml, AD_STYLE, INDEX_LEADERBOARD, INDEX_SIDEBAR_1, INDEX_SIDEBAR_2, indexGridAd } from './adsterra.mjs';
+
+const STYLE_MARKER = '<!-- Adsterra Style -->';
+const GRID_AD_EVERY = 9;   // a full-row ad card after every N grid cards
+const GRID_AD_FIRST = 8;   // first grid ad after this many cards (1-based)
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BLOG_DIR = path.resolve(__dirname, '../blog');
@@ -37,9 +41,20 @@ function stripOldAds(html) {
 }
 
 function injectStyle(html) {
-  const headEnd = html.lastIndexOf('</head>');
-  if (headEnd === -1) return html;
-  return html.slice(0, headEnd) + '\n' + AD_STYLE + '\n' + html.slice(headEnd);
+  // Idempotent: replace the existing Adsterra style block (marked or detected
+  // by content) so changes to AD_STYLE propagate, or insert a new one.
+  const marked = /<!-- Adsterra Style -->\s*\n?<style>[\s\S]*?<\/style>\n?/;
+  const legacy = /<style>\s*\.adsterra-slot\{[\s\S]*?<\/style>\n?/;
+  let out = html;
+  if (marked.test(out)) {
+    return out.replace(marked, AD_STYLE + '\n');
+  }
+  if (legacy.test(out)) {
+    return out.replace(legacy, AD_STYLE + '\n');
+  }
+  const headEnd = out.lastIndexOf('</head>');
+  if (headEnd === -1) return out;
+  return out.slice(0, headEnd) + '\n' + AD_STYLE + '\n' + out.slice(headEnd);
 }
 
 // Insert mid-article ads after h2 headings inside .blog-content.
@@ -114,25 +129,94 @@ function convertPost(html, index) {
   return injectStyle(out);
 }
 
-function convertIndex(html) {
-  // Idempotent: skip files that already contain Adsterra ads
-  if (html.includes('<!-- Adsterra Ad -->')) return html;
+// ---- index grid helpers ---------------------------------------------------
+
+const GRID_OPEN = '<div class="pl-articles-grid" id="plArticlesGrid">';
+const CARD_RE = /<a href="[^"]*" class="pl-card"[\s\S]*?<\/a>/g;
+const META_DATE_RE = /<span>([A-Za-z]{3} \d{1,2}, \d{4})<\/span>/;
+
+// Locate the grid container and return the slice boundaries.
+// The grid's own close tag is the first </div> after the last card, because
+// cards themselves contain nested divs.
+function gridBounds(html) {
+  const start = html.indexOf(GRID_OPEN);
+  if (start === -1) return null;
+  const contentStart = start + GRID_OPEN.length;
+  const tail = html.slice(contentStart);
+  const matches = [...tail.matchAll(CARD_RE)];
+  if (matches.length === 0) return null;
+  const last = matches[matches.length - 1];
+  const afterLastCard = contentStart + last.index + last[0].length;
+  const end = html.indexOf('</div>', afterLastCard);
+  if (end === -1) return null;
+  return { start, contentStart, end };
+}
+
+// Extract the card blocks that live inside the grid.
+function gridCards(html) {
+  const b = gridBounds(html);
+  if (!b) return [];
+  const inner = html.slice(b.contentStart, b.end);
+  return [...inner.matchAll(CARD_RE)].map((m) => ({ html: m[0], date: cardDate(m[0]) }));
+}
+
+function cardDate(cardHtml) {
+  const m = cardHtml.match(META_DATE_RE);
+  return m ? Date.parse(m[1]) : 0;
+}
+
+const CARD_SEP = '\n          ';
+
+// Sort the grid's cards newest-first so the ad rows land at fixed offsets.
+function reorderGridCards(html) {
+  const b = gridBounds(html);
+  if (!b) return html;
+  const cards = gridCards(html);
+  if (cards.length === 0) return html;
+  cards.sort((a, z) => z.date - a.date);
+  const rebuilt = '\n' + cards.map((c) => CARD_SEP + c.html.trim()).join('') + '\n        ';
+  return html.slice(0, b.contentStart) + rebuilt + html.slice(b.end);
+}
+
+// Weave full-row ad cards into the grid after every Nth article card.
+function injectGridAds(html, fileIndex) {
+  const b = gridBounds(html);
+  if (!b) return html;
+  const cards = gridCards(html);
+  if (cards.length === 0) return html;
+
+  const rebuilt = [];
+  cards.forEach((card, i) => {
+    const pos = i + 1; // 1-based
+    rebuilt.push(CARD_SEP + card.html.trim());
+    if (pos >= GRID_AD_FIRST && (pos - GRID_AD_FIRST) % GRID_AD_EVERY === 0) {
+      rebuilt.push(CARD_SEP + indexGridAd(fileIndex + Math.floor((pos - GRID_AD_FIRST) / GRID_AD_EVERY)).replace(/\n/g, '\n          '));
+    }
+  });
+
+  return html.slice(0, b.contentStart) + '\n' + rebuilt.join('') + '\n        ' + html.slice(b.end);
+}
+
+function convertIndex(html, fileIndex = 0) {
   let out = stripOldAds(html);
 
-  // Leaderboard above the articles grid
-  if (out.includes('<div class="pl-articles-grid" id="plArticlesGrid">')) {
-    out = out.replace(
-      '<div class="pl-articles-grid" id="plArticlesGrid">',
-      INDEX_LEADERBOARD + '\n        <div class="pl-articles-grid" id="plArticlesGrid">'
-    );
+  // Leaderboard above the articles grid (idempotent via marker check)
+  if (!out.includes(INDEX_LEADERBOARD) && out.includes(GRID_OPEN)) {
+    out = out.replace(GRID_OPEN, INDEX_LEADERBOARD + '\n        ' + GRID_OPEN);
   }
 
-  // Sidebar ads inside the "Ad" widget
-  if (out.includes('<div class="pl-sb-widget-title">Ad</div>')) {
+  // Sidebar ads inside the "Ad" widget (idempotent)
+  if (!out.includes(INDEX_SIDEBAR_1) && out.includes('<div class="pl-sb-widget-title">Ad</div>')) {
     out = out.replace(
       '<div class="pl-sb-widget-title">Ad</div>',
       '<div class="pl-sb-widget-title">Ad</div>\n' + INDEX_SIDEBAR_1 + '\n' + INDEX_SIDEBAR_2
     );
+  }
+
+  // In-grid ads: sort newest-first then weave in ad cards (idempotent)
+  if (!out.includes('pl-card-ad')) {
+    out = reorderGridCards(out);
+    out = injectGridAds(out, fileIndex);
   }
 
   return injectStyle(out);
@@ -157,7 +241,7 @@ async function main() {
 
   const idxPath = path.join(BLOG_DIR, 'index.html');
   const idxOrig = await fs.readFile(idxPath, 'utf8');
-  const idxOut = convertIndex(idxOrig);
+  const idxOut = convertIndex(idxOrig, posts.length);
   if (idxOut !== idxOrig) {
     await fs.writeFile(idxPath, idxOut, 'utf8');
     console.log('Updated blog/index.html');
